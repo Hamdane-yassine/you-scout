@@ -12,6 +12,7 @@
   <name>you-scout</name>
   <modules>
     <module>service-discovery</module>
+      <module>user-feed-service</module>
   </modules>
   <!-- FIXME change it to the project's website -->
 <!--  <url>http://www.example.com</url>-->

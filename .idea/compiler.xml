@@ -8,7 +8,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="service-discovery" />
+        <module name="user-feed-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="feed-service" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>
