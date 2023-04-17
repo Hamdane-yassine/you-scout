@@ -5,24 +5,28 @@ spring:
 
   data:
     cassandra:
-      keyspaceName: feed-service
-      contactPoints: localhost
+      #      username: qbAwSdWicJdORowhJlqxgbji
+#      password: 31DYwyowywH_n0nLHKtJ.z65pFEB2Ioe40cE2FM47bcxzdZvmeDMk_OuZmUCfZ8cpastxPrI.lShnaY1vsoyyhwavI5fwwuIO.IEygNq85SGuJReMMMxfde-Te4pFiJm
       port: 9042
       schema-action: CREATE_IF_NOT_EXISTS
-astra:
-  # Allow usage of devops and Stargate apis
-  api:
-    application-token: "AstraCS:qbAwSdWicJdORowhJlqxgbji:134e29d5db4c1e283eff5b2b83eb52f50151445a83e6df61dccd78765b229024"
-    database-id: "cfc81f9b-fc31-439c-b601-1f21165e3d2d"
-    database-region: "europe-west1"
-  # Connectivity to Cassandra
-  cql:
-    enabled: true
-    download-scb:
-      enabled: true
-    driver-config:
-      basic:
-        session-keyspace: "youscoutfeed"
+      local-datacenter: datacenter1
+      keyspace-name: youscoutfeed
+#datastax.astra:
+#  secure-connect-bundle: secure-bundle.zip
+#astra:
+#  # Allow usage of devops and Stargate apis
+#  api:
+#    application-token: AstraCS:qbAwSdWicJdORowhJlqxgbji:134e29d5db4c1e283eff5b2b83eb52f50151445a83e6df61dccd78765b229024
+#    database-id: cfc81f9b-fc31-439c-b601-1f21165e3d2d
+#    database-region: europe-west1
+#  # Connectivity to Cassandra
+#  cql:
+#    enabled: true
+#    download-scb:
+#      enabled: true
+#    driver-config:
+#      basic:
+#        session-keyspace: youscoutfeed
 
 #  cloud:
 #    stream:
