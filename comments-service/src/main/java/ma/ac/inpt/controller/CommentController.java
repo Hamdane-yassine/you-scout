@@ -30,24 +30,16 @@ public class CommentController {
         }
     }
 
-    @GetMapping("/comments/{postId}")
+    @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<List<Comment>> getAllCommentsForPost(@PathVariable("postId") String postId) {
-        try {
-            List<Comment> comments = commentService.getAllCommentsForPost(postId);
-            return new ResponseEntity<>(comments, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<Comment> comments = commentService.getAllCommentsForPost(postId);
+        return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
     @GetMapping("/comments/{id}")
     public ResponseEntity<Comment> getComment(@PathVariable("id") String id) {
-        try {
-            Comment comment = commentService.getComment(id);
-            return new ResponseEntity<>(comment, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Comment comment = commentService.getComment(id);
+        return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 
     @DeleteMapping("/comments/{id}")

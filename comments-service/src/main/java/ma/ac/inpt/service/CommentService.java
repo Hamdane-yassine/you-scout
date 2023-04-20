@@ -69,8 +69,7 @@ public class CommentService {
 
     public Comment getComment(String id) {
         Optional<Comment> providedComment = commentRepository.findById(id);
-        Comment comment = providedComment.orElseThrow(() -> new CommentException("Comment not found"));
-        return comment;
+        return providedComment.orElseThrow(() -> new CommentException("Comment not found"));
     }
 
     public String deleteComment(String id) {
