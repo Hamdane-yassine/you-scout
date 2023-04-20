@@ -20,12 +20,9 @@ public class SkillController {
     final private SkillService skillService;
 
     @Autowired
-    public SkillController(SkillService skillService, SkillRepository skillRepository) {
+    public SkillController(SkillService skillService) {
         this.skillService = skillService;
-        this.skillRepository = skillRepository;
     }
-
-    final private SkillRepository skillRepository;
 
     @GetMapping("/skills")
     public ResponseEntity<List<Skill>> getAllSkills(@RequestParam(required = false) String skill) {
