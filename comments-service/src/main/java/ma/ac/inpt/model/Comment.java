@@ -18,6 +18,6 @@ public class Comment {
     private String id;
     private User author;
     private String body;
-    private List<Reply> replies;
+    private List<String> replies;
     private String postId;
 }

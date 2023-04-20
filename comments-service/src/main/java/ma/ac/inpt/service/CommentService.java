@@ -5,7 +5,6 @@ import ma.ac.inpt.exceptions.PostException;
 import ma.ac.inpt.exceptions.UserException;
 import ma.ac.inpt.model.Comment;
 import ma.ac.inpt.model.Post;
-import ma.ac.inpt.model.Reply;
 import ma.ac.inpt.model.User;
 import ma.ac.inpt.repository.CommentRepository;
 import ma.ac.inpt.repository.PostRepository;
@@ -37,7 +36,7 @@ public class CommentService {
         Optional<User> providedUser = userRepository.findById(comment.getId());
         User user = providedUser.orElseThrow(() -> new UserException("User not found"));
 
-        List<Reply> replies = new ArrayList<>();
+        List<String> replies = new ArrayList<>();
 
         Optional<Post> providedPost = postRepository.findById(comment.getPostId());
         Post post = providedPost.orElseThrow(() -> new PostException("Post not found"));

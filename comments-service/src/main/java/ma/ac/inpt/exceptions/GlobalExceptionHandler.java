@@ -10,11 +10,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CommentException.class)
     public ResponseEntity<String> handleCommentException(CommentException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(PostException.class)
     public ResponseEntity<String> handlePostException(PostException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<String> handleUserException(UserException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ReplyException.class)
+    public ResponseEntity<String> handleReplyException(ReplyException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

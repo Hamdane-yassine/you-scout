@@ -1,6 +1,5 @@
 package ma.ac.inpt.controller;
 
-import ma.ac.inpt.exceptions.CommentException;
 import ma.ac.inpt.model.Comment;
 import ma.ac.inpt.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +21,8 @@ public class CommentController {
 
     @PostMapping("/comments")
     public ResponseEntity<Comment> createComment(@RequestBody Comment comment) {
-        try {
-            Comment newComment = commentService.createComment(comment);
-            return new ResponseEntity<>(newComment, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Comment newComment = commentService.createComment(comment);
+        return new ResponseEntity<>(newComment, HttpStatus.CREATED);
     }
 
     @GetMapping("/posts/{postId}/comments")
@@ -44,11 +39,7 @@ public class CommentController {
 
     @DeleteMapping("/comments/{id}")
     public ResponseEntity<String> deleteComment(@PathVariable("id") String id) {
-        try {
-            String message = commentService.deleteComment(id);
-            return new ResponseEntity<>(message, HttpStatus.OK);
-        } catch (CommentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        String message = commentService.deleteComment(id);
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 }

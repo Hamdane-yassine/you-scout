@@ -1,6 +1,5 @@
 package ma.ac.inpt.controller;
 
-import ma.ac.inpt.exceptions.PostException;
 import ma.ac.inpt.model.Post;
 import ma.ac.inpt.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,21 +20,13 @@ public class PostController {
 
     @PostMapping("/posts")
     public ResponseEntity<Post> createPost(@RequestBody Post post) {
-        try{
-            Post newPost = postService.createPost(post);
-            return new ResponseEntity<>(newPost, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Post newPost = postService.createPost(post);
+        return new ResponseEntity<>(newPost, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/posts/{postId}")
     public ResponseEntity<String> deletePost(@PathVariable("postId") String postId) {
-        try{
-            String message = postService.deletePost(postId);
-            return new ResponseEntity<>(message, HttpStatus.CREATED);
-        } catch (PostException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        String message = postService.deletePost(postId);
+        return new ResponseEntity<>(message, HttpStatus.CREATED);
     }
 }
