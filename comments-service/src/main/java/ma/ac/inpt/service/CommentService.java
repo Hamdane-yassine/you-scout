@@ -1,8 +1,8 @@
 package ma.ac.inpt.service;
 
-import ma.ac.inpt.exceptions.CommentNotFoundException;
-import ma.ac.inpt.exceptions.PostNotFoundException;
-import ma.ac.inpt.exceptions.UserNotFoundException;
+import ma.ac.inpt.exceptions.CommentException;
+import ma.ac.inpt.exceptions.PostException;
+import ma.ac.inpt.exceptions.UserException;
 import ma.ac.inpt.model.Comment;
 import ma.ac.inpt.model.Post;
 import ma.ac.inpt.model.Reply;
@@ -35,12 +35,12 @@ public class CommentService {
         String ID = objectId.toHexString();
 
         Optional<User> providedUser = userRepository.findById(comment.getId());
-        User user = providedUser.orElseThrow(() -> new UserNotFoundException("User not found"));
+        User user = providedUser.orElseThrow(() -> new UserException("User not found"));
 
         List<Reply> replies = new ArrayList<>();
 
         Optional<Post> providedPost = postRepository.findById(comment.getPostId());
-        Post post = providedPost.orElseThrow(() -> new PostNotFoundException("Post not found"));
+        Post post = providedPost.orElseThrow(() -> new PostException("Post not found"));
 
         List<String> postComments = post.getComments();
         postComments.add(ID);
@@ -55,13 +55,13 @@ public class CommentService {
     // Can be improved by querying the comment who have postId equals the provided postId
     public List<Comment> getAllCommentsForPost(String postId) {
         Optional<Post> providedPost = postRepository.findById(postId);
-        Post post = providedPost.orElseThrow(() -> new PostNotFoundException("Post not found"));
+        Post post = providedPost.orElseThrow(() -> new PostException("Post not found"));
         List<String> postComments = post.getComments();
         List<Comment> comments = new ArrayList<>();
 
         postComments.forEach(comment -> {
                     Optional<Comment> existingComment = commentRepository.findById(comment);
-                    Comment confirmedComment = existingComment.orElseThrow(() -> new CommentNotFoundException("Comment not found"));
+                    Comment confirmedComment = existingComment.orElseThrow(() -> new CommentException("Comment not found"));
                     comments.add(confirmedComment);
                 });
         return comments;
@@ -69,15 +69,24 @@ public class CommentService {
 
     public Comment getComment(String id) {
         Optional<Comment> providedComment = commentRepository.findById(id);
-        Comment comment = providedComment.orElseThrow(() -> new CommentNotFoundException("Comment not found"));
+        Comment comment = providedComment.orElseThrow(() -> new CommentException("Comment not found"));
         return comment;
     }
 
     public String deleteComment(String id) {
         Optional<Comment> providedComment = commentRepository.findById(id);
-        Comment comment = providedComment.orElseThrow(() -> new CommentNotFoundException("Comment not found"));
+        Comment comment = providedComment.orElseThrow(() -> new CommentException("Comment not found"));
+
+        Optional<Post> providedPost = postRepository.findById(comment.getPostId());
+        Post post = providedPost.orElseThrow(() -> new PostException("Post not found"));
+
+        // Delete the deleted comment's id from the post's comments List
+        List<String> newComments = post.getComments();
+        newComments.remove(id);
+        post.setComments(newComments);
+        postRepository.save(post);
 
         commentRepository.deleteById(id);
-        return "Comment deleted successfully";
+        return "Comment deleted!";
     }
 }
