@@ -1,5 +1,6 @@
 package ma.ac.inpt.controller;
 
+import ma.ac.inpt.exceptions.CommentNotFoundException;
 import ma.ac.inpt.model.Comment;
 import ma.ac.inpt.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,26 @@ public class CommentController {
             return new ResponseEntity<>(comments, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/comments/{id}")
+    public ResponseEntity<Comment> getComment(@PathVariable("id") String id) {
+        try {
+            Comment comment = commentService.getComment(id);
+            return new ResponseEntity<>(comment, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/comments/{id}")
+    public ResponseEntity<String> deleteComment(@PathVariable("id") String id) {
+        try {
+            String message = commentService.deleteComment(id);
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } catch (CommentNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

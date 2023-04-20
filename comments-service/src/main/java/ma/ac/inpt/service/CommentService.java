@@ -52,6 +52,7 @@ public class CommentService {
         return newComment;
     }
 
+    // Can be improved by querying the comment who have postId equals the provided postId
     public List<Comment> getAllCommentsForPost(String postId) {
         Optional<Post> providedPost = postRepository.findById(postId);
         Post post = providedPost.orElseThrow(() -> new PostNotFoundException("Post not found"));
@@ -66,4 +67,17 @@ public class CommentService {
         return comments;
     }
 
+    public Comment getComment(String id) {
+        Optional<Comment> providedComment = commentRepository.findById(id);
+        Comment comment = providedComment.orElseThrow(() -> new CommentNotFoundException("Comment not found"));
+        return comment;
+    }
+
+    public String deleteComment(String id) {
+        Optional<Comment> providedComment = commentRepository.findById(id);
+        Comment comment = providedComment.orElseThrow(() -> new CommentNotFoundException("Comment not found"));
+
+        commentRepository.deleteById(id);
+        return "Comment deleted successfully";
+    }
 }
