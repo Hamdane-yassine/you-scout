@@ -16,5 +16,5 @@ public class Reply {
     private String id;
     private User author;
     private String body;
-    private Comment repliedTo;
+    private String repliedTo;
 }
