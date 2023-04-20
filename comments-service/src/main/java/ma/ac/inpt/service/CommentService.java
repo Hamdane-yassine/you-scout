@@ -1,5 +1,7 @@
 package ma.ac.inpt.service;
 
+import ma.ac.inpt.exceptions.CommentNotFoundException;
+import ma.ac.inpt.exceptions.PostNotFoundException;
 import ma.ac.inpt.exceptions.UserNotFoundException;
 import ma.ac.inpt.model.Comment;
 import ma.ac.inpt.model.Post;
@@ -38,7 +40,7 @@ public class CommentService {
         List<Reply> replies = new ArrayList<>();
 
         Optional<Post> providedPost = postRepository.findById(comment.getPostId());
-        Post post = providedPost.orElseThrow(() -> new UserNotFoundException("Post not found"));
+        Post post = providedPost.orElseThrow(() -> new PostNotFoundException("Post not found"));
 
         List<String> postComments = post.getComments();
         postComments.add(ID);
@@ -50,5 +52,18 @@ public class CommentService {
         return newComment;
     }
 
+    public List<Comment> getAllCommentsForPost(String postId) {
+        Optional<Post> providedPost = postRepository.findById(postId);
+        Post post = providedPost.orElseThrow(() -> new PostNotFoundException("Post not found"));
+        List<String> postComments = post.getComments();
+        List<Comment> comments = new ArrayList<>();
+
+        postComments.forEach(comment -> {
+                    Optional<Comment> existingComment = commentRepository.findById(comment);
+                    Comment confirmedComment = existingComment.orElseThrow(() -> new CommentNotFoundException("Comment not found"));
+                    comments.add(confirmedComment);
+                });
+        return comments;
+    }
 
 }

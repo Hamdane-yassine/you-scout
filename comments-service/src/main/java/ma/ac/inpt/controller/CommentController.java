@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -23,6 +24,16 @@ public class CommentController {
         try {
             Comment newComment = commentService.createComment(comment);
             return new ResponseEntity<>(newComment, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/comments/{postId}")
+    public ResponseEntity<List<Comment>> getAllCommentsForPost(@PathVariable("postId") String postId) {
+        try {
+            List<Comment> comments = commentService.getAllCommentsForPost(postId);
+            return new ResponseEntity<>(comments, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
