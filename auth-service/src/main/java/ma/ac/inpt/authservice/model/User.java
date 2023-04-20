@@ -40,6 +40,9 @@ public class User implements UserDetails {
     /* Username of the user */
     private String username;
 
+    /* whether the user's account is enabled or not */
+    private boolean isEnabled;
+
     /* Roles of the user */
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
@@ -83,6 +86,6 @@ public class User implements UserDetails {
     /* Returns whether the user's account is enabled */
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnabled;
     }
 }

@@ -30,8 +30,8 @@ public class ExceptionHandlerController {
      * @param ex the InvalidRefreshTokenException to handle
      * @return a ResponseEntity with HTTP status code 401 and the exception message in the body
      */
-    @ExceptionHandler(InvalidRefreshTokenException.class)
-    public ResponseEntity<String> handleInvalidRefreshTokenException(InvalidRefreshTokenException ex) {
+    @ExceptionHandler({InvalidRefreshTokenException.class,AccountNotEnabledException.class})
+    public ResponseEntity<String> handleInvalidRefreshTokenOrAccountNotEnabledException(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 
@@ -74,8 +74,13 @@ public class ExceptionHandlerController {
      * @param ex the exception to handle
      * @return a ResponseEntity with HTTP status code 404 and the exception message in the body
      */
-    @ExceptionHandler({UsernameNotFoundException.class, RoleNotFoundException.class})
+    @ExceptionHandler({UsernameNotFoundException.class, RoleNotFoundException.class,UserNotFoundException.class})
     public ResponseEntity<String> RoleOrUserNotFoundException(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(VerificationTokenExpiredException.class)
+    public ResponseEntity<String> VerificationTokenExpiredException(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 

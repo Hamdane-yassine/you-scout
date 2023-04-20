@@ -1,6 +1,5 @@
 package ma.ac.inpt.authservice.service;
 
-import ma.ac.inpt.authservice.payload.AuthenticationResponse;
 import ma.ac.inpt.authservice.payload.RegisterRequest;
 import org.springframework.stereotype.Service;
 
@@ -14,5 +13,6 @@ public interface RegistrationService {
      * @param request the registration request containing user details
      * @return an authentication response containing an access token and an optional refresh token
      */
-    AuthenticationResponse register(RegisterRequest request);
+    String register(RegisterRequest request);
+
 }

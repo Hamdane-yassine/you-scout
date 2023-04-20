@@ -8,8 +8,6 @@ import ma.ac.inpt.authservice.exception.InvalidRequestException;
 import ma.ac.inpt.authservice.exception.RegistrationException;
 import ma.ac.inpt.authservice.exception.UsernameAlreadyExistsException;
 import ma.ac.inpt.authservice.model.User;
-import ma.ac.inpt.authservice.payload.AuthenticationRequest;
-import ma.ac.inpt.authservice.payload.AuthenticationResponse;
 import ma.ac.inpt.authservice.payload.RegisterRequest;
 import ma.ac.inpt.authservice.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,8 +45,10 @@ public class RegistrationServiceImpl implements RegistrationService {
     /**
      * AuthenticationService instance for user authentication
      */
-    private final AuthenticationService authenticationService;
     private final RoleService roleService;
+
+    private final AccountVerificationService accountVerificationService;
+
 
     /**
      * Registers a new user with the provided registration details.
@@ -59,8 +59,9 @@ public class RegistrationServiceImpl implements RegistrationService {
      * @throws RegistrationException   if registration fails for any other reason
      */
     @Override
-    public AuthenticationResponse register(RegisterRequest request) {
+    public String register(RegisterRequest request) {
         Set<ConstraintViolation<RegisterRequest>> violations = validator.validate(request);
+        String message;
         if (!violations.isEmpty()) {
             log.error("Invalid registration request: {}", violations);
             throw new InvalidRequestException("Invalid registration request");
@@ -68,15 +69,16 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         try {
             validateRegistrationRequest(request);
-            saveUser(request);
+            var user = saveUser(request);
+            message = accountVerificationService.sendVerificationEmail(user);
         } catch (UsernameAlreadyExistsException | EmailAlreadyExistsException ex) {
             throw ex;
         } catch (Exception ex) {
             log.error("Registration failed with error: {}", ex.getMessage());
             throw new RegistrationException("Registration failed");
         }
-        log.info("Successfully registered user with username {}", request.getUsername());
-        return authenticationService.authenticate(AuthenticationRequest.builder().grantType("PASSWORD").withRefreshToken(request.isWithRefreshToken()).password(request.getPassword()).username(request.getUsername()).build());
+        log.info("verification email has been sent to user {}", request.getUsername());
+        return message;
     }
 
     /**
@@ -120,10 +122,11 @@ public class RegistrationServiceImpl implements RegistrationService {
      *
      * @param request the registration request containing user details
      */
-    private void saveUser(RegisterRequest request) {
+    private User saveUser(RegisterRequest request) {
         var user = User.builder().username(request.getUsername()).email(request.getEmail()).password(passwordEncoder.encode(request.getPassword())).firstname(request.getFirstname()).lastname(request.getLastname()).build();
         roleService.addDefaultRolesToUser(user);
-        userRepository.save(user);
+        return userRepository.save(user);
     }
+
 
 }

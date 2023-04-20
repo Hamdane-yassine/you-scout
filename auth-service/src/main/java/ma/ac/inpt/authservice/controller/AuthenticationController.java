@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller class for handling authentication and registration requests.
+ * Controller class for handling authentication requests.
  */
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -23,19 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
-    private final RegistrationService registrationService;
-
-    /**
-     * Endpoint for registering a new user.
-     * @param request the registration request data
-     * @return the authentication response containing a JWT token
-     */
-    @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
-        log.info("Received registration request for username {}", request.getUsername());
-        AuthenticationResponse response = registrationService.register(request);
-        return ResponseEntity.ok(response);
-    }
 
     /**
      * Endpoint for authenticating a user and generating a JWT token.

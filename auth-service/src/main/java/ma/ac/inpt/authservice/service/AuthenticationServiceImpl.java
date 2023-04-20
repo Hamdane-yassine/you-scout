@@ -2,11 +2,14 @@ package ma.ac.inpt.authservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.ac.inpt.authservice.exception.AccountNotEnabledException;
 import ma.ac.inpt.authservice.exception.InvalidRefreshTokenException;
 import ma.ac.inpt.authservice.exception.InvalidRequestException;
+import ma.ac.inpt.authservice.model.User;
 import ma.ac.inpt.authservice.payload.AuthenticationRequest;
 import ma.ac.inpt.authservice.payload.AuthenticationResponse;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -49,6 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     private final UserDetailsService userDetailsService;
 
+    private final AccountVerificationService accountVerificationService;
     /**
      * Authenticates user and returns authentication response with access token and refresh token (optional).
      *
@@ -83,12 +87,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     private AuthenticationResponse authenticatePasswordGrant(AuthenticationRequest request) {
         validateCredentials(request.getUsername(), request.getPassword());
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-        String subject = authentication.getName();
-        String scope = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(" "));
-        log.info("Password grant authentication successful for user: {}", subject);
-
-        return buildAuthenticationResponse(request.isWithRefreshToken(), subject, scope);
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+            String subject = authentication.getName();
+            String scope = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(" "));
+            log.info("Password grant authentication successful for user: {}", subject);
+            return buildAuthenticationResponse(request.isWithRefreshToken(), subject, scope);
+        }catch (DisabledException e){
+            User user = (User) userDetailsService.loadUserByUsername(request.getUsername());
+            String message = accountVerificationService.sendVerificationEmail(user);
+            throw new AccountNotEnabledException(message);
+        }
     }
 
     /**
