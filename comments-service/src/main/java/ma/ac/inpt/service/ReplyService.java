@@ -53,11 +53,26 @@ public class ReplyService {
 
     public List<Reply> getRepliesForComment(String commentId) {
         Optional<List<Reply>> providedReplies = replyRepository.findByRepliedTo(commentId);
-        List<Reply> replies = providedReplies.orElseThrow(() -> new ReplyException("Replies not found"));
-        return replies;
+        return providedReplies.orElseThrow(() -> new ReplyException("Replies not found"));
+    }
+
+    public String updateReplyForComment(String commentId, String replyId, Reply newReply) {
+        // Check the existence of the comment
+        Optional<Comment> providedComment = commentRepository.findById(commentId);
+        if (providedComment.isEmpty()) {
+            throw new  CommentException("Comment not found");
+        }
+
+        // Update the body of the reply
+        Optional<Reply> providedReply = replyRepository.findById(replyId);
+        Reply reply = providedReply.orElseThrow(() -> new ReplyException("Reply not found"));
+        reply.setBody(newReply.getBody());
+        replyRepository.save(reply);
+        return "Reply updated successfully!";
     }
 
     public String deleteReplyForComment(String commentId, String replyId) {
+        // Check the existence of the comment
         Optional<Comment> providedComment = commentRepository.findById(commentId);
         Comment comment = providedComment.orElseThrow(() -> new CommentException("Comment not found"));
 

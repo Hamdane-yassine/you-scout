@@ -31,10 +31,22 @@ public class CommentController {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
+    @GetMapping("/posts/{postId}/lastComment")
+    public ResponseEntity<Comment> getLastCommentForPost(@PathVariable("postId") String postId) {
+        Comment lastComment = commentService.getLastCommentForPost(postId);
+        return new ResponseEntity<>(lastComment, HttpStatus.OK);
+    }
+
     @GetMapping("/comments/{id}")
     public ResponseEntity<Comment> getComment(@PathVariable("id") String id) {
         Comment comment = commentService.getComment(id);
         return new ResponseEntity<>(comment, HttpStatus.OK);
+    }
+
+    @PutMapping("/comments/{id}")
+    public ResponseEntity<String> updateComment(@PathVariable("id") String id, @RequestBody Comment comment) {
+        String message = commentService.updateComment(id, comment);
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     @DeleteMapping("/comments/{id}")

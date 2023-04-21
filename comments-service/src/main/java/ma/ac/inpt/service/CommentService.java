@@ -55,20 +55,36 @@ public class CommentService {
         return newComment;
     }
 
-    // Can be improved by querying the comment who have postId equals the provided postId
     public List<Comment> getAllCommentsForPost(String postId) {
+        return checkPost(postId);
+    }
+
+    public Comment getLastCommentForPost(String postId) {
+        List<Comment> comments = checkPost(postId);
+        return comments.get(comments.size() - 1);
+    }
+
+    private List<Comment> checkPost(String postId) {
         Optional<Post> providedPost = postRepository.findById(postId);
         if (providedPost.isEmpty()){
             throw new PostException("Post not found");
         }
         Optional<List<Comment>> providedComments = commentRepository.findCommentsByPostId(postId);
-        List<Comment> comments = providedComments.orElseThrow(() -> new CommentException("Comments not found"));
-        return comments;
+        return providedComments.orElseThrow(() -> new CommentException("Comments not found"));
     }
 
     public Comment getComment(String id) {
         Optional<Comment> providedComment = commentRepository.findById(id);
         return providedComment.orElseThrow(() -> new CommentException("Comment not found"));
+    }
+
+    public String updateComment(String id, Comment newComment) {
+        Optional<Comment> providedComment = commentRepository.findById(id);
+        Comment comment = providedComment.orElseThrow(() -> new CommentException("Comment not found"));
+
+        comment.setBody(newComment.getBody());
+        commentRepository.save(comment);
+        return "Comment updated successfully";
     }
 
     public String deleteComment(String id) {
