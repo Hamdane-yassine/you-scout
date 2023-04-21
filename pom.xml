@@ -12,6 +12,8 @@
   <name>you-scout</name>
   <modules>
     <module>service-discovery</module>
+    <module>comments-service</module>
+    <module>skills-service</module>
   </modules>
   <!-- FIXME change it to the project's website -->
 <!--  <url>http://www.example.com</url>-->
@@ -48,6 +50,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
