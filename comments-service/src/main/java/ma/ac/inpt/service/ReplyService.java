@@ -56,4 +56,18 @@ public class ReplyService {
         List<Reply> replies = providedReplies.orElseThrow(() -> new ReplyException("Replies not found"));
         return replies;
     }
+
+    public String deleteReplyForComment(String commentId, String replyId) {
+        Optional<Comment> providedComment = commentRepository.findById(commentId);
+        Comment comment = providedComment.orElseThrow(() -> new CommentException("Comment not found"));
+
+        // Delete the reply ID from the comment's replies' List
+        List<String> newReplies = comment.getReplies();
+        newReplies.remove(replyId);
+        comment.setReplies(newReplies);
+        commentRepository.save(comment);
+
+        replyRepository.deleteById(replyId);
+        return "Reply deleted!";
+    }
 }

@@ -84,6 +84,9 @@ public class CommentService {
         post.setComments(newComments);
         postRepository.save(post);
 
+        // Delete all the replies inside the replies list of the comment
+
+
         commentRepository.deleteById(id);
         return "Comment deleted!";
     }

@@ -31,4 +31,10 @@ public class ReplyController {
         List<Reply> replies = replyService.getRepliesForComment(commentId);
         return new ResponseEntity<>(replies, HttpStatus.OK);
     }
+
+    @DeleteMapping("/comments/{commentId}/replies/{replyId}")
+    public ResponseEntity<String> deleteReplyForComment(@PathVariable("commentId") String commentId, @PathVariable("replyId") String replyId) {
+        String message = replyService.deleteReplyForComment(commentId, replyId);
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
 }
