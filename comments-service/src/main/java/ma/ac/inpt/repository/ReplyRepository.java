@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface ReplyRepository extends MongoRepository<Reply, String> {
     Optional<List<Reply>> findByRepliedTo(String commentId);
+    void deleteRepliesByRepliedTo(String commentId);
 }

@@ -8,6 +8,7 @@ import ma.ac.inpt.model.Post;
 import ma.ac.inpt.model.User;
 import ma.ac.inpt.repository.CommentRepository;
 import ma.ac.inpt.repository.PostRepository;
+import ma.ac.inpt.repository.ReplyRepository;
 import ma.ac.inpt.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -21,12 +22,15 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final ReplyRepository replyRepository;
 
     public CommentService(CommentRepository commentRepository, UserRepository userRepository,
-                          PostRepository postRepository) {
+                          PostRepository postRepository,
+                          ReplyRepository replyRepository) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.postRepository = postRepository;
+        this.replyRepository = replyRepository;
     }
 
     public Comment createComment(Comment comment){
@@ -54,15 +58,11 @@ public class CommentService {
     // Can be improved by querying the comment who have postId equals the provided postId
     public List<Comment> getAllCommentsForPost(String postId) {
         Optional<Post> providedPost = postRepository.findById(postId);
-        Post post = providedPost.orElseThrow(() -> new PostException("Post not found"));
-        List<String> postComments = post.getComments();
-        List<Comment> comments = new ArrayList<>();
-
-        postComments.forEach(comment -> {
-                    Optional<Comment> existingComment = commentRepository.findById(comment);
-                    Comment confirmedComment = existingComment.orElseThrow(() -> new CommentException("Comment not found"));
-                    comments.add(confirmedComment);
-                });
+        if (providedPost.isEmpty()){
+            throw new PostException("Post not found");
+        }
+        Optional<List<Comment>> providedComments = commentRepository.findCommentsByPostId(postId);
+        List<Comment> comments = providedComments.orElseThrow(() -> new CommentException("Comments not found"));
         return comments;
     }
 
@@ -85,7 +85,7 @@ public class CommentService {
         postRepository.save(post);
 
         // Delete all the replies inside the replies list of the comment
-
+        replyRepository.deleteRepliesByRepliedTo(id);
 
         commentRepository.deleteById(id);
         return "Comment deleted!";
