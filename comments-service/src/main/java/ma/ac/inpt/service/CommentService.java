@@ -62,8 +62,12 @@ public class CommentService {
         if (providedPost.isEmpty()){
             throw new PostException("Post not found");
         }
-        if (query.equals("timestamp")) {
+        if (query.equals("timestampAsc")) {
             Optional<List<Comment>> providedComments = commentRepository.findCommentsByPostIdOrderByTimestampAsc(postId);
+            return providedComments.orElseThrow(() -> new CommentException("Comments not found"));
+        }
+        if (query.equals("timestampDesc")) {
+            Optional<List<Comment>> providedComments = commentRepository.findCommentsByPostIdOrderByTimestampDesc(postId);
             return providedComments.orElseThrow(() -> new CommentException("Comments not found"));
         }
         return checkPost(postId);
