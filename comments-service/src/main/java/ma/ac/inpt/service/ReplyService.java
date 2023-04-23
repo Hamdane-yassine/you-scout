@@ -52,7 +52,11 @@ public class ReplyService {
         return newReply;
     }
 
-    public List<Reply> getRepliesForComment(String commentId) {
+    public List<Reply> getRepliesForComment(String commentId, String query) {
+        if (query.equals("timestamp")){
+            Optional<List<Reply>> providedReplies = replyRepository.findByRepliedToOrderByTimestampAsc(commentId);
+            return providedReplies.orElseThrow(() -> new ReplyException("Replies not found"));
+        }
         Optional<List<Reply>> providedReplies = replyRepository.findByRepliedTo(commentId);
         return providedReplies.orElseThrow(() -> new ReplyException("Replies not found"));
     }

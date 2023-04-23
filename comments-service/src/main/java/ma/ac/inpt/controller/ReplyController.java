@@ -27,8 +27,8 @@ public class ReplyController {
     }
 
     @GetMapping("/comments/{commentId}/replies")
-    public ResponseEntity<List<Reply>> getRepliesForComment(@PathVariable("commentId") String commentId) {
-        List<Reply> replies = replyService.getRepliesForComment(commentId);
+    public ResponseEntity<List<Reply>> getRepliesForComment(@PathVariable("commentId") String commentId, @RequestParam(value="orderBy", required = false, defaultValue = "") String query) {
+        List<Reply> replies = replyService.getRepliesForComment(commentId, query);
         return new ResponseEntity<>(replies, HttpStatus.OK);
     }
 

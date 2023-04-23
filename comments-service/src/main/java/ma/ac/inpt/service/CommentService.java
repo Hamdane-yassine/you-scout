@@ -58,27 +58,27 @@ public class CommentService {
 
 
     public List<Comment> getAllCommentsForPost(String postId, String query) {
+        Optional<Post> providedPost = postRepository.findById(postId);
+        if (providedPost.isEmpty()){
+            throw new PostException("Post not found");
+        }
         if (query.equals("timestamp")) {
-            Optional<Post> providedPost = postRepository.findById(postId);
-            if (providedPost.isEmpty()){
-                throw new PostException("Post not found");
-            }
-            Optional<List<Comment>> providedComments = commentRepository.findCommentsByPostIdOrderByTimestamp(postId);
+            Optional<List<Comment>> providedComments = commentRepository.findCommentsByPostIdOrderByTimestampAsc(postId);
             return providedComments.orElseThrow(() -> new CommentException("Comments not found"));
         }
         return checkPost(postId);
     }
 
     public Comment getLastCommentForPost(String postId) {
+        Optional<Post> providedPost = postRepository.findById(postId);
+        if (providedPost.isEmpty()){
+            throw new PostException("Post not found");
+        }
         List<Comment> comments = checkPost(postId);
         return comments.get(comments.size() - 1);
     }
 
     private List<Comment> checkPost(String postId) {
-        Optional<Post> providedPost = postRepository.findById(postId);
-        if (providedPost.isEmpty()){
-            throw new PostException("Post not found");
-        }
         Optional<List<Comment>> providedComments = commentRepository.findCommentsByPostId(postId);
         return providedComments.orElseThrow(() -> new CommentException("Comments not found"));
     }

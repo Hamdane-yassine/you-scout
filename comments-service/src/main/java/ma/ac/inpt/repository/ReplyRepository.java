@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface ReplyRepository extends MongoRepository<Reply, String> {
     Optional<List<Reply>> findByRepliedTo(String commentId);
+    Optional<List<Reply>> findByRepliedToOrderByTimestampAsc(String commentId);
     void deleteRepliesByRepliedTo(String commentId);
 }
