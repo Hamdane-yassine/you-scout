@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -17,4 +20,5 @@ public class Reply {
     private User author;
     private String body;
     private String repliedTo;
+    private LocalDateTime timestamp;
 }

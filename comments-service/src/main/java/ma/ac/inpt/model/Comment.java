@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,4 +21,5 @@ public class Comment {
     private String body;
     private List<String> replies;
     private String postId;
+    private LocalDateTime timestamp;
 }

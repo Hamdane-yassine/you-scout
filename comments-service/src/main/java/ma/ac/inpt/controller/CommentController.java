@@ -26,8 +26,8 @@ public class CommentController {
     }
 
     @GetMapping("/posts/{postId}/comments")
-    public ResponseEntity<List<Comment>> getAllCommentsForPost(@PathVariable("postId") String postId) {
-        List<Comment> comments = commentService.getAllCommentsForPost(postId);
+    public ResponseEntity<List<Comment>> getAllCommentsForPost(@PathVariable("postId") String postId, @RequestParam(value = "orderBy", required = false, defaultValue = "") String query) {
+        List<Comment> comments = commentService.getAllCommentsForPost(postId, query);
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 

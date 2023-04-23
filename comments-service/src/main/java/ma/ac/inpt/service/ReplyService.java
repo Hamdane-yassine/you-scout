@@ -12,6 +12,7 @@ import ma.ac.inpt.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +37,7 @@ public class ReplyService {
         Optional<User> providedUser = userRepository.findById(reply.getId());
         User user = providedUser.orElseThrow(() -> new UserException("User not found"));
 
-        Reply newReply = new Reply(ID, user, reply.getBody(), commentId);
+        Reply newReply = new Reply(ID, user, reply.getBody(), commentId, LocalDateTime.now());
         replyRepository.save(newReply);
 
         Optional<Comment> providedComment = commentRepository.findById(commentId);

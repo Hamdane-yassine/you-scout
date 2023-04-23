@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface CommentRepository extends MongoRepository<Comment, String> {
     Optional<List<Comment>> findCommentsByPostId(String replyId);
+    Optional<List<Comment>> findCommentsByPostIdOrderByTimestamp(String replyId);
 }

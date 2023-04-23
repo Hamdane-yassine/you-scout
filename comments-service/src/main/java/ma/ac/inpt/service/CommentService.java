@@ -13,6 +13,7 @@ import ma.ac.inpt.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -49,13 +50,22 @@ public class CommentService {
         postComments.add(ID);
         post.setComments(postComments);
 
-        Comment newComment = new Comment(ID, user, comment.getBody(), replies, comment.getPostId());
+        Comment newComment = new Comment(ID, user, comment.getBody(), replies, comment.getPostId(), LocalDateTime.now());
         commentRepository.save(newComment);
         postRepository.save(post);
         return newComment;
     }
 
-    public List<Comment> getAllCommentsForPost(String postId) {
+
+    public List<Comment> getAllCommentsForPost(String postId, String query) {
+        if (query.equals("timestamp")) {
+            Optional<Post> providedPost = postRepository.findById(postId);
+            if (providedPost.isEmpty()){
+                throw new PostException("Post not found");
+            }
+            Optional<List<Comment>> providedComments = commentRepository.findCommentsByPostIdOrderByTimestamp(postId);
+            return providedComments.orElseThrow(() -> new CommentException("Comments not found"));
+        }
         return checkPost(postId);
     }
 
