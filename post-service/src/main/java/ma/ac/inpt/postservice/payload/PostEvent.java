@@ -1,11 +1,8 @@
-package ma.ac.inpt.payload;
+package ma.ac.inpt.postservice.payload;
 
-import lombok.AllArgsConstructor;
+import ma.ac.inpt.postservice.messaging.PostEventType;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import ma.ac.inpt.kafkaMessaging.PostEventType;
-
 import java.time.Instant;
 
 @Data
@@ -20,5 +17,4 @@ public class PostEvent {
     private String imageUrl;
     private String caption;
     private PostEventType eventType;
-
 }

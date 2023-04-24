@@ -1,7 +1,7 @@
 
 spring:
   application:
-    name: feed-service
+    name: user-feed-service
 
   data:
     cassandra:
@@ -11,6 +11,17 @@ spring:
       schema-action: CREATE_IF_NOT_EXISTS
       local-datacenter: datacenter1
       keyspace-name: youscoutfeed
+  kafka:
+    consumer:
+      value-deserializer:
+        org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          deserializer:
+            value:
+              delegate:
+                class:
+                  org.springframework.kafka.support.serializer.JsonDeserializer
 #datastax.astra:
 #  secure-connect-bundle: secure-bundle.zip
 #astra:
@@ -28,27 +39,27 @@ spring:
 #      basic:
 #        session-keyspace: youscoutfeed
 
-#  cloud:
-#    stream:
-#      kafka:
-#        binder:
-#          brokers: localhost:9092
-#          configuration:
-#            key:
-#              deserializer: org.apache.kafka.common.serialization.StringDeserializer
-#        bindings:
-#          momentsPostChanged:
-#            consumer:
-#              startOffset: latest
-#              autoCommitOffset: false
-#      bindings:
-#        momentsPostChanged:
-#          destination: moments.post.changed
-#          contentType: application/json
-#          group: handlePostService
-#          consumer:
-#            startOffset: latest
-#            autoCommitOffset: false
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:29092
+          configuration:
+            key:
+              deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        bindings:
+          momentsPostChanged:
+            consumer:
+              startOffset: latest
+              autoCommitOffset: false
+      bindings:
+        momentsPostChanged:
+          destination: moments.post.changed
+          contentType: application/json
+          group: handlePostService
+          consumer:
+            startOffset: latest
+            autoCommitOffset: false
 
 server:
   port: 8003

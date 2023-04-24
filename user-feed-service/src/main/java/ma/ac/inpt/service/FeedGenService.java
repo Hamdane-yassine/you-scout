@@ -1,5 +1,6 @@
 package ma.ac.inpt.service;
 
+import lombok.RequiredArgsConstructor;
 import ma.ac.inpt.exceptions.UnableToGetFollowersException;
 import ma.ac.inpt.UserFeedEntity;
 import ma.ac.inpt.models.Post;
@@ -16,10 +17,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class FeedGenService {
 
-    @Autowired private Graph graphClient;
-    @Autowired private Cassandra feedRepository;
+    private final Graph graphClient;
+    private final Cassandra feedRepository;
 
     public void addToFeed(Post post) {
         log.info("adding post {} to feed for user {}" ,

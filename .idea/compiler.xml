@@ -9,10 +9,16 @@
         <outputRelativeToContentRoot value="true" />
         <module name="service-discovery" />
         <module name="user-feed-service" />
+        <module name="post-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="feed-service" target="17" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="post-service" options="-parameters" />
+    </option>
   </component>
 </project>
