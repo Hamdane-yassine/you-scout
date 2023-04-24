@@ -71,6 +71,10 @@ public class CommentService {
             Optional<List<Comment>> providedComments = commentRepository.findCommentsByPostIdOrderByTimestampDesc(postId);
             return providedComments.orElseThrow(() -> new CommentException("Comments not found"));
         }
+        if (query.equals("popularity")) {
+            Optional<List<Comment>> providedComments = commentRepository.findCommentsByPostIdOrderByLikesDesc(postId);
+            return providedComments.orElseThrow(() -> new CommentException("Comments not found"));
+        }
         return checkPost(postId);
     }
 
