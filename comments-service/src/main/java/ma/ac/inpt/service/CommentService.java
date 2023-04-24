@@ -42,6 +42,7 @@ public class CommentService {
         User user = providedUser.orElseThrow(() -> new UserException("User not found"));
 
         List<String> replies = new ArrayList<>();
+        List<String> likes = new ArrayList<>();
 
         Optional<Post> providedPost = postRepository.findById(comment.getPostId());
         Post post = providedPost.orElseThrow(() -> new PostException("Post not found"));
@@ -50,7 +51,7 @@ public class CommentService {
         postComments.add(ID);
         post.setComments(postComments);
 
-        Comment newComment = new Comment(ID, user, comment.getBody(), replies, comment.getPostId(), LocalDateTime.now());
+        Comment newComment = new Comment(ID, user, comment.getBody(), replies, comment.getPostId(), LocalDateTime.now(), likes);
         commentRepository.save(newComment);
         postRepository.save(post);
         return newComment;
@@ -90,6 +91,36 @@ public class CommentService {
     public Comment getComment(String id) {
         Optional<Comment> providedComment = commentRepository.findById(id);
         return providedComment.orElseThrow(() -> new CommentException("Comment not found"));
+    }
+
+    public String likeComment(String id, User user) {
+        Optional<Comment> providedComment = commentRepository.findById(id);
+        Comment comment = providedComment.orElseThrow(() -> new CommentException("Comment not found"));
+
+        List<String> commentLikes = comment.getLikes();
+        if (!commentLikes.contains(user.getId())) {
+            commentLikes.add(user.getId());
+            comment.setLikes(commentLikes);
+            commentRepository.save(comment);
+            return "Comment liked successfully";
+        } else {
+            return "Comment already liked!";
+        }
+    }
+
+    public String unlikeComment(String id, User user) {
+        Optional<Comment> providedComment = commentRepository.findById(id);
+        Comment comment = providedComment.orElseThrow(() -> new CommentException("Comment not found"));
+
+        List<String> commentLikes = comment.getLikes();
+        if (commentLikes.contains(user.getId())) {
+            commentLikes.remove(user.getId());
+            comment.setLikes(commentLikes);
+            commentRepository.save(comment);
+            return "Comment unliked successfully";
+        } else {
+            return "Comment was not liked!";
+        }
     }
 
     public String updateComment(String id, Comment newComment) {

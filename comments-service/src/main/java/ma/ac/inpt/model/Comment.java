@@ -22,4 +22,5 @@ public class Comment {
     private List<String> replies;
     private String postId;
     private LocalDateTime timestamp;
+    private List<String> likes;
 }

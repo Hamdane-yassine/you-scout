@@ -1,6 +1,7 @@
 package ma.ac.inpt.controller;
 
 import ma.ac.inpt.model.Comment;
+import ma.ac.inpt.model.User;
 import ma.ac.inpt.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,18 @@ public class CommentController {
     public ResponseEntity<Comment> getComment(@PathVariable("id") String id) {
         Comment comment = commentService.getComment(id);
         return new ResponseEntity<>(comment, HttpStatus.OK);
+    }
+
+    @PutMapping("/comments/{id}/unlike")
+    public ResponseEntity<String> unlikeComment(@PathVariable("id") String id, @RequestBody User user) {
+        String message = commentService.unlikeComment(id, user);
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
+    @PutMapping("/comments/{id}/like")
+    public ResponseEntity<String> likeComment(@PathVariable("id") String id, @RequestBody User user) {
+        String message = commentService.likeComment(id, user);
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     @PutMapping("/comments/{id}")
