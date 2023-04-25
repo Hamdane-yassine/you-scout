@@ -10,6 +10,8 @@ import java.time.Instant;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PostEvent {
 
     private String id;

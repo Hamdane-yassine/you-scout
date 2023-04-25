@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-@FeignClient(name = "INSTA-GRAPH")
+@FeignClient(name = "GRAPH")
 public interface Graph {
 
     @RequestMapping(method = RequestMethod.GET, value = "/users/paginated/{username}/followers")
