@@ -1,6 +1,7 @@
 package ma.ac.inpt.postservice.api;
 
 
+import lombok.RequiredArgsConstructor;
 import ma.ac.inpt.postservice.model.Post;
 import ma.ac.inpt.postservice.payload.ApiResponse;
 import ma.ac.inpt.postservice.payload.PostRequest;
@@ -9,7 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -19,10 +21,11 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class PostApi {
 
-    @Autowired
-    private PostService postService;
+
+    private final PostService postService;
 
     @PostMapping("/posts")
     public ResponseEntity<?> createPost(@RequestBody PostRequest postRequest){
@@ -39,12 +42,25 @@ public class PostApi {
                 .body(new ApiResponse(true, "Post created successfully"));
     }
 
-//    @DeleteMapping("/posts/{id}")
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void deletePost(@PathVariable("id") String id, @AuthenticationPrincipal Principal user) {
-//        log.info("received a delete request for post id {} from user {}", id, user.getName());
-//        postService.deletePost(id, user.getName());
-//    }
+    @DeleteMapping("/posts/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePost(@PathVariable("id") String id, @AuthenticationPrincipal Principal user) {
+        log.info("received a delete request for post id {} from user {}", id, user.getName());
+        postService.deletePost(id, user.getName());
+    }
+
+    @DeleteMapping("/posts/{id}/like")
+    public void likePost(@PathVariable("id") String id, @AuthenticationPrincipal Principal user) {
+        log.info("received a post liking request for post id {} from user {}", id, user.getName());
+        postService.likePost(id, user.getName());
+    }
+
+    @DeleteMapping("/posts/{id}/removelike")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeLikePost(@PathVariable("id") String id, @AuthenticationPrincipal Principal user) {
+        log.info("received a remove post liking request for post id {} from user {}", id, user.getName());
+        postService.removeLikePost(id, user.getName());
+    }
 //
 //    @GetMapping("/posts/me")
 //    public ResponseEntity<?> findCurrentUserPosts(@AuthenticationPrincipal Principal principal) {

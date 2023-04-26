@@ -4,15 +4,13 @@ package ma.ac.inpt.postservice.service;
 import lombok.RequiredArgsConstructor;
 import ma.ac.inpt.postservice.exception.NotAllowedException;
 import ma.ac.inpt.postservice.exception.ResourceNotFoundException;
-//import ma.ac.inpt.postservice.messaging.PostEventSender;
 import ma.ac.inpt.postservice.messaging.PostEventSender;
 import ma.ac.inpt.postservice.model.Post;
 import ma.ac.inpt.postservice.payload.PostRequest;
 import ma.ac.inpt.postservice.repository.PostRepo;
 import lombok.extern.slf4j.Slf4j;
-import ma.ac.inpt.postservice.repository.PostRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 
@@ -52,6 +50,40 @@ public class PostService {
 
                     postRepository.delete(post);
                     postEventSender.sendPostDeleted(post);
+                    return post;
+                })
+                .orElseThrow(() -> {
+                    log.warn("post not found id {}", postId);
+                    return new ResourceNotFoundException(postId);
+                });
+    }
+
+    public void likePost(String postId, String username){
+        log.info("liking post {} by {}", postId, username);
+        postRepository
+                .findById(postId)
+                .map(post-> {
+                    post.getLikes().add(username);
+//                    post.setLikes();
+                    postRepository.save(post);
+                    return post;
+                })
+                .orElseThrow(() -> {
+                    log.warn("post not found id {}", postId);
+                    return new ResourceNotFoundException(postId);
+                });
+    }public void removeLikePost(String postId, String username){
+        log.info("removing like post {} by {}", postId, username);
+        postRepository
+                .findById(postId)
+                .map(post-> {
+                    if(!post.getLikes().contains(username)) {
+                        log.warn("user {} has not liked post {} to begin with", username, postId);
+                        throw new NotAllowedException(username, "post id " + postId, "remove like");
+                    }
+                    post.getLikes().remove(username);
+//                    post.setLikes();
+                    postRepository.save(post);
                     return post;
                 })
                 .orElseThrow(() -> {

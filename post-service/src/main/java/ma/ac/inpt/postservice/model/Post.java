@@ -8,6 +8,7 @@ import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
+import java.util.ArrayList;
 
 @Data
 @RequiredArgsConstructor
@@ -28,6 +29,8 @@ public class Post {
 
     @LastModifiedBy
     private String lastModifiedBy;
+
+    private ArrayList<String> likes;
 
     @NonNull
     private String imageUrl; //for now post will contain only one image
