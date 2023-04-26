@@ -1,5 +1,6 @@
 package ma.ac.inpt.service;
 
+import lombok.RequiredArgsConstructor;
 import ma.ac.inpt.exceptions.UnableToGetPostsException;
 import ma.ac.inpt.models.Post;
 import lombok.extern.slf4j.Slf4j;
@@ -12,10 +13,11 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class PostService {
 
-    @Autowired
-    private PostClient postServiceClient;
+
+    private final PostClient postServiceClient;
 
 
     public List<Post> findPostsIn( List<String> ids) {
@@ -28,7 +30,7 @@ public class PostService {
             return response.getBody();
         } else {
             throw new UnableToGetPostsException(
-                    String.format("unable to get posts for ids", ids));
+                    String.format("unable to get posts for ids: %s", ids));
         }
     }
 }

@@ -2,6 +2,7 @@ package ma.ac.inpt.service;
 
 
 import com.datastax.oss.driver.api.core.cql.PagingState;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.ac.inpt.UserFeedEntity;
 import ma.ac.inpt.exceptions.ResourceNotFoundException;
@@ -9,7 +10,6 @@ import ma.ac.inpt.models.Post;
 import ma.ac.inpt.payload.SlicedResult;
 import ma.ac.inpt.repo.Cassandra;
 import ma.ac.inpt.util.AppConstants;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.cassandra.core.query.CassandraPageRequest;
 import org.springframework.data.domain.PageRequest;
 //import org.springframework.data.domain.Pageable;
@@ -27,12 +27,13 @@ import static java.util.stream.Collectors.toList;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class FeedService {
 
-    @Autowired private Cassandra feedRepository;
+    private final Cassandra feedRepository;
 
-    @Autowired private AuthService authService;
-    @Autowired private PostService postService;
+    private final AuthService authService;
+    private final PostService postService;
 
     public SlicedResult<Post> getUserFeed(String username, Optional<String> pagingState) {
 
