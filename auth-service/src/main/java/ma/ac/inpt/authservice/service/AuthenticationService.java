@@ -2,9 +2,9 @@ package ma.ac.inpt.authservice.service;
 
 import ma.ac.inpt.authservice.payload.AuthenticationRequest;
 import ma.ac.inpt.authservice.payload.AuthenticationResponse;
-import org.springframework.stereotype.Service;
 
-@Service
+import java.io.IOException;
+
 public interface AuthenticationService {
 
     /**
@@ -14,4 +14,6 @@ public interface AuthenticationService {
      * @return An authentication response containing access and refresh tokens.
      */
     AuthenticationResponse authenticate(AuthenticationRequest request);
+
+    AuthenticationResponse authenticateOAuth2(String provider, String authorizationCode) throws IOException;
 }

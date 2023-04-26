@@ -7,8 +7,9 @@ import ma.ac.inpt.authservice.exception.EmailAlreadyExistsException;
 import ma.ac.inpt.authservice.exception.InvalidRequestException;
 import ma.ac.inpt.authservice.exception.RegistrationException;
 import ma.ac.inpt.authservice.exception.UsernameAlreadyExistsException;
+import ma.ac.inpt.authservice.model.Profile;
 import ma.ac.inpt.authservice.model.User;
-import ma.ac.inpt.authservice.payload.RegisterRequest;
+import ma.ac.inpt.authservice.payload.RegistrationRequest;
 import ma.ac.inpt.authservice.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -59,8 +60,8 @@ public class RegistrationServiceImpl implements RegistrationService {
      * @throws RegistrationException   if registration fails for any other reason
      */
     @Override
-    public String register(RegisterRequest request) {
-        Set<ConstraintViolation<RegisterRequest>> violations = validator.validate(request);
+    public String register(RegistrationRequest request) {
+        Set<ConstraintViolation<RegistrationRequest>> violations = validator.validate(request);
         String message;
         if (!violations.isEmpty()) {
             log.error("Invalid registration request: {}", violations);
@@ -69,7 +70,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         try {
             validateRegistrationRequest(request);
-            var user = saveUser(request);
+            var user = saveUser(request,false);
             message = accountVerificationService.sendVerificationEmail(user);
         } catch (UsernameAlreadyExistsException | EmailAlreadyExistsException ex) {
             throw ex;
@@ -81,6 +82,13 @@ public class RegistrationServiceImpl implements RegistrationService {
         return message;
     }
 
+    @Override
+    public void registerOauth2User(RegistrationRequest request) {
+        if(!userRepository.existsByEmail(request.getEmail())){
+            saveUser(request,true);
+        }
+    }
+
     /**
      * Validates the registration request by checking if the provided username and email are already taken.
      *
@@ -88,7 +96,7 @@ public class RegistrationServiceImpl implements RegistrationService {
      * @throws UsernameAlreadyExistsException if the username is already taken
      * @throws EmailAlreadyExistsException    if the email is already taken
      */
-    private void validateRegistrationRequest(RegisterRequest request) {
+    private void validateRegistrationRequest(RegistrationRequest request) {
         validateUsername(request.getUsername());
         validateEmail(request.getEmail());
     }
@@ -122,11 +130,15 @@ public class RegistrationServiceImpl implements RegistrationService {
      *
      * @param request the registration request containing user details
      */
-    private User saveUser(RegisterRequest request) {
-        var user = User.builder().username(request.getUsername()).email(request.getEmail()).password(passwordEncoder.encode(request.getPassword())).firstname(request.getFirstname()).lastname(request.getLastname()).build();
+    private User saveUser(RegistrationRequest request, boolean isEnabled) {
+        var user = User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
+                .isEnabled(isEnabled)
+                .profile(Profile.builder().fullName(request.getFullName()).build())
+                .build();
         roleService.addDefaultRolesToUser(user);
         return userRepository.save(user);
     }
-
 
 }

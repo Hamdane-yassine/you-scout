@@ -9,10 +9,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+/**
+ * User entity representing the user's account data.
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -25,65 +31,57 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /* First name of the user */
-    private String firstname;
-
-    /* Last name of the user */
-    private String lastname;
-
-    /* Email address of the user */
+    @NotNull
+    @Email
     private String email;
 
-    /* Password of the user */
+    @NotNull
+    @Size(min = 8)
     private String password;
 
-    /* Username of the user */
+    @NotNull
+    @Size(min = 1, max = 50)
     private String username;
 
-    /* whether the user's account is enabled or not */
     private boolean isEnabled;
 
-    /* Roles of the user */
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
 
-    /* Returns a list of the user's granted authorities based on their role */
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_id", referencedColumnName = "id")
+    private Profile profile;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getRoleName())).collect(Collectors.toList());
     }
 
-    /* Returns the user's password */
     @Override
     public String getPassword() {
         return password;
     }
 
-    /* Returns the user's username */
     @Override
     public String getUsername() {
         return username;
     }
 
-    /* Returns whether the user's account has expired */
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
-    /* Returns whether the user's account is locked */
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
-    /* Returns whether the user's credentials have expired */
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
-    /* Returns whether the user's account is enabled */
     @Override
     public boolean isEnabled() {
         return isEnabled;

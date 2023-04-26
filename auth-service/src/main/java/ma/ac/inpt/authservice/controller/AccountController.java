@@ -9,6 +9,8 @@ import ma.ac.inpt.authservice.service.PasswordResetService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @Slf4j
@@ -26,16 +28,15 @@ public class AccountController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+    public ResponseEntity<String> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
         String message = passwordResetService.sendPasswordResetEmail(request);
         return ResponseEntity.ok(message);
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request, @RequestParam String token) {
+    public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordRequest request, @RequestParam String token) {
         String message = passwordResetService.resetPassword(request, token);
         return ResponseEntity.ok(message);
     }
-
 
 }

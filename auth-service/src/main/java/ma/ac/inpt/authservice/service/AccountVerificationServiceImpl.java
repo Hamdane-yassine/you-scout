@@ -2,12 +2,15 @@ package ma.ac.inpt.authservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.ac.inpt.authservice.messaging.UserEventSender;
 import ma.ac.inpt.authservice.model.User;
 import ma.ac.inpt.authservice.model.VerificationToken;
 import ma.ac.inpt.authservice.repository.TokenRepository;
 import ma.ac.inpt.authservice.repository.UserRepository;
 import ma.ac.inpt.authservice.repository.VerificationTokenRepository;
+import ma.ac.inpt.authservice.util.ApplicationBaseUrlRetriever;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,11 +18,17 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class AccountVerificationServiceImpl extends AbstractTokenService<VerificationToken> implements AccountVerificationService {
 
     private final EmailService emailService;
     private final VerificationTokenRepository verificationTokenRepository;
     private final UserRepository userRepository;
+
+    private final ApplicationBaseUrlRetriever baseUrlRetriever;
+
+    private final UserEventSender userEventSender;
+
 
     @Override
     protected EmailService getEmailService() {
@@ -38,13 +47,15 @@ public class AccountVerificationServiceImpl extends AbstractTokenService<Verific
 
     @Override
     protected String getTokenContent(VerificationToken token) {
-        return "http://localhost:8082/api/v1/auth/confirm-account?token=" + token.getToken();
+        String baseUrl = baseUrlRetriever.getApplicationBaseUrl();
+        return baseUrl + "/api/v1/auth/confirm-account?token=" + token.getToken();
     }
 
     @Override
     protected void handleValidToken(User user,String value) {
         user.setEnabled(true);
         userRepository.save(user);
+        userEventSender.sendUserCreated(user);
     }
 
     @Override
@@ -69,7 +80,7 @@ public class AccountVerificationServiceImpl extends AbstractTokenService<Verific
 
     @Override
     public String sendVerificationEmail(User user) {
-        return sendTokenEmail(user, "Verify your account", "A verification email");
+        return sendTokenEmail(user, "Account verification", "A verification email");
     }
 
     @Override

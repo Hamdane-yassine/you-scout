@@ -11,6 +11,7 @@ import ma.ac.inpt.authservice.repository.PasswordResetTokenRepository;
 import ma.ac.inpt.authservice.repository.TokenRepository;
 import ma.ac.inpt.authservice.repository.UserRepository;
 import ma.ac.inpt.authservice.repository.VerificationTokenRepository;
+import ma.ac.inpt.authservice.util.ApplicationBaseUrlRetriever;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,9 @@ public class PasswordResetServiceImpl extends AbstractTokenService<PasswordReset
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
+
+    private final ApplicationBaseUrlRetriever baseUrlRetriever;
+
 
 
     @Override
@@ -47,7 +51,8 @@ public class PasswordResetServiceImpl extends AbstractTokenService<PasswordReset
     @Override
     protected String getTokenContent(PasswordResetToken token) {
         String tokenString = token.getToken();
-        return "http://localhost:8082/api/v1/auth/reset-password?token=" + tokenString;
+        String baseUrl = baseUrlRetriever.getApplicationBaseUrl();
+        return baseUrl + "/api/v1/auth/reset-password?token=" + tokenString;
     }
 
     @Override
@@ -81,7 +86,7 @@ public class PasswordResetServiceImpl extends AbstractTokenService<PasswordReset
     @Override
     public String sendPasswordResetEmail(ForgotPasswordRequest request) {
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new UserNotFoundException("User not found"));
-        return sendTokenEmail(user, "Password Reset Request", "A password reset email");
+        return sendTokenEmail(user, "Password Reset", "A password reset email");
     }
 
     @Override

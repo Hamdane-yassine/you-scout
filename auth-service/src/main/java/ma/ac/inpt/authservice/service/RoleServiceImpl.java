@@ -66,7 +66,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public String assignRoleToUser(UserRoleRequest request) {
-        User user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = userRepository.findByUsernameOrEmail(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         Role role = roleRepository.findByRoleNameIgnoreCase(request.getRoleName()).orElseThrow(() -> new RoleNotFoundException("Role not found"));
         if (!user.getRoles().contains(role)) {
             user.getRoles().add(role);
@@ -183,7 +183,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public String removeRoleFromUser(UserRoleRequest request) {
         log.info("Removing role {} from user {}", request.getRoleName(), request.getUsername());
-        User user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = userRepository.findByUsernameOrEmail(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         Role role = roleRepository.findByRoleNameIgnoreCase(request.getRoleName()).orElseThrow(() -> new RoleNotFoundException("Role not found"));
 
         if (!user.getRoles().contains(role)) {

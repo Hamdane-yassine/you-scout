@@ -4,16 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotNull;
+import ma.ac.inpt.authservice.util.ValidAuthenticationRequest;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ValidAuthenticationRequest
 public class AuthenticationRequest {
 
-    @NotNull
     private String grantType; // Type of grant, e.g. "password" or "refresh_token"
 
     private String username; // User's username

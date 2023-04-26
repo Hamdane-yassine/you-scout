@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-@RequestMapping("/api/v1/auth/roles")
+@RequestMapping("/api/v1/users/roles")
 @Slf4j
 @RequiredArgsConstructor
 public class RoleController {

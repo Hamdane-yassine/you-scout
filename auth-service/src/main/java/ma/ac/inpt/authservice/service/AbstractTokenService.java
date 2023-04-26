@@ -29,7 +29,7 @@ public abstract class AbstractTokenService<T extends Token> {
             token = createOrUpdateToken(user);
             String recipientAddress = token.getUser().getEmail();
             String confirmationLink = getTokenContent(token);
-            String content = "Please click on the following link to proceed:\n\n" + confirmationLink + "\n\nThis link will expire in 24 hours.";
+            String content = "Please click on the following link to proceed:<br>" + confirmationLink + "<br> This link will expire in 24 hours.";
             responseMessage = message + " has been sent to " + recipientAddress + ". Please check your inbox and follow the instructions.";
             getEmailService().sendEmail(EmailPayload.builder().recipientAddress(recipientAddress).subject(subject).content(content).build());
         }
@@ -44,6 +44,7 @@ public abstract class AbstractTokenService<T extends Token> {
         User user = getUserFromToken(token);
         handleValidToken(user, value);
         getTokenRepository().delete(token);
+
         return "Your operation has been successfully completed!";
     }
 
