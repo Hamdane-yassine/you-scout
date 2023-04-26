@@ -1,0 +1,144 @@
+package ma.ac.inpt.authservice.service;
+
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import ma.ac.inpt.authservice.exception.EmailAlreadyExistsException;
+import ma.ac.inpt.authservice.exception.InvalidRequestException;
+import ma.ac.inpt.authservice.exception.RegistrationException;
+import ma.ac.inpt.authservice.exception.UsernameAlreadyExistsException;
+import ma.ac.inpt.authservice.model.Profile;
+import ma.ac.inpt.authservice.model.User;
+import ma.ac.inpt.authservice.payload.RegistrationRequest;
+import ma.ac.inpt.authservice.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import java.util.Set;
+
+/**
+ * Service class that handles user registration.
+ */
+@Service
+@RequiredArgsConstructor
+@Slf4j
+@Transactional
+public class RegistrationServiceImpl implements RegistrationService {
+
+    /**
+     * UserRepository instance for user data access
+     */
+    private final UserRepository userRepository;
+
+    /**
+     * PasswordEncoder instance for encoding passwords
+     */
+    private final PasswordEncoder passwordEncoder;
+
+    /**
+     * Validator instance for validating request objects
+     */
+    private final Validator validator;
+
+    /**
+     * AuthenticationService instance for user authentication
+     */
+    private final RoleService roleService;
+
+    private final AccountVerificationService accountVerificationService;
+
+
+    /**
+     * Registers a new user with the provided registration details.
+     *
+     * @param request the registration request containing user details
+     * @return an authentication response after the user has been registered
+     * @throws InvalidRequestException if the registration request is invalid
+     * @throws RegistrationException   if registration fails for any other reason
+     */
+    @Override
+    public String register(RegistrationRequest request) {
+        Set<ConstraintViolation<RegistrationRequest>> violations = validator.validate(request);
+        String message;
+        if (!violations.isEmpty()) {
+            log.error("Invalid registration request: {}", violations);
+            throw new InvalidRequestException("Invalid registration request");
+        }
+
+        try {
+            validateRegistrationRequest(request);
+            var user = saveUser(request,false);
+            message = accountVerificationService.sendVerificationEmail(user);
+        } catch (UsernameAlreadyExistsException | EmailAlreadyExistsException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            log.error("Registration failed with error: {}", ex.getMessage());
+            throw new RegistrationException("Registration failed");
+        }
+        log.info("verification email has been sent to user {}", request.getUsername());
+        return message;
+    }
+
+    @Override
+    public void registerOauth2User(RegistrationRequest request) {
+        if(!userRepository.existsByEmail(request.getEmail())){
+            saveUser(request,true);
+        }
+    }
+
+    /**
+     * Validates the registration request by checking if the provided username and email are already taken.
+     *
+     * @param request the registration request containing user details
+     * @throws UsernameAlreadyExistsException if the username is already taken
+     * @throws EmailAlreadyExistsException    if the email is already taken
+     */
+    private void validateRegistrationRequest(RegistrationRequest request) {
+        validateUsername(request.getUsername());
+        validateEmail(request.getEmail());
+    }
+
+    /**
+     * Validates if the provided username is already taken.
+     *
+     * @param username the username to be validated
+     * @throws UsernameAlreadyExistsException if the username is already taken
+     */
+    private void validateUsername(String username) {
+        if (userRepository.existsByUsername(username)) {
+            throw new UsernameAlreadyExistsException(String.format("Username '%s' already exists", username));
+        }
+    }
+
+    /**
+     * Validates if the provided email is already taken.
+     *
+     * @param email the email to be validated
+     * @throws EmailAlreadyExistsException if the email is already taken
+     */
+    private void validateEmail(String email) {
+        if (userRepository.existsByEmail(email)) {
+            throw new EmailAlreadyExistsException(String.format("Email '%s' already exists", email));
+        }
+    }
+
+    /**
+     * Saves the new user to the repository after encoding the password.
+     *
+     * @param request the registration request containing user details
+     */
+    private User saveUser(RegistrationRequest request, boolean isEnabled) {
+        var user = User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
+                .isEnabled(isEnabled)
+                .profile(Profile.builder().fullName(request.getFullName()).build())
+                .build();
+        roleService.addDefaultRolesToUser(user);
+        return userRepository.save(user);
+    }
+
+}
