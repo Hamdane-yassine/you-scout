@@ -5,8 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
+/**
+ * Represents a registration request containing the necessary information to create a new user account.
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -14,41 +20,32 @@ import javax.validation.constraints.*;
 public class RegistrationRequest {
 
     /**
-     * The username provided by the user during registration.
-     * It is mandatory and can have a length between 1 and 50 characters.
+     * The username of the user. It must be between 1 and 50 characters long.
      */
-    @NotNull
-    @NotEmpty
-    @Size(max = 50)
+    @NotNull(message = "Username cannot be null.")
+    @Size(min = 1, max = 50, message = "Username must be between 1 and 50 characters long.")
     private String username;
 
     /**
-     * The full name provided by the user during registration.
-     * It is mandatory and can have a length between 1 and 50 characters.
-     * It must contain only letters and spaces.
+     * The full name of the user. It must be between 1 and 50 characters long.
      */
-    @NotNull
-    @NotEmpty
-    @Size(max = 50)
-    @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Full name can only contain letters and spaces")
+    @NotNull(message = "Full name cannot be null.")
+    @Size(min = 1, max = 50, message = "Full name must be between 1 and 50 characters long.")
     private String fullName;
 
     /**
-     * The email address provided by the user during registration.
-     * It is mandatory and must be a valid email address format.
+     * The email address of the user. It must be a valid email format.
      */
-    @NotNull
-    @Email
+    @Email(message = "Email must be in a valid format.")
     private String email;
 
     /**
-     * The password provided by the user during registration.
-     * It is mandatory and must be at least 8 characters long.
-     * It must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.
+     * The password of the user. It must be at least 8 characters long and contain at least one uppercase letter,
+     * one lowercase letter, one number, and one special character.
      */
-    @NotNull
-    @Size(min = 8)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&_])[A-Za-z\\d@$!%*_?&]+$", message = "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character")
+    @NotNull(message = "Password cannot be null.")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$", message = "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.")
     private String password;
 
 }
+

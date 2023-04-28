@@ -8,49 +8,58 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-/**
- * UserRepository is an interface for performing CRUD operations on the User entity.
- * It extends the JpaRepository interface, which provides all the basic CRUD methods.
- */
 
+/**
+ * Repository interface for managing User entities.
+ */
 public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
-     * Finds a user by their username or email.
+     * Returns an optional User object with the specified username or email.
      *
-     * @param identifier the username or email of the user to find
-     * @return an Optional<User> object representing the user if found, otherwise an empty Optional
+     * @param identifier the username or email to search for
+     * @return an Optional containing the User object with the specified username or email, or an empty Optional if not found
      */
     @Query("SELECT u FROM User u WHERE u.username = :identifier OR u.email = :identifier")
     Optional<User> findByUsernameOrEmail(@Param("identifier") String identifier);
 
-
+    /**
+     * Returns an optional User object with the specified username.
+     *
+     * @param username the username to search for
+     * @return an Optional containing the User object with the specified username, or an empty Optional if not found
+     */
     Optional<User> findByUsername(String username);
 
+    /**
+     * Returns an optional User object with the specified email.
+     *
+     * @param email the email to search for
+     * @return an Optional containing the User object with the specified email, or an empty Optional if not found
+     */
     Optional<User> findByEmail(String email);
 
-
     /**
-     * Checks if a user with a given username exists in the database.
+     * Returns true if a user with the specified username exists.
      *
-     * @param username the username to check for existence
-     * @return a boolean value indicating whether a user with the given username exists
+     * @param username the username to search for
+     * @return true if a user with the specified username exists, false otherwise
      */
     Boolean existsByUsername(String username);
 
     /**
-     * Checks if a user with a given email exists in the database.
+     * Returns true if a user with the specified email exists.
      *
-     * @param email the email to check for existence
-     * @return a boolean value indicating whether a user with the given email exists
+     * @param email the email to search for
+     * @return true if a user with the specified email exists, false otherwise
      */
     Boolean existsByEmail(String email);
 
     /**
-     * Removes the specified role from all users who have this role.
+     * Removes the role with the specified ID from all users that have that role.
      *
      * @param roleId the ID of the role to remove
-     * @return the number of users whose roles were updated
+     * @return the number of users from which the role was removed
      */
     @Modifying
     @Query(value = "DELETE FROM users_roles where users_roles.roles_id = :roleId", nativeQuery = true)

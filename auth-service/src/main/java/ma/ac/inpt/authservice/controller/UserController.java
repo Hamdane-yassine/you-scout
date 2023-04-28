@@ -1,9 +1,10 @@
 package ma.ac.inpt.authservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.ac.inpt.authservice.payload.UserDetailsDto;
 import ma.ac.inpt.authservice.payload.UserUpdateDto;
-import ma.ac.inpt.authservice.service.UserServiceImpl;
+import ma.ac.inpt.authservice.service.user.UserServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,122 +15,157 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.security.Principal;
 
+/**
+ * Controller class for managing user data.
+ * Provides endpoints for getting, updating and deleting user data.
+ */
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
+@RequiredArgsConstructor
+@Slf4j
 public class UserController {
-
     private final UserServiceImpl userServiceImpl;
 
     /**
-     * Get all users
+     * Endpoint for getting all users.
+     * Returns HTTP 200 OK status with a list of UserDetailsDto on successful retrieval.
      *
-     * @param page page number (default is 0)
-     * @param size page size (default is 20)
-     * @return ResponseEntity<Page < UserDetailsDto>>
+     * @param page The page number.
+     * @param size The page size.
+     * @return A response entity with a list of UserDetailsDto.
      */
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @GetMapping
     public ResponseEntity<Page<UserDetailsDto>> getAllUsers(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "20") Integer size) {
-        return ResponseEntity.ok(userServiceImpl.getAllUsers(page, size));
+        log.info("Received request to get all users with page {} and size {}", page, size);
+        Page<UserDetailsDto> users = userServiceImpl.getAllUsers(page, size);
+        return ResponseEntity.ok(users);
     }
 
     /**
-     * Partially update user by username
+     * Endpoint for updating a user by username.
+     * Validates user update request using the UserUpdateDto.
+     * Returns HTTP 200 OK status with an updated UserDetailsDto on successful update.
      *
-     * @param username  the username
-     * @param userUpdateDto The dto for request updating
-     * @return ResponseEntity<UserDetailsDto>
+     * @param username The username of the user to be updated.
+     * @param userUpdateDto The updated user data.
+     * @return A response entity with the updated UserDetailsDto.
      */
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @PatchMapping("/{username}")
-    public ResponseEntity<UserDetailsDto> UpdateUserByUsername(@PathVariable String username, @Valid @RequestBody UserUpdateDto userUpdateDto) {
-        return ResponseEntity.ok(userServiceImpl.UpdateUserByUsername(username, userUpdateDto));
+    public ResponseEntity<UserDetailsDto> updateUserByUsername(@PathVariable String username, @Valid @RequestBody UserUpdateDto userUpdateDto) {
+        log.info("Received request to update user with username {}", username);
+        UserDetailsDto updatedUser = userServiceImpl.updateUserByUsername(username, userUpdateDto);
+        log.info("Updated user with username {}", username);
+        return ResponseEntity.ok(updatedUser);
     }
 
     /**
-     * Delete user by username
+     * Endpoint for deleting a user by username.
+     * Returns HTTP 204 NO CONTENT status on successful deletion.
      *
-     * @param username the username
-     * @return ResponseEntity<Void>
+     * @param username The username of the user to be deleted.
+     * @return A response entity with no content.
      */
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @DeleteMapping("/{username}")
     public ResponseEntity<Void> deleteUserByUsername(@PathVariable String username) {
+        log.info("Received request to delete user with username {}", username);
         userServiceImpl.deleteUserByUsername(username);
+        log.info("Deleted user with username {}", username);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /**
-     * Get user's profile by username
+     * Endpoint for getting a user profile by username.
+     * Returns HTTP 200 OK status with a UserDetailsDto on successful retrieval.
      *
-     * @param username the username
-     * @return ResponseEntity<UserDetailsDto>
+     * @param username The username of the user to get profile for.
+     * @return A response entity with the UserDetailsDto.
      */
     @GetMapping("/{username}/profile")
     public ResponseEntity<UserDetailsDto> getProfileByUsername(@PathVariable String username) {
-        return ResponseEntity.ok(userServiceImpl.getUserDetailsByUsername(username));
+        log.info("Received request to get profile for username {}", username);
+        UserDetailsDto userDetails = userServiceImpl.getUserDetailsByUsername(username);
+        return ResponseEntity.ok(userDetails);
     }
 
     /**
-     * Disable user by username
+     * Endpoint for disabling a user by username.
+     * Returns HTTP 204 NO CONTENT status on successful disable.
      *
-     * @param username the username
-     * @return ResponseEntity<Void>
+     * @param username The username of the user to be disabled.
+     * @return A response entity with no content.
      */
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @PutMapping("/{username}/disable")
     public ResponseEntity<Void> disableUserByUsername(@PathVariable String username) {
+        log.info("Received request to disable user with username {}", username);
         userServiceImpl.updateUserEnabledStatus(username, false);
+        log.info("Disabled user with username {}", username);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /**
-     * Enable user by username
+     * Endpoint for enabling a user by username.
+     * Returns HTTP 204 NO CONTENT status on successful enable.
      *
-     * @param username the username
-     * @return ResponseEntity<Void>
+     * @param username The username of the user to be enabled.
+     * @return A response entity with no content.
      */
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @PutMapping("/{username}/enable")
     public ResponseEntity<Void> enableUserByUsername(@PathVariable String username) {
+        log.info("Received request to enable user with username {}", username);
         userServiceImpl.updateUserEnabledStatus(username, true);
+        log.info("Enabled user with username {}", username);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-
     /**
-     * Get current user's profile
+     * Endpoint for getting the profile of the currently authenticated user.
+     * Returns HTTP 200 OK status with the UserDetailsDto on successful retrieval.
      *
-     * @param principal the authenticated user
-     * @return ResponseEntity<UserDetailsDto>
+     * @param principal The principal object representing the authenticated user.
+     * @return A response entity with the UserDetailsDto.
      */
     @GetMapping("/me/profile")
     public ResponseEntity<UserDetailsDto> getCurrentUserProfile(Principal principal) {
-        return ResponseEntity.ok(userServiceImpl.getUserDetailsByUsername(principal.getName()));
+        log.info("Received request to get current user profile");
+        UserDetailsDto userDetails = userServiceImpl.getUserDetailsByUsername(principal.getName());
+        return ResponseEntity.ok(userDetails);
     }
 
     /**
-     *  update current user
+     * Endpoint for updating the profile of the currently authenticated user.
+     * Validates user update request using the UserUpdateDto.
+     * Returns HTTP 200 OK status with the updated UserDetailsDto on successful update.
      *
-     * @param principal the authenticated user
-     * @param userUpdateDto The dto for request updating
-     * @return ResponseEntity<UserDetailsDto>
+     * @param principal The principal object representing the authenticated user.
+     * @param userUpdateDto The updated user data.
+     * @return A response entity with the updated UserDetailsDto.
      */
     @PatchMapping("/me/profile")
-    public ResponseEntity<UserDetailsDto> UpdateCurrentUser(Principal principal, @Valid @RequestBody UserUpdateDto userUpdateDto) {
-        return ResponseEntity.ok(userServiceImpl.UpdateUserByUsername(principal.getName(), userUpdateDto));
+    public ResponseEntity<UserDetailsDto> updateCurrentUser(Principal principal, @Valid @RequestBody UserUpdateDto userUpdateDto) {
+        log.info("Received request to update current user profile");
+        UserDetailsDto updatedUser = userServiceImpl.updateUserByUsername(principal.getName(), userUpdateDto);
+        log.info("Updated current user profile");
+        return ResponseEntity.ok(updatedUser);
     }
 
     /**
-     * Update current user's profile picture
+     * Endpoint for updating the profile picture of the currently authenticated user.
+     * Returns HTTP 200 OK status with the updated UserDetailsDto on successful update.
      *
-     * @param principal the authenticated user
-     * @param file           the profile picture file
-     * @return ResponseEntity<UserDetailsDto>
+     * @param principal The principal object representing the authenticated user.
+     * @param file The profile picture file.
+     * @return A response entity with the updated UserDetailsDto.
      */
     @PostMapping("/me/profile/picture")
     public ResponseEntity<UserDetailsDto> updateProfilePicture(Principal principal, @RequestPart("file") MultipartFile file) {
-        return ResponseEntity.ok(userServiceImpl.updateProfilePicture(principal.getName(), file));
+        log.info("Received request to update profile picture for the current user");
+        UserDetailsDto updatedUser = userServiceImpl.updateProfilePicture(principal.getName(), file);
+        log.info("Updated profile picture for the current user");
+        return ResponseEntity.ok(updatedUser);
     }
 }

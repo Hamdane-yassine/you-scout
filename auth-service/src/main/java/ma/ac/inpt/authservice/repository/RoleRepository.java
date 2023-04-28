@@ -7,25 +7,25 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The RoleRepository interface provides CRUD operations for the Role entity
- * using Spring Data JPA.
+ * Repository interface for managing Role entities.
  */
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
     /**
-     * Finds a Role entity by its name in a case-insensitive manner.
+     * Returns an optional Role object with the specified role name in case-insensitive manner.
      *
-     * @param roleName the name of the role to find
-     * @return an Optional containing the Role entity if found, otherwise empty
+     * @param roleName the role name to search for
+     * @return an Optional containing the Role object with the specified role name, or an empty Optional if not found
      */
     Optional<Role> findByRoleNameIgnoreCase(String roleName);
 
     /**
-     * Finds all Role entities with names in the given list of roles.
+     * Returns a list of Role objects with role names in the specified list.
      *
-     * @param roles the list of role names to find
-     * @return a List containing the matching Role entities
+     * @param roles the list of role names to search for
+     * @return a List of Role objects with role names in the specified list
      */
     List<Role> findByRoleNameIn(List<String> roles);
 }
+
 
