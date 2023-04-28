@@ -14,7 +14,6 @@
     <module>service-discovery</module>
     <module>api-gateway</module>
     <module>auth-service</module>
-      <module>social-graph-service</module>
   </modules>
   <!-- FIXME change it to the project's website -->
 <!--  <url>http://www.example.com</url>-->
