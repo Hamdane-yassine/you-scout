@@ -1,24 +1,35 @@
 package ma.ac.inpt.authservice.util;
 
-import com.netflix.discovery.EurekaClient;
-import lombok.RequiredArgsConstructor;
-import ma.ac.inpt.authservice.exception.BaseUrlNotResolvedException;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+/**
+ * A component responsible for retrieving the base URL of the application.
+ * The base URL is composed of the application base URL and the server port number.
+ */
 @Component
-@RequiredArgsConstructor
 public class ApplicationBaseUrlRetriever {
 
-    private final EurekaClient eurekaClient;
+    /**
+     * The application base URL.
+     */
+    @Value("${application.base-url}")
+    private String baseUrl;
 
-    public String getApplicationBaseUrl() {
-        return eurekaClient.getApplication("AUTH-SERVICE")
-                .getInstances().stream()
-                .findFirst().map(i -> "http://" + i.getHostName() + ":" + i.getPort())
-                .orElseThrow(() -> new BaseUrlNotResolvedException("cannot resolve base url"));
+    /**
+     * The server port number.
+     */
+    @Value("${server.port}")
+    private String serverPort;
+
+    /**
+     * Retrieves the base URL of the application by concatenating the application base URL and server port number.
+     *
+     * @return the base URL of the application
+     */
+    public String getBaseUrl() {
+        return baseUrl + ":" + serverPort;
     }
-
 }
-
-
 

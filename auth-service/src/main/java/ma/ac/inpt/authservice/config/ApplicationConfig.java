@@ -9,28 +9,37 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * Configuration class for setting up the application.
+ */
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
+
+    /**
+     * The user repository.
+     */
     private final UserRepository userRepository;
 
     /**
-     * Returns a UserDetailsService that loads a user by its username from the UserRepository.
+     * Creates a new instance of the UserDetailsService using the user repository.
      *
-     * @return UserDetailsService
+     * @return the UserDetailsService instance
      */
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByUsernameOrEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return username -> userRepository.findByUsernameOrEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     /**
-     * Returns a PasswordEncoder instance for encoding and decoding passwords using BCrypt algorithm.
+     * Creates a new instance of the PasswordEncoder.
      *
-     * @return PasswordEncoder
+     * @return the PasswordEncoder instance
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
+

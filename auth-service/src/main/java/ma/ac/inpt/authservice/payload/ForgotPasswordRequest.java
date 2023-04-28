@@ -7,12 +7,18 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 
+/**
+ * Represents a forgot password request containing the email address of the user.
+ */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ForgotPasswordRequest {
 
-    @Email
+    /**
+     * The email address of the user.
+     */
+    @Email(message = "The email address is not valid.")
     private String email;
 }

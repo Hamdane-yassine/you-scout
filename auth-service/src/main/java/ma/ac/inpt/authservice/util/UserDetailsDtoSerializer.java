@@ -11,8 +11,22 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
 
+/**
+ * UserDetailsDtoSerializer is a custom JsonSerializer for UserDetailsDto.
+ * It serializes the UserDetailsDto object into JSON format.
+ * The purpose of this custom serializer is to conditionally include certain fields (isEnabled, roles)
+ * in the JSON output based on the authority of the authenticated user.
+ */
 public class UserDetailsDtoSerializer extends JsonSerializer<UserDetailsDto> {
 
+    /**
+     * Serializes the UserDetailsDto object into JSON format.
+     *
+     * @param userDetailsDto     the UserDetailsDto object to serialize
+     * @param jsonGenerator      the JsonGenerator used to generate the JSON output
+     * @param serializerProvider the SerializerProvider
+     * @throws IOException if there is an error writing the JSON output
+     */
     @Override
     public void serialize(UserDetailsDto userDetailsDto, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
@@ -38,6 +52,16 @@ public class UserDetailsDtoSerializer extends JsonSerializer<UserDetailsDto> {
         jsonGenerator.writeEndObject();
     }
 
+    /**
+     * Serializes the UserDetailsDto object with type information.
+     * This method is called when the serializer is asked to include type information in the JSON output.
+     *
+     * @param value       the UserDetailsDto object to serialize
+     * @param gen         the JsonGenerator used to generate the JSON output
+     * @param serializers the SerializerProvider
+     * @param typeSer     the TypeSerializer used to include type information
+     * @throws IOException if there is an error writing the JSON output
+     */
     @Override
     public void serializeWithType(UserDetailsDto value, JsonGenerator gen, SerializerProvider serializers, TypeSerializer typeSer) throws IOException {
         typeSer.writeTypePrefix(gen, typeSer.typeId(value, JsonToken.START_OBJECT));

@@ -6,12 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Represents a user's profile.
+ * Includes basic information about the user, such as their name, profile picture, date of birth, gender, and location,
+ * as well as additional details such as a bio and links to their social media profiles.
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,37 +23,60 @@ import java.util.Map;
 @Table(name = "profiles")
 public class Profile {
 
+    /**
+     * The unique ID of the profile.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Size(min = 1, max = 50)
+    /**
+     * The full name of the user associated with the profile.
+     */
     private String fullName;
 
+    /**
+     * The URL of the profile picture for the user.
+     */
     private String profilePicture;
 
+    /**
+     * The date of birth of the user associated with the profile.
+     */
     private LocalDate dateOfBirth;
 
-    @Size(max = 10)
+    /**
+     * The gender of the user associated with the profile.
+     */
     private String gender;
 
-    @Size(max = 50)
+    /**
+     * The country where the user associated with the profile is located.
+     */
     private String country;
 
-    @Size(max = 50)
+    /**
+     * The city or region where the user associated with the profile is located.
+     */
     private String cityOrRegion;
 
-    @Size(max = 500)
+    /**
+     * A brief bio or description of the user associated with the profile.
+     */
     private String bio;
 
-    // Map to store social media links
+    /**
+     * A map of social media links associated with the user, keyed by the name of the social media platform.
+     */
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private Map<String, String> socialMediaLinks = new HashMap<>();
 
-    // One-to-One relationship with the User entity
+    /**
+     * The User object associated with the profile.
+     */
     @OneToOne(mappedBy = "profile")
     private User user;
 }
+
 

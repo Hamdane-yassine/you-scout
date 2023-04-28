@@ -6,21 +6,34 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ma.ac.inpt.authservice.util.ValidAuthenticationRequest;
 
+/**
+ * Represents an authentication request containing the necessary information to authenticate a user.
+ */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ValidAuthenticationRequest
+@ValidAuthenticationRequest(message = "The authentication request is not valid.")
 public class AuthenticationRequest {
 
-    private String grantType; // Type of grant, e.g. "password" or "refresh_token"
-
-    private String username; // User's username
-
-    private String password; // User's password
-
-    private boolean withRefreshToken; // Boolean value indicating if a new refresh token should be generated
-
-    private String refreshToken; // Refresh token used for obtaining a new access token
-
+    /**
+     * The type of grant, e.g. "PASSWORD" or "REFRESH_TOKEN".
+     */
+    private String grantType;
+    /**
+     * The username of the user.
+     */
+    private String username;
+    /**
+     * The password of the user.
+     */
+    private String password;
+    /**
+     * A boolean indicating whether to include a refresh token in the response.
+     */
+    private boolean withRefreshToken;
+    /**
+     * The refresh token to use for refreshing the access token.
+     */
+    private String refreshToken;
 }
