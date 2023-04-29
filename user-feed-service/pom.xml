@@ -72,7 +72,7 @@
 
 
 
-<!--        <dependency>-->
+        <!--        <dependency>-->
 <!--            <groupId>com.datastax.astra</groupId>-->
 <!--            <artifactId>astra-spring-boot-starter</artifactId>-->
 <!--            <version>0.5</version>-->
