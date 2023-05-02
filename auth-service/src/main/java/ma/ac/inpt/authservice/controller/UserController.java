@@ -2,6 +2,7 @@ package ma.ac.inpt.authservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.ac.inpt.authservice.payload.ProfileUpdateDto;
 import ma.ac.inpt.authservice.payload.UserDetailsDto;
 import ma.ac.inpt.authservice.payload.UserUpdateDto;
 import ma.ac.inpt.authservice.service.user.UserServiceImpl;
@@ -142,13 +143,13 @@ public class UserController {
      * Returns HTTP 200 OK status with the updated UserDetailsDto on successful update.
      *
      * @param principal The principal object representing the authenticated user.
-     * @param userUpdateDto The updated user data.
+     * @param profileUpdateDto The updated user data.
      * @return A response entity with the updated UserDetailsDto.
      */
     @PatchMapping("/me/profile")
-    public ResponseEntity<UserDetailsDto> updateCurrentUser(Principal principal, @Valid @RequestBody UserUpdateDto userUpdateDto) {
+    public ResponseEntity<UserDetailsDto> updateCurrentUserProfile(Principal principal, @Valid @RequestBody ProfileUpdateDto profileUpdateDto) {
         log.info("Received request to update current user profile");
-        UserDetailsDto updatedUser = userServiceImpl.updateUserByUsername(principal.getName(), userUpdateDto);
+        UserDetailsDto updatedUser = userServiceImpl.updateProfileByUsername(principal.getName(), profileUpdateDto);
         log.info("Updated current user profile");
         return ResponseEntity.ok(updatedUser);
     }

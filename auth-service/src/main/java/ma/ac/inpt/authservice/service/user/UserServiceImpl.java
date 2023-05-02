@@ -6,13 +6,14 @@ import ma.ac.inpt.authservice.exception.email.EmailAlreadyExistsException;
 import ma.ac.inpt.authservice.exception.user.UserNotFoundException;
 import ma.ac.inpt.authservice.exception.user.UsernameAlreadyExistsException;
 import ma.ac.inpt.authservice.messaging.UserEventMessagingService;
+import ma.ac.inpt.authservice.payload.ProfileUpdateDto;
+import ma.ac.inpt.authservice.payload.UserUpdateDto;
+import ma.ac.inpt.authservice.repository.UserRepository;
+import ma.ac.inpt.authservice.service.media.MediaService;
 import ma.ac.inpt.authservice.model.Profile;
 import ma.ac.inpt.authservice.model.Role;
 import ma.ac.inpt.authservice.model.User;
 import ma.ac.inpt.authservice.payload.UserDetailsDto;
-import ma.ac.inpt.authservice.payload.UserUpdateDto;
-import ma.ac.inpt.authservice.repository.UserRepository;
-import ma.ac.inpt.authservice.service.media.MediaService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -94,7 +95,25 @@ public class UserServiceImpl implements UserService {
     public UserDetailsDto updateUserByUsername(String username, UserUpdateDto userUpdateDto) {
         log.info("Updating user with username: {}", username);
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User with username " + username + " not found"));
-        updateProfileFields(user, userUpdateDto);
+        //updateProfileFields(user, profileUpdateDto);
+        userRepository.save(user);
+        userEventMessagingService.sendUserUpdated(user);
+        log.info("User with username '{}' has been updated.", username);
+        return convertToUserDetailsDto(user);
+    }
+
+    /**
+     * Update user information by username.
+     *
+     * @param username      the username of the user to update
+     * @param profileUpdateDto the UserUpdateDto containing the new information
+     * @return the updated UserDetailsDto
+     */
+    @Override
+    public UserDetailsDto updateProfileByUsername(String username, ProfileUpdateDto profileUpdateDto) {
+        log.info("Updating user profile with username: {}", username);
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User with username " + username + " not found"));
+        updateProfileFields(user, profileUpdateDto);
         userRepository.save(user);
         userEventMessagingService.sendUserUpdated(user);
         log.info("User with username '{}' has been updated.", username);
@@ -170,19 +189,16 @@ public class UserServiceImpl implements UserService {
      * Update user's profile fields.
      *
      * @param user          the User entity
-     * @param userUpdateDto the UserUpdateDto containing the new information
+     * @param profileUpdateDto the UserUpdateDto containing the new information
      */
-    private void updateProfileFields(User user, UserUpdateDto userUpdateDto) {
-        updateIfNotNull(userUpdateDto.getEmail(), () -> updateEmail(user, userUpdateDto.getEmail()));
-        updateIfNotNull(userUpdateDto.getUsername(), () -> updateUsername(user, userUpdateDto.getUsername()));
-        updateIfNotNull(userUpdateDto.getPassword(), () -> user.setPassword(passwordEncoder.encode(userUpdateDto.getPassword())));
-        updateIfNotNull(userUpdateDto.getFullName(), () -> user.getProfile().setFullName(userUpdateDto.getFullName()));
-        updateIfNotNull(userUpdateDto.getDateOfBirth(), () -> user.getProfile().setDateOfBirth(userUpdateDto.getDateOfBirth()));
-        updateIfNotNull(userUpdateDto.getGender(), () -> user.getProfile().setGender(userUpdateDto.getGender()));
-        updateIfNotNull(userUpdateDto.getCountry(), () -> user.getProfile().setCountry(userUpdateDto.getCountry()));
-        updateIfNotNull(userUpdateDto.getCityOrRegion(), () -> user.getProfile().setCityOrRegion(userUpdateDto.getCityOrRegion()));
-        updateIfNotNull(userUpdateDto.getBio(), () -> user.getProfile().setBio(userUpdateDto.getBio()));
-        updateIfNotNull(userUpdateDto.getSocialMediaLinks(), () -> user.getProfile().setSocialMediaLinks(userUpdateDto.getSocialMediaLinks()));
+    private void updateProfileFields(User user, ProfileUpdateDto profileUpdateDto) {
+        updateIfNotNull(profileUpdateDto.getFullName(), () -> user.getProfile().setFullName(profileUpdateDto.getFullName()));
+        updateIfNotNull(profileUpdateDto.getDateOfBirth(), () -> user.getProfile().setDateOfBirth(profileUpdateDto.getDateOfBirth()));
+        updateIfNotNull(profileUpdateDto.getGender(), () -> user.getProfile().setGender(profileUpdateDto.getGender()));
+        updateIfNotNull(profileUpdateDto.getCountry(), () -> user.getProfile().setCountry(profileUpdateDto.getCountry()));
+        updateIfNotNull(profileUpdateDto.getCityOrRegion(), () -> user.getProfile().setCityOrRegion(profileUpdateDto.getCityOrRegion()));
+        updateIfNotNull(profileUpdateDto.getBio(), () -> user.getProfile().setBio(profileUpdateDto.getBio()));
+        updateIfNotNull(profileUpdateDto.getSocialMediaLinks(), () -> user.getProfile().setSocialMediaLinks(profileUpdateDto.getSocialMediaLinks()));
     }
 
     /**

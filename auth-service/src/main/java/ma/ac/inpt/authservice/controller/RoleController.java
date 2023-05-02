@@ -2,8 +2,8 @@ package ma.ac.inpt.authservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ma.ac.inpt.authservice.model.Role;
 import ma.ac.inpt.authservice.payload.UserRoleRequest;
+import ma.ac.inpt.authservice.model.Role;
 import ma.ac.inpt.authservice.service.role.RoleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

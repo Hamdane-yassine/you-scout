@@ -1,5 +1,6 @@
 package ma.ac.inpt.authservice.service.user;
 
+import ma.ac.inpt.authservice.payload.ProfileUpdateDto;
 import ma.ac.inpt.authservice.payload.UserDetailsDto;
 import ma.ac.inpt.authservice.payload.UserUpdateDto;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,15 @@ public interface UserService {
      * @return a UserDetailsDto object containing the updated user's details
      */
     UserDetailsDto updateUserByUsername(String username, UserUpdateDto userUpdateDto);
+
+    /**
+     * Updates a user's details by their username.
+     *
+     * @param username      the username of the user to update
+     * @param profileUpdateDto the DTO containing the updated user details
+     * @return a UserDetailsDto object containing the updated user's details
+     */
+    UserDetailsDto updateProfileByUsername(String username, ProfileUpdateDto profileUpdateDto);
 
     /**
      * Updates a user's profile picture by their username.

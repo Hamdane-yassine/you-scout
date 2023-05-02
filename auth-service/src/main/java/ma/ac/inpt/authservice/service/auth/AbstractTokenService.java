@@ -1,11 +1,11 @@
 package ma.ac.inpt.authservice.service.auth;
 
+import ma.ac.inpt.authservice.repository.TokenRepository;
+import ma.ac.inpt.authservice.service.email.EmailService;
 import ma.ac.inpt.authservice.exception.registration.InvalidRequestException;
 import ma.ac.inpt.authservice.model.Token;
 import ma.ac.inpt.authservice.model.User;
 import ma.ac.inpt.authservice.payload.EmailPayload;
-import ma.ac.inpt.authservice.repository.TokenRepository;
-import ma.ac.inpt.authservice.service.email.EmailService;
 
 import java.util.Optional;
 

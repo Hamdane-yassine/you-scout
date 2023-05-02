@@ -2,8 +2,8 @@ package ma.ac.inpt.authservice.service.role;
 
 
 import ma.ac.inpt.authservice.model.Role;
-import ma.ac.inpt.authservice.model.User;
 import ma.ac.inpt.authservice.payload.UserRoleRequest;
+import ma.ac.inpt.authservice.model.User;
 
 import java.util.List;
 import java.util.Optional;
