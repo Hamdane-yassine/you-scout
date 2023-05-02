@@ -1,4 +1,4 @@
-package ma.ac.inpt.listener.authservice;
+package ma.ac.inpt.authservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

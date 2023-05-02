@@ -10,7 +10,6 @@
     </option>
     <option name="ignoredFiles">
       <set>
-        <option value="$PROJECT_DIR$/social-graph-service/pom.xml" />
         <option value="$PROJECT_DIR$/test-listener/pom.xml" />
       </set>
     </option>
