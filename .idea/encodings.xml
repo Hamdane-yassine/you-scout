@@ -7,7 +7,15 @@
     <file url="file://$PROJECT_DIR$/service-discovery/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/skills-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/skills-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/api-gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/api-gateway/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/auth-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/auth-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/social-graph-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/social-graph-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/test-listener/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/test-listener/src/main/resources" charset="UTF-8" />
   </component>
 </project>
