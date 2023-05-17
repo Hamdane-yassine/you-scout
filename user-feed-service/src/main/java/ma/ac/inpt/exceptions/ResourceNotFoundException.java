@@ -1,0 +1,9 @@
+package ma.ac.inpt.exceptions;
+
+
+public class ResourceNotFoundException extends RuntimeException {
+
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
+}

@@ -1,0 +1,93 @@
+
+spring:
+  application:
+    name: user-feed-service
+
+  data:
+    cassandra:
+      #      username: qbAwSdWicJdORowhJlqxgbji
+#      password: 31DYwyowywH_n0nLHKtJ.z65pFEB2Ioe40cE2FM47bcxzdZvmeDMk_OuZmUCfZ8cpastxPrI.lShnaY1vsoyyhwavI5fwwuIO.IEygNq85SGuJReMMMxfde-Te4pFiJm
+      port: 9042
+      schema-action: CREATE_IF_NOT_EXISTS
+      local-datacenter: datacenter1
+      keyspace-name: youscoutfeed
+  kafka:
+    consumer:
+      value-deserializer:
+        org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          deserializer:
+            value:
+              delegate:
+                class:
+                  org.springframework.kafka.support.serializer.JsonDeserializer
+#datastax.astra:
+#  secure-connect-bundle: secure-bundle.zip
+#astra:
+#  # Allow usage of devops and Stargate apis
+#  api:
+#    application-token: AstraCS:qbAwSdWicJdORowhJlqxgbji:134e29d5db4c1e283eff5b2b83eb52f50151445a83e6df61dccd78765b229024
+#    database-id: cfc81f9b-fc31-439c-b601-1f21165e3d2d
+#    database-region: europe-west1
+#  # Connectivity to Cassandra
+#  cql:
+#    enabled: true
+#    download-scb:
+#      enabled: true
+#    driver-config:
+#      basic:
+#        session-keyspace: youscoutfeed
+
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:29092
+          configuration:
+            key:
+              deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        bindings:
+          momentsPostChanged:
+            consumer:
+              startOffset: latest
+              autoCommitOffset: false
+      bindings:
+        momentsPostChanged:
+          destination: moments.post.changed
+          contentType: application/json
+          group: handlePostService
+          consumer:
+            startOffset: latest
+            autoCommitOffset: false
+
+server:
+  port: 8003
+
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka
+
+#security:
+#  basic:
+#    enable: false
+#
+#  jwt:
+#    uri: /auth/**
+#    header: Authorization
+#    prefix: Bearer
+#    expiration: 86400
+#    secret: JwtSecretKey
+#
+#  service:
+#    username: d245ef53-5ad5-4216-9c56-89fe0f8302a0
+#    password: ef919ae4-b893-4969-b782-57978180ad33
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic
