@@ -11,4 +11,5 @@ public interface Cassandra extends CrudRepository<UserFeedEntity, String> {
     Slice<UserFeedEntity> findByUsername(String username, Pageable pageable);
 
 
+
 }

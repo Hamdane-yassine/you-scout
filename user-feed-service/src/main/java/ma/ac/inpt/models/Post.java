@@ -21,4 +21,5 @@ public class Post {
     private String lastModifiedBy;
     private String imageUrl;
     private String caption;
+    private int commentsNum;
 }
