@@ -15,10 +15,6 @@
         <option value="$PROJECT_DIR$/feed-service/pom.xml" />
       </set>
     </option>
-        <option value="$PROJECT_DIR$/social-graph-service/pom.xml" />
-        <option value="$PROJECT_DIR$/test-listener/pom.xml" />
-      </set>
-    </option>
   </component>
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="javax.annotation.Nullable" />
