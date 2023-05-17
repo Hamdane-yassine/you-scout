@@ -2,6 +2,7 @@ package ma.ac.inpt.postservice.model;
 
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.*;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 
 @Data
 @RequiredArgsConstructor
+@NoArgsConstructor
 @Document
 public class Post {
 
@@ -37,4 +39,6 @@ public class Post {
 
     @NonNull
     private String caption;
+
+    private int commentsNum;
 }

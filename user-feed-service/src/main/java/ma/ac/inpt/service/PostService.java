@@ -5,7 +5,6 @@ import ma.ac.inpt.exceptions.UnableToGetPostsException;
 import ma.ac.inpt.models.Post;
 import lombok.extern.slf4j.Slf4j;
 import ma.ac.inpt.feignClient.PostClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +17,7 @@ public class PostService {
 
 
     private final PostClient postServiceClient;
+
 
 
     public List<Post> findPostsIn( List<String> ids) {
@@ -33,4 +33,6 @@ public class PostService {
                     String.format("unable to get posts for ids: %s", ids));
         }
     }
+
+
 }
