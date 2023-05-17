@@ -2,13 +2,26 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="api-gateway" />
+        <module name="comments-service" />
+        <module name="auth-service" />
+        <module name="skills-service" />
         <module name="service-discovery" />
+        <module name="user-feed-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="api-gateway" target="17" />
+      <module name="auth-service" target="17" />
+      <module name="comments-service" target="17" />
+      <module name="service-discovery" target="17" />
+      <module name="skills-service" target="17" />
+      <module name="user-feed-service" target="17" />
+      <module name="you-scout" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>
