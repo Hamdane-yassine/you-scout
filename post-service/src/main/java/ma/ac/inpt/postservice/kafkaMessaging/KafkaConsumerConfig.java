@@ -32,7 +32,7 @@ public class KafkaConsumerConfig {
         configProps.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
         configProps.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
         configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-        configProps.put(JsonSerializer.TYPE_MAPPINGS, "PostEvent:ma.ac.inpt.payload.CommentNumEvent");
+        configProps.put(JsonSerializer.TYPE_MAPPINGS, "CommentNumEvent:ma.ac.inpt.postservice.payload.CommentNumEvent");
 //        configProps.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
 //        configProps.put(JsonDeserializer.VALUE_DEFAULT_TYPE, PostEvent.class);
         return configProps;
