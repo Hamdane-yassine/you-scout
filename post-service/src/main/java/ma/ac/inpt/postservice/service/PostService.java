@@ -99,4 +99,12 @@ public class PostService {
     public List<Post> postsByIdIn(List<String> ids) {
         return postRepository.findByIdInOrderByCreatedAtDesc(ids);
     }
+
+    public void updateCommentNum(String id, int num){
+        log.info("updating number of comments in post {}", id);
+        Post postNum = new Post();
+        postNum.setId(id);
+        postNum.setCommentsNum(num);
+        postRepository.save(postNum);
+    }
 }

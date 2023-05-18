@@ -1,14 +1,15 @@
-package ma.ac.inpt.postservice.messaging;
+package ma.ac.inpt.messaging;
 
+import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
-import org.apache.kafka.clients.admin.NewTopic;
 @Configuration
 public class KafkaTopicConfig {
+
     @Bean
-    public NewTopic amigoscodeTopic(){
-        return TopicBuilder.name("amigoscode")
+    public NewTopic commentsTopic(){
+        return TopicBuilder.name("comments")
                 .build();
     }
-    }
+}
