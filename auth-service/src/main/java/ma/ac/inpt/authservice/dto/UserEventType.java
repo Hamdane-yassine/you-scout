@@ -1,4 +1,4 @@
-package ma.ac.inpt.authservice.payload;
+package ma.ac.inpt.authservice.dto;
 
 /**
  * Represents the types of user events that can occur.

@@ -1,5 +1,6 @@
 package ma.ac.inpt.authservice.service.auth;
 
+import ma.ac.inpt.authservice.dto.EmailVerificationType;
 import ma.ac.inpt.authservice.model.User;
 
 /**
@@ -13,7 +14,7 @@ public interface AccountVerificationService {
      * @param user the user to send the email to
      * @return a message indicating the status of the email sending process
      */
-    String sendVerificationEmail(User user);
+    String sendVerificationEmail(User user, EmailVerificationType emailVerificationType);
 
     /**
      * Verifies the specified account verification token and enables the associated user's account.

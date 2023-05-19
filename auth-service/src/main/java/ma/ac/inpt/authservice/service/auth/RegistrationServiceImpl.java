@@ -3,6 +3,7 @@ package ma.ac.inpt.authservice.service.auth;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.ac.inpt.authservice.dto.EmailVerificationType;
 import ma.ac.inpt.authservice.exception.email.EmailAlreadyExistsException;
 import ma.ac.inpt.authservice.exception.user.UsernameAlreadyExistsException;
 import ma.ac.inpt.authservice.repository.UserRepository;
@@ -10,7 +11,7 @@ import ma.ac.inpt.authservice.exception.registration.InvalidRequestException;
 import ma.ac.inpt.authservice.exception.registration.RegistrationException;
 import ma.ac.inpt.authservice.model.Profile;
 import ma.ac.inpt.authservice.model.User;
-import ma.ac.inpt.authservice.payload.RegistrationRequest;
+import ma.ac.inpt.authservice.dto.RegistrationRequest;
 import ma.ac.inpt.authservice.service.role.RoleService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -61,7 +62,7 @@ public class RegistrationServiceImpl implements RegistrationService {
             validateRegistrationRequest(request);
             // Save the user and send a verification email
             var user = saveUser(request, false);
-            message = accountVerificationService.sendVerificationEmail(user);
+            message = accountVerificationService.sendVerificationEmail(user, EmailVerificationType.REGISTRATION);
         } catch (UsernameAlreadyExistsException | EmailAlreadyExistsException ex) {
             throw ex;
         } catch (Exception ex) {

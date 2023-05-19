@@ -1,4 +1,4 @@
-package ma.ac.inpt.authservice.payload;
+package ma.ac.inpt.authservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import ma.ac.inpt.authservice.util.ValidAge;
 
 import javax.annotation.Nullable;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Map;
@@ -21,7 +19,7 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProfileUpdateDto {
+public class ProfileUpdateRequest {
 
     /**
      * The full name of the user.

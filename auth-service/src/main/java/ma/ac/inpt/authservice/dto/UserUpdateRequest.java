@@ -1,18 +1,16 @@
-package ma.ac.inpt.authservice.payload;
+package ma.ac.inpt.authservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.annotation.Nullable;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserUpdateDto {
+public class UserUpdateRequest {
 
     /**
      * The email address of the user.
@@ -35,8 +33,17 @@ public class UserUpdateDto {
      * It must be at least 8 characters long and contain at least one uppercase letter,
      * one lowercase letter, one number, and one special character.
      */
-    @Nullable
+    @NotEmpty
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$", message = "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.")
     private String password;
+
+    /**
+     * The password of the user.
+     * It must be at least 8 characters long and contain at least one uppercase letter,
+     * one lowercase letter, one number, and one special character.
+     */
+    @Nullable
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$", message = "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.")
+    private String newPassword;
 
 }

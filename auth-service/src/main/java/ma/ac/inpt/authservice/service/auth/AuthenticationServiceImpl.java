@@ -1,29 +1,29 @@
 package ma.ac.inpt.authservice.service.auth;
 
 import lombok.extern.slf4j.Slf4j;
+import ma.ac.inpt.authservice.dto.AuthenticationRequest;
+import ma.ac.inpt.authservice.dto.AuthenticationResponse;
+import ma.ac.inpt.authservice.dto.EmailVerificationType;
 import ma.ac.inpt.authservice.exception.auth.AccountNotEnabledException;
 import ma.ac.inpt.authservice.exception.auth.InvalidRefreshTokenException;
-import ma.ac.inpt.authservice.service.oauth2.OAuth2Provider;
+import ma.ac.inpt.authservice.model.RefreshToken;
 import ma.ac.inpt.authservice.model.User;
-import ma.ac.inpt.authservice.payload.AuthenticationRequest;
-import ma.ac.inpt.authservice.payload.AuthenticationResponse;
+import ma.ac.inpt.authservice.repository.RefreshTokenRepository;
+import ma.ac.inpt.authservice.repository.UserRepository;
+import ma.ac.inpt.authservice.service.oauth2.OAuth2Provider;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -37,17 +37,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtEncoder jwtEncoder; // Component for encoding JWT tokens
     private final JwtDecoder jwtDecoder; // Component for decoding JWT tokens
     private final AuthenticationManager authenticationManager; // Spring's authentication manager
-    private final UserDetailsService userDetailsService; // Custom user details service for loading user data
+    private final UserRepository userRepository; // Custom user details service for loading user data
     private final AccountVerificationService accountVerificationService; // Service for handling account verification
     private final Map<String, OAuth2Provider> oAuth2Providers; // Map of supported OAuth2 providers
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final static Integer REFRESH_TOKEN_EXPIRE_DATE_IN_DAYS = 7;
+    private final static Integer ACCESS_TOKEN_EXPIRE_DATE_IN_MINUTES = 15;
 
-    public AuthenticationServiceImpl(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder, AuthenticationManager authenticationManager, UserDetailsService userDetailsService, AccountVerificationService accountVerificationService, List<OAuth2Provider> oAuth2Providers) {
+    public AuthenticationServiceImpl(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder, AuthenticationManager authenticationManager, UserRepository userRepository, AccountVerificationService accountVerificationService, List<OAuth2Provider> oAuth2Providers,RefreshTokenRepository refreshTokenRepository) {
         this.jwtEncoder = jwtEncoder;
         this.jwtDecoder = jwtDecoder;
         this.authenticationManager = authenticationManager;
-        this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
         this.accountVerificationService = accountVerificationService;
         this.oAuth2Providers = oAuth2Providers.stream().collect(Collectors.toMap(OAuth2Provider::getName, Function.identity()));
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     /**
@@ -80,10 +84,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new IllegalArgumentException("Unsupported OAuth2 provider: " + provider);
         }
         var authenticationRequest = oAuth2Provider.authenticate(authorizationCode);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+        User user = userRepository.findByUsername(authenticationRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
         String scope = authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(" "));
         return buildAuthenticationResponse(authenticationRequest.isWithRefreshToken(), authenticationRequest.getUsername(), scope);
+    }
+
+    @Override
+    public void logout(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        refreshTokenRepository.deleteByUser(user);
     }
 
     /**
@@ -100,8 +110,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             log.info("Password grant authentication successful for user: {}", subject);
             return buildAuthenticationResponse(request.isWithRefreshToken(), subject, scope);
         } catch (DisabledException e) {
-            User user = (User) userDetailsService.loadUserByUsername(request.getUsername());
-            String message = accountVerificationService.sendVerificationEmail(user);
+            User user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            String message = accountVerificationService.sendVerificationEmail(user, EmailVerificationType.RESEND);
             throw new AccountNotEnabledException(message);
         } catch (AuthenticationException e) {
             log.error("Authentication failed for user: {}", request.getUsername(), e);
@@ -124,10 +134,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             log.error(errorMessage, e);
             throw new InvalidRefreshTokenException(errorMessage);
         }
-
+        String jti = decodeJWT.getClaim("jti");
+        if(!refreshTokenRepository.existsByTokenUuid(jti))
+            throw new InvalidRefreshTokenException("Error validating refresh token");
         String subject = decodeJWT.getSubject();
-        UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
-        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+        User user = userRepository.findByUsername(subject).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
         String scope = authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(" "));
         log.info("Refresh token grant authentication successful for user: {}", subject);
         return buildAuthenticationResponse(request.isWithRefreshToken(), subject, scope);
@@ -143,11 +155,35 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     private AuthenticationResponse buildAuthenticationResponse(boolean withRefreshToken, String subject, String scope) {
         Instant instant = Instant.now();
-        JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder().subject(subject).issuedAt(instant).expiresAt(instant.plus(withRefreshToken ? 30 : 55, ChronoUnit.MINUTES)).issuer("you-scout-auth-service").claim("scope", scope).build();
+        JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder().subject(subject).issuedAt(instant).expiresAt(instant.plus(ACCESS_TOKEN_EXPIRE_DATE_IN_MINUTES, ChronoUnit.MINUTES)).issuer("you-scout-auth-service").claim("scope", scope).build();
         String jwtAccessToken = jwtEncoder.encode(JwtEncoderParameters.from(jwtClaimsSet)).getTokenValue();
-        Optional<String> jwtRefreshToken = withRefreshToken ? Optional.of(jwtEncoder.encode(JwtEncoderParameters.from(JwtClaimsSet.builder().subject(subject).issuedAt(instant).expiresAt(instant.plus(55, ChronoUnit.MINUTES)).issuer("you-scout-auth-service").build())).getTokenValue()) : Optional.empty();
+        Optional<String> jwtRefreshToken = Optional.empty();
+
+        if (withRefreshToken) {
+            String refreshTokenUuid = UUID.randomUUID().toString();
+            jwtRefreshToken = Optional.of(jwtEncoder.encode(JwtEncoderParameters.from(JwtClaimsSet.builder().subject(subject).issuedAt(instant).expiresAt(instant.plus(REFRESH_TOKEN_EXPIRE_DATE_IN_DAYS, ChronoUnit.DAYS)).issuer("you-scout-auth-service").claim("jti", refreshTokenUuid).build())).getTokenValue());
+
+            // Retrieve the user from the subject (username)
+            User user = userRepository.findByUsername(subject).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+            // Delete the existing refresh token for the user
+            refreshTokenRepository.deleteByUser(user);
+
+            // Create a new RefreshToken instance
+            RefreshToken refreshToken = RefreshToken.builder()
+                    .tokenUuid(refreshTokenUuid)
+                    .user(user)
+                    .expiryDate(instant.plus(REFRESH_TOKEN_EXPIRE_DATE_IN_DAYS, ChronoUnit.DAYS))
+                    .build();
+
+            // Save the new refresh token to the database
+            refreshTokenRepository.save(refreshToken);
+        }
+
         log.info("Authentication response generated for user: {}", subject);
         return AuthenticationResponse.builder().accessToken(jwtAccessToken).refreshToken(jwtRefreshToken.orElse(null)).build();
     }
+
+
 }
 

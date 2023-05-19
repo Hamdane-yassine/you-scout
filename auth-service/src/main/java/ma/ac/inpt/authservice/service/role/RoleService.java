@@ -2,11 +2,11 @@ package ma.ac.inpt.authservice.service.role;
 
 
 import ma.ac.inpt.authservice.model.Role;
-import ma.ac.inpt.authservice.payload.UserRoleRequest;
+import ma.ac.inpt.authservice.dto.UserRoleRequest;
 import ma.ac.inpt.authservice.model.User;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -48,7 +48,7 @@ public interface RoleService {
      * @param id the ID of the role to get
      * @return an optional role
      */
-    Optional<Role> getRoleById(Long id);
+    Role getRoleById(Long id);
 
     /**
      * Update a role.
@@ -79,7 +79,7 @@ public interface RoleService {
      *
      * @return a list of all roles
      */
-    List<Role> getAllRoles();
+    Page<Role> getAllRoles(Integer page, Integer size);
 }
 
 

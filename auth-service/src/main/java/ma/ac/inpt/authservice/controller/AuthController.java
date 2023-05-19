@@ -2,7 +2,7 @@ package ma.ac.inpt.authservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ma.ac.inpt.authservice.payload.*;
+import ma.ac.inpt.authservice.dto.*;
 import ma.ac.inpt.authservice.service.auth.AccountVerificationService;
 import ma.ac.inpt.authservice.service.auth.AuthenticationService;
 import ma.ac.inpt.authservice.service.auth.PasswordResetService;
@@ -116,13 +116,26 @@ public class AuthController {
      * @return A response entity with the authentication response.
      */
     @GetMapping("/oauth2/callback")
-    public ResponseEntity<?> handleGoogleCallback(@RequestParam(value = "code") String authorizationCode) {
+    public ResponseEntity<AuthenticationResponse> handleGoogleCallback(@RequestParam(value = "code") String authorizationCode) {
         log.info("Received OAuth2 Google authentication request");
         AuthenticationResponse response = authenticationService.authenticateOAuth2("google", authorizationCode);
         log.info("OAuth2 Google authentication successful");
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * Endpoint for user logout.
+     * Invalidates the refresh token for the user, effectively logging them out.
+     * Returns HTTP 200 OK status with a success message on successful logout.
+     *
+     * @param username The username of the user to logout.
+     * @return A response entity with a success message.
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestParam("username") String username) {
+        log.info("Received logout request for username {}", username);
+        authenticationService.logout(username);
+        log.info("User {} logged out successfully", username);
+        return ResponseEntity.ok("User logged out successfully.");
+    }
 }
-
-
-

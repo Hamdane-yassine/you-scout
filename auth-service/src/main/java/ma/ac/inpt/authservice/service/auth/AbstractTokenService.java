@@ -1,11 +1,11 @@
 package ma.ac.inpt.authservice.service.auth;
 
+import ma.ac.inpt.authservice.dto.EmailVerificationType;
 import ma.ac.inpt.authservice.repository.TokenRepository;
 import ma.ac.inpt.authservice.service.email.EmailService;
-import ma.ac.inpt.authservice.exception.registration.InvalidRequestException;
 import ma.ac.inpt.authservice.model.Token;
 import ma.ac.inpt.authservice.model.User;
-import ma.ac.inpt.authservice.payload.EmailPayload;
+import ma.ac.inpt.authservice.dto.EmailPayload;
 
 import java.util.Optional;
 
@@ -57,7 +57,7 @@ public abstract class AbstractTokenService<T extends Token> {
      * @param message the message to include in the email
      * @return a message indicating the status of the email and token sending process
      */
-    public String sendTokenEmail(User user, String subject, String message) {
+    public String sendTokenEmail(User user, String subject, String message, EmailVerificationType emailVerificationType) {
         Optional<T> tokenOptional = getTokenRepository().findByUser(user);
         T token;
         String responseMessage;
@@ -65,7 +65,7 @@ public abstract class AbstractTokenService<T extends Token> {
             token = tokenOptional.get();
             responseMessage = message + " has already been sent to " + token.getUser().getEmail() + ". Please check your inbox and follow the instructions.";
         } else {
-            token = createOrUpdateToken(user);
+            token = createOrUpdateToken(user,emailVerificationType);
             String recipientAddress = token.getUser().getEmail();
             String confirmationLink = getTokenContent(token);
             String content = "Please click on the following link to proceed:<br>" + confirmationLink + "<br> This link will expire in 24 hours.";
@@ -78,12 +78,11 @@ public abstract class AbstractTokenService<T extends Token> {
     /**
      * Verifies the specified token and performs some operation on the user associated with the token.
      *
-     * @param tokenString the string representation of the token to verify
+     * @param token the string representation of the token to verify
      * @param value       the value to pass to the handleValidToken method
      * @return a message indicating the status of the token verification process
      */
-    public String verifyToken(String tokenString, String value) {
-        var token = getTokenRepository().findByToken(tokenString).orElseThrow(() -> new InvalidRequestException("Invalid Token"));
+    public String verifyToken(T token, String value) {
         if (isTokenExpired(token)) {
             return "Your token has expired. Please request a new one.";
         }
@@ -109,10 +108,10 @@ public abstract class AbstractTokenService<T extends Token> {
      * @param user the user to create the token for
      * @return the newly created token
      */
-    private T createOrUpdateToken(User user) {
+    private T createOrUpdateToken(User user, EmailVerificationType emailVerificationType) {
         Optional<T> tokenOptional = getTokenRepository().findByUser(user);
         T token;
-        token = tokenOptional.map(this::updateToken).orElseGet(() -> createToken(user));
+        token = tokenOptional.map(this::updateToken).orElseGet(() -> createToken(user,emailVerificationType));
         return token;
     }
 
@@ -122,7 +121,7 @@ public abstract class AbstractTokenService<T extends Token> {
      * @param user the user to create the token for
      * @return the newly created token
      */
-    protected abstract T createToken(User user);
+    protected abstract T createToken(User user,EmailVerificationType emailVerificationType);
 
     /**
      * Updates an existing token.

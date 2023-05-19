@@ -2,7 +2,8 @@ package ma.ac.inpt.authservice.service.auth;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ma.ac.inpt.authservice.exception.user.UserNotFoundException;
+import ma.ac.inpt.authservice.dto.EmailVerificationType;
+import ma.ac.inpt.authservice.exception.registration.InvalidRequestException;
 import ma.ac.inpt.authservice.repository.PasswordResetTokenRepository;
 import ma.ac.inpt.authservice.repository.TokenRepository;
 import ma.ac.inpt.authservice.repository.UserRepository;
@@ -11,8 +12,9 @@ import ma.ac.inpt.authservice.service.email.EmailService;
 import ma.ac.inpt.authservice.util.ApplicationBaseUrlRetriever;
 import ma.ac.inpt.authservice.model.PasswordResetToken;
 import ma.ac.inpt.authservice.model.User;
-import ma.ac.inpt.authservice.payload.ForgotPasswordRequest;
-import ma.ac.inpt.authservice.payload.ResetPasswordRequest;
+import ma.ac.inpt.authservice.dto.ForgotPasswordRequest;
+import ma.ac.inpt.authservice.dto.ResetPasswordRequest;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,7 +104,7 @@ public class PasswordResetServiceImpl extends AbstractTokenService<PasswordReset
      * @return the created password reset token
      */
     @Override
-    protected PasswordResetToken createToken(User user) {
+    protected PasswordResetToken createToken(User user, EmailVerificationType emailVerificationType) {
         String token = UUID.randomUUID().toString();
         return passwordResetTokenRepository.save(PasswordResetToken.builder().user(user).token(token).build());
     }
@@ -140,19 +142,20 @@ public class PasswordResetServiceImpl extends AbstractTokenService<PasswordReset
      */
     @Override
     public String sendPasswordResetEmail(ForgotPasswordRequest request) {
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new UserNotFoundException("User not found"));
-        return sendTokenEmail(user, "Password Reset", "A password reset email");
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return sendTokenEmail(user, "Password Reset", "A password reset email",EmailVerificationType.PASSWORD_RESET);
     }
 
     /**
      * Verifies the token, sets the new password for the user, and returns a success message.
      *
      * @param request the reset password request object containing the new password
-     * @param token   the password reset token
+     * @param tokenString   the password reset token
      * @return success message
      */
     @Override
-    public String resetPassword(ResetPasswordRequest request, String token) {
+    public String resetPassword(ResetPasswordRequest request, String tokenString) {
+        var token = getTokenRepository().findByToken(tokenString).orElseThrow(() -> new InvalidRequestException("Invalid Token"));
         return verifyToken(token, request.getNewPassword());
     }
 }

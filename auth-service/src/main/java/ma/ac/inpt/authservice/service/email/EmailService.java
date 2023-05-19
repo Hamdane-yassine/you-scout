@@ -1,6 +1,6 @@
 package ma.ac.inpt.authservice.service.email;
 
-import ma.ac.inpt.authservice.payload.EmailPayload;
+import ma.ac.inpt.authservice.dto.EmailPayload;
 
 /**
  * Interface representing a service for sending emails.

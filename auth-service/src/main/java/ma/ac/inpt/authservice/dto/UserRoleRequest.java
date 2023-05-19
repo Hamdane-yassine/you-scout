@@ -1,4 +1,4 @@
-package ma.ac.inpt.authservice.payload;
+package ma.ac.inpt.authservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
