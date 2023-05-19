@@ -18,19 +18,28 @@
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar" />
         </processorPath>
-        <module name="api-gateway" />
         <module name="social-graph-service" />
+        <module name="comments-service" />
+        <module name="post-service" />
         <module name="auth-service" />
+        <module name="skills-service" />
+        <module name="api-gateway" />
+        <module name="chat-service" />
         <module name="service-discovery" />
+        <module name="user-feed-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="feed-service" target="17" />
+      <module name="social-graph-service" target="17" />
       <module name="test-listener" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="auth-service" options="" />
+      <module name="chat-service" options="" />
+      <module name="post-service" options="" />
     </option>
   </component>
 </project>
