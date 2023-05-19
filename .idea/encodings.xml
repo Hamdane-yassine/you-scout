@@ -3,9 +3,23 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/api-gateway/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/api-gateway/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/auth-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/auth-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/chat-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/chat-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/comments-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/comments-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/post-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/post-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/service-discovery/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/service-discovery/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/skills-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/skills-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/test-listener/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/test-listener/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/user-feed-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/user-feed-service/src/main/resources" charset="UTF-8" />
   </component>
 </project>
