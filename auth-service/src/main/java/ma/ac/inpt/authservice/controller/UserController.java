@@ -2,8 +2,7 @@ package ma.ac.inpt.authservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ma.ac.inpt.authservice.payload.UserDetailsDto;
-import ma.ac.inpt.authservice.payload.UserUpdateDto;
+import ma.ac.inpt.authservice.dto.*;
 import ma.ac.inpt.authservice.service.user.UserServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -40,24 +39,6 @@ public class UserController {
         log.info("Received request to get all users with page {} and size {}", page, size);
         Page<UserDetailsDto> users = userServiceImpl.getAllUsers(page, size);
         return ResponseEntity.ok(users);
-    }
-
-    /**
-     * Endpoint for updating a user by username.
-     * Validates user update request using the UserUpdateDto.
-     * Returns HTTP 200 OK status with an updated UserDetailsDto on successful update.
-     *
-     * @param username The username of the user to be updated.
-     * @param userUpdateDto The updated user data.
-     * @return A response entity with the updated UserDetailsDto.
-     */
-    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    @PatchMapping("/{username}")
-    public ResponseEntity<UserDetailsDto> updateUserByUsername(@PathVariable String username, @Valid @RequestBody UserUpdateDto userUpdateDto) {
-        log.info("Received request to update user with username {}", username);
-        UserDetailsDto updatedUser = userServiceImpl.updateUserByUsername(username, userUpdateDto);
-        log.info("Updated user with username {}", username);
-        return ResponseEntity.ok(updatedUser);
     }
 
     /**
@@ -142,13 +123,21 @@ public class UserController {
      * Returns HTTP 200 OK status with the updated UserDetailsDto on successful update.
      *
      * @param principal The principal object representing the authenticated user.
-     * @param userUpdateDto The updated user data.
+     * @param profileUpdateRequest The updated user data.
      * @return A response entity with the updated UserDetailsDto.
      */
     @PatchMapping("/me/profile")
-    public ResponseEntity<UserDetailsDto> updateCurrentUser(Principal principal, @Valid @RequestBody UserUpdateDto userUpdateDto) {
+    public ResponseEntity<ProfileUpdateResponse> updateCurrentUserProfile(Principal principal, @Valid @RequestBody ProfileUpdateRequest profileUpdateRequest) {
         log.info("Received request to update current user profile");
-        UserDetailsDto updatedUser = userServiceImpl.updateUserByUsername(principal.getName(), userUpdateDto);
+        ProfileUpdateResponse updatedUser = userServiceImpl.updateProfileByUsername(principal.getName(), profileUpdateRequest);
+        log.info("Updated current user profile");
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @PatchMapping("/me")
+    public ResponseEntity<UserUpdateResponse> updateCurrentUserDetails(Principal principal, @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
+        log.info("Received request to update current user profile");
+        UserUpdateResponse updatedUser = userServiceImpl.updateUserByUsername(principal.getName(), userUpdateRequest);
         log.info("Updated current user profile");
         return ResponseEntity.ok(updatedUser);
     }
@@ -162,10 +151,10 @@ public class UserController {
      * @return A response entity with the updated UserDetailsDto.
      */
     @PostMapping("/me/profile/picture")
-    public ResponseEntity<UserDetailsDto> updateProfilePicture(Principal principal, @RequestPart("file") MultipartFile file) {
+    public ResponseEntity<ProfilePictureUpdateResponse> updateProfilePicture(Principal principal, @RequestPart("file") MultipartFile file) {
         log.info("Received request to update profile picture for the current user");
-        UserDetailsDto updatedUser = userServiceImpl.updateProfilePicture(principal.getName(), file);
+        ProfilePictureUpdateResponse profilePictureUpdateResponse = userServiceImpl.updateProfilePicture(principal.getName(), file);
         log.info("Updated profile picture for the current user");
-        return ResponseEntity.ok(updatedUser);
+        return ResponseEntity.ok(profilePictureUpdateResponse);
     }
 }

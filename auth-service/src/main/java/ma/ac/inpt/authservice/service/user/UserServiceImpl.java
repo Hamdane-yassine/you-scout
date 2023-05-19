@@ -2,26 +2,26 @@ package ma.ac.inpt.authservice.service.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.ac.inpt.authservice.dto.*;
 import ma.ac.inpt.authservice.exception.email.EmailAlreadyExistsException;
-import ma.ac.inpt.authservice.exception.user.UserNotFoundException;
+import ma.ac.inpt.authservice.exception.user.PasswordInvalidException;
 import ma.ac.inpt.authservice.exception.user.UsernameAlreadyExistsException;
+import ma.ac.inpt.authservice.mapper.UserMapper;
 import ma.ac.inpt.authservice.messaging.UserEventMessagingService;
-import ma.ac.inpt.authservice.model.Profile;
-import ma.ac.inpt.authservice.model.Role;
-import ma.ac.inpt.authservice.model.User;
-import ma.ac.inpt.authservice.payload.UserDetailsDto;
-import ma.ac.inpt.authservice.payload.UserUpdateDto;
 import ma.ac.inpt.authservice.repository.UserRepository;
+import ma.ac.inpt.authservice.service.auth.AccountVerificationService;
+import ma.ac.inpt.authservice.service.auth.AuthenticationService;
 import ma.ac.inpt.authservice.service.media.MediaService;
+import ma.ac.inpt.authservice.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Service implementation for managing users.
@@ -35,8 +35,10 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final MediaService mediaService;
     private final PasswordEncoder passwordEncoder;
-
     private final UserEventMessagingService userEventMessagingService;
+    private final AccountVerificationService accountVerificationService;
+    private final AuthenticationService authenticationService;
+    private final UserMapper userMapper;
 
     /**
      * Get all users with pagination.
@@ -49,8 +51,7 @@ public class UserServiceImpl implements UserService {
     public Page<UserDetailsDto> getAllUsers(Integer page, Integer size) {
         log.info("Fetching all users with pagination - page: {}, size: {}", page, size);
         Page<User> userPage = userRepository.findAll(PageRequest.of(page, size));
-        return userPage.map(this::convertToUserDetailsDto);
-    }
+        return userPage.map(userMapper::userToUserDetailsDto);    }
 
     /**
      * Delete a user by username.
@@ -60,7 +61,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserByUsername(String username) {
         log.info("Deleting user with username: {}", username);
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User with username " + username + " not found"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
         String ProfilePictureUrl = user.getProfile().getProfilePicture();
         if (ProfilePictureUrl != null) {
             mediaService.deleteFile(ProfilePictureUrl);
@@ -79,26 +80,45 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetailsDto getUserDetailsByUsername(String username) {
         log.info("Fetching user details by username: {}", username);
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User with username " + username + " not found"));
-        return convertToUserDetailsDto(user);
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
+        return userMapper.userToUserDetailsDto(user);
     }
 
     /**
      * Update user information by username.
      *
      * @param username      the username of the user to update
-     * @param userUpdateDto the UserUpdateDto containing the new information
+     * @param userUpdateRequest the UserUpdateDto containing the new information
      * @return the updated UserDetailsDto
      */
     @Override
-    public UserDetailsDto updateUserByUsername(String username, UserUpdateDto userUpdateDto) {
+    public UserUpdateResponse updateUserByUsername(String username, UserUpdateRequest userUpdateRequest) {
         log.info("Updating user with username: {}", username);
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User with username " + username + " not found"));
-        updateProfileFields(user, userUpdateDto);
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
+        updateUserFields(user, userUpdateRequest);
+        userRepository.save(user);
+        if(userUpdateRequest.getUsername()!=null)userEventMessagingService.sendUserUpdated(user);
+        authenticationService.logout(username);
+        log.info("User with username '{}' has been updated.", username);
+        return userMapper.userToUserUpdateResponse(user);
+    }
+
+    /**
+     * Update user profile information by username.
+     *
+     * @param username      the username of the user to update
+     * @param profileUpdateRequest the UserUpdateDto containing the new information
+     * @return the updated UserDetailsDto
+     */
+    @Override
+    public ProfileUpdateResponse updateProfileByUsername(String username, ProfileUpdateRequest profileUpdateRequest) {
+        log.info("Updating user profile with username: {}", username);
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
+        updateProfileFields(user, profileUpdateRequest);
         userRepository.save(user);
         userEventMessagingService.sendUserUpdated(user);
-        log.info("User with username '{}' has been updated.", username);
-        return convertToUserDetailsDto(user);
+        log.info("User profile with username '{}' has been updated.", username);
+        return userMapper.profileToProfileUpdateResponse(user.getProfile());
     }
 
     /**
@@ -109,9 +129,9 @@ public class UserServiceImpl implements UserService {
      * @return the updated UserDetailsDto
      */
     @Override
-    public UserDetailsDto updateProfilePicture(String username, MultipartFile file) {
+    public ProfilePictureUpdateResponse  updateProfilePicture(String username, MultipartFile file) {
         log.info("Updating profile picture for user with username: {}", username);
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User with username " + username + " not found"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
 
         String oldProfilePictureUrl = user.getProfile().getProfilePicture();
         if (oldProfilePictureUrl != null) {
@@ -123,7 +143,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         log.info("Profile picture for user with username '{}' has been updated.", username);
-        return convertToUserDetailsDto(user);
+        return userMapper.userToProfilePictureUpdateResponse(user);
     }
 
     /**
@@ -135,7 +155,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserEnabledStatus(String username, boolean isEnabled) {
         log.info("Updating enabled status for user with username: {}", username);
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User with username " + username + " not found"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
 
         user.setEnabled(isEnabled);
         userRepository.save(user);
@@ -143,48 +163,38 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Convert User entity to UserDetailsDto.
-     *
-     * @param user the User entity
-     * @return the UserDetailsDto
-     */
-    private UserDetailsDto convertToUserDetailsDto(User user) {
-        Profile profile = user.getProfile();
-        return UserDetailsDto.builder()
-                .email(user.getEmail())
-                .username(user.getUsername())
-                .fullName(profile.getFullName())
-                .profilePicture(profile.getProfilePicture())
-                .dateOfBirth(profile.getDateOfBirth())
-                .gender(profile.getGender())
-                .country(profile.getCountry())
-                .cityOrRegion(profile.getCityOrRegion())
-                .bio(profile.getBio())
-                .socialMediaLinks(profile.getSocialMediaLinks())
-                .isEnabled(user.isEnabled())
-                .roles(user.getRoles().stream().map(Role::getRoleName).collect(Collectors.toList()))
-                .build();
-    }
-
-    /**
      * Update user's profile fields.
      *
      * @param user          the User entity
-     * @param userUpdateDto the UserUpdateDto containing the new information
+     * @param profileUpdateRequest the UserUpdateDto containing the new information
      */
-    private void updateProfileFields(User user, UserUpdateDto userUpdateDto) {
-        updateIfNotNull(userUpdateDto.getEmail(), () -> updateEmail(user, userUpdateDto.getEmail()));
-        updateIfNotNull(userUpdateDto.getUsername(), () -> updateUsername(user, userUpdateDto.getUsername()));
-        updateIfNotNull(userUpdateDto.getPassword(), () -> user.setPassword(passwordEncoder.encode(userUpdateDto.getPassword())));
-        updateIfNotNull(userUpdateDto.getFullName(), () -> user.getProfile().setFullName(userUpdateDto.getFullName()));
-        updateIfNotNull(userUpdateDto.getDateOfBirth(), () -> user.getProfile().setDateOfBirth(userUpdateDto.getDateOfBirth()));
-        updateIfNotNull(userUpdateDto.getGender(), () -> user.getProfile().setGender(userUpdateDto.getGender()));
-        updateIfNotNull(userUpdateDto.getCountry(), () -> user.getProfile().setCountry(userUpdateDto.getCountry()));
-        updateIfNotNull(userUpdateDto.getCityOrRegion(), () -> user.getProfile().setCityOrRegion(userUpdateDto.getCityOrRegion()));
-        updateIfNotNull(userUpdateDto.getBio(), () -> user.getProfile().setBio(userUpdateDto.getBio()));
-        updateIfNotNull(userUpdateDto.getSocialMediaLinks(), () -> user.getProfile().setSocialMediaLinks(userUpdateDto.getSocialMediaLinks()));
+    private void updateProfileFields(User user, ProfileUpdateRequest profileUpdateRequest) {
+        updateIfNotNull(profileUpdateRequest.getFullName(), () -> user.getProfile().setFullName(profileUpdateRequest.getFullName()));
+        updateIfNotNull(profileUpdateRequest.getDateOfBirth(), () -> user.getProfile().setDateOfBirth(profileUpdateRequest.getDateOfBirth()));
+        updateIfNotNull(profileUpdateRequest.getGender(), () -> user.getProfile().setGender(profileUpdateRequest.getGender()));
+        updateIfNotNull(profileUpdateRequest.getCountry(), () -> user.getProfile().setCountry(profileUpdateRequest.getCountry()));
+        updateIfNotNull(profileUpdateRequest.getCityOrRegion(), () -> user.getProfile().setCityOrRegion(profileUpdateRequest.getCityOrRegion()));
+        updateIfNotNull(profileUpdateRequest.getBio(), () -> user.getProfile().setBio(profileUpdateRequest.getBio()));
+        updateIfNotNull(profileUpdateRequest.getSocialMediaLinks(), () -> user.getProfile().setSocialMediaLinks(profileUpdateRequest.getSocialMediaLinks()));
     }
 
+    /**
+     * Update user's fields.
+     *
+     * @param user          the User entity
+     * @param userUpdateRequest the UserUpdateDto containing the new information
+     */
+    private void updateUserFields(User user, UserUpdateRequest userUpdateRequest) {
+        checkUserPassword(user, userUpdateRequest.getPassword());
+        updateIfNotNull(userUpdateRequest.getUsername(), () -> updateUsername(user, userUpdateRequest.getUsername()));
+        updateIfNotNull(userUpdateRequest.getPassword(), () -> user.setPassword(passwordEncoder.encode(userUpdateRequest.getNewPassword())));
+        updateIfNotNull(userUpdateRequest.getEmail(), () -> updateEmail(user, userUpdateRequest.getEmail()));
+    }
+
+    private void checkUserPassword(User user, String password) {
+        if(!user.getPassword().equals(passwordEncoder.encode(password)))
+            throw new PasswordInvalidException("Password invalid");
+    }
     /**
      * Run the provided action if the value is not null.
      *
@@ -220,6 +230,8 @@ public class UserServiceImpl implements UserService {
             throw new EmailAlreadyExistsException(String.format("Email '%s' already exists", email));
         } else {
             user.setEmail(email);
+            user.setEnabled(false);
+            accountVerificationService.sendVerificationEmail(user,EmailVerificationType.UPDATING);
         }
     }
 }

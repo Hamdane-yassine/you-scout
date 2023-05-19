@@ -1,6 +1,6 @@
 package ma.ac.inpt.authservice.service.auth;
 
-import ma.ac.inpt.authservice.payload.RegistrationRequest;
+import ma.ac.inpt.authservice.dto.RegistrationRequest;
 import org.springframework.stereotype.Service;
 
 /**

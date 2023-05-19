@@ -1,7 +1,7 @@
 package ma.ac.inpt.authservice.service.auth;
 
-import ma.ac.inpt.authservice.payload.AuthenticationRequest;
-import ma.ac.inpt.authservice.payload.AuthenticationResponse;
+import ma.ac.inpt.authservice.dto.AuthenticationRequest;
+import ma.ac.inpt.authservice.dto.AuthenticationResponse;
 
 /**
  * Service interface for authenticating users.
@@ -24,5 +24,7 @@ public interface AuthenticationService {
      * @return the authentication response indicating whether the authentication was successful and, if so, the JWT token to be used for further requests
      */
     AuthenticationResponse authenticateOAuth2(String provider, String authorizationCode);
+
+    void logout(String username);
 }
 

@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.ac.inpt.authservice.exception.role.RoleAlreadyExistException;
 import ma.ac.inpt.authservice.exception.role.RoleNotFoundException;
-import ma.ac.inpt.authservice.model.Role;
-import ma.ac.inpt.authservice.model.User;
-import ma.ac.inpt.authservice.payload.UserRoleRequest;
+import ma.ac.inpt.authservice.dto.UserRoleRequest;
 import ma.ac.inpt.authservice.repository.RoleRepository;
 import ma.ac.inpt.authservice.repository.UserRepository;
+import ma.ac.inpt.authservice.model.Role;
+import ma.ac.inpt.authservice.model.User;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,8 +104,8 @@ public class RoleServiceImpl implements RoleService {
      * @return an Optional<Role> containing the role if it exists
      */
     @Override
-    public Optional<Role> getRoleById(Long id) {
-        return Optional.ofNullable(roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException("Role Not found")));
+    public Role getRoleById(Long id) {
+        return roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException("Role Not found"));
     }
 
     /**
@@ -139,8 +141,8 @@ public class RoleServiceImpl implements RoleService {
      * @return a list of all roles
      */
     @Override
-    public List<Role> getAllRoles() {
-        return roleRepository.findAll();
+    public Page<Role> getAllRoles(Integer page, Integer size) {
+        return roleRepository.findAll(PageRequest.of(page, size));
     }
 
     /**

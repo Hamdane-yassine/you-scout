@@ -1,6 +1,6 @@
 package ma.ac.inpt.authservice.config;
 
-import ma.ac.inpt.authservice.payload.UserEventPayload;
+import ma.ac.inpt.authservice.dto.UserEventPayload;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
