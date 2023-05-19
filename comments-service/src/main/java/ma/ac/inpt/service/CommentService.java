@@ -3,6 +3,7 @@ package ma.ac.inpt.service;
 import ma.ac.inpt.exceptions.CommentException;
 import ma.ac.inpt.exceptions.PostException;
 import ma.ac.inpt.exceptions.UserException;
+import ma.ac.inpt.messaging.PostEventSender;
 import ma.ac.inpt.model.Comment;
 import ma.ac.inpt.model.Post;
 import ma.ac.inpt.model.User;
@@ -24,14 +25,16 @@ public class CommentService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final ReplyRepository replyRepository;
+    private final PostEventSender postEventSender;
 
     public CommentService(CommentRepository commentRepository, UserRepository userRepository,
                           PostRepository postRepository,
-                          ReplyRepository replyRepository) {
+                          ReplyRepository replyRepository, PostEventSender postEventSender) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.postRepository = postRepository;
         this.replyRepository = replyRepository;
+        this.postEventSender = postEventSender;
     }
 
     public Comment createComment(Comment comment){
@@ -52,6 +55,7 @@ public class CommentService {
         post.setComments(postComments);
 
         Comment newComment = new Comment(ID, user, comment.getBody(), replies, comment.getPostId(), LocalDateTime.now(), likes);
+        postEventSender.sendCommentNum(post);
         commentRepository.save(newComment);
         postRepository.save(post);
         return newComment;
