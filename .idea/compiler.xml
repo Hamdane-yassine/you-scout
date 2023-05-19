@@ -26,9 +26,9 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="auth-service" options="" />
-      <module name="chat-service" options="-parameters" />
+      <module name="chat-service" options="" />
       <module name="comments-service" options="" />
-      <module name="post-service" options="-parameters" />
+      <module name="post-service" options="" />
     </option>
   </component>
 </project>
