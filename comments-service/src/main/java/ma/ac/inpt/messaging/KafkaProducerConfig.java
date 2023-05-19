@@ -27,6 +27,7 @@ public class KafkaProducerConfig {
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         configProps.put(JsonSerializer.TYPE_MAPPINGS, "CommentNumEvent:ma.ac.inpt.payload.CommentNumEvent");
 
+
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
