@@ -8,8 +8,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="comments-service" />
-        <module name="auth-service" />
         <module name="post-service" />
+        <module name="auth-service" />
         <module name="skills-service" />
         <module name="api-gateway" />
         <module name="chat-service" />
@@ -17,11 +17,17 @@
         <module name="user-feed-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="feed-service" target="17" />
+      <module name="social-graph-service" target="17" />
+      <module name="test-listener" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="auth-service" options="" />
       <module name="chat-service" options="" />
-      <module name="post-service" options="-parameters" />
+      <module name="post-service" options="" />
     </option>
   </component>
 </project>
