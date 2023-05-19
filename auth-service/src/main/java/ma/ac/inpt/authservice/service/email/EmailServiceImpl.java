@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.ac.inpt.authservice.exception.email.EmailSendingException;
 import ma.ac.inpt.authservice.exception.email.EmailTemplateLoadingException;
-import ma.ac.inpt.authservice.payload.EmailPayload;
+import ma.ac.inpt.authservice.dto.EmailPayload;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;

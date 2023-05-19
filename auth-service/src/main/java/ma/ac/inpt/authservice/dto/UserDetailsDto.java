@@ -1,4 +1,4 @@
-package ma.ac.inpt.authservice.payload;
+package ma.ac.inpt.authservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

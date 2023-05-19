@@ -2,16 +2,16 @@ package ma.ac.inpt.authservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.ac.inpt.authservice.dto.UserRoleRequest;
 import ma.ac.inpt.authservice.model.Role;
-import ma.ac.inpt.authservice.payload.UserRoleRequest;
 import ma.ac.inpt.authservice.service.role.RoleService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Controller class for managing roles.
@@ -74,13 +74,9 @@ public class RoleController {
      * @return A list of all roles.
      */
     @GetMapping
-    public ResponseEntity<List<Role>> getAllRoles() {
+    public ResponseEntity<Page<Role>> getAllRoles(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "20") Integer size) {
         log.info("Received request to retrieve all roles");
-        List<Role> roles = roleService.getAllRoles();
-        if (roles.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(roles);
+        return ResponseEntity.ok(roleService.getAllRoles(page,size));
     }
 
     /**
@@ -92,8 +88,7 @@ public class RoleController {
     @GetMapping("/{id}")
     public ResponseEntity<Role> getRoleById(@PathVariable Long id) {
         log.info("Received request to retrieve role with ID: {}", id);
-        Optional<Role> role = roleService.getRoleById(id);
-        return role.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(roleService.getRoleById(id));
     }
 
     /**
@@ -106,12 +101,7 @@ public class RoleController {
     @PutMapping("/{id}")
     public ResponseEntity<Role> updateRole(@PathVariable Long id, @RequestBody Role role) {
         log.info("Received request to update role with ID: {}", id);
-        Optional<Role> existingRole = roleService.getRoleById(id);
-        if (existingRole.isPresent()) {
-            Role updatedRole = roleService.updateRole(id, role);
-            return ResponseEntity.ok(updatedRole);
-        }
-        return ResponseEntity.ok(role);
+        return ResponseEntity.ok(roleService.updateRole(id, role));
     }
 
     /**

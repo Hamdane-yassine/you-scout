@@ -1,7 +1,6 @@
 package ma.ac.inpt.authservice.service.user;
 
-import ma.ac.inpt.authservice.payload.UserDetailsDto;
-import ma.ac.inpt.authservice.payload.UserUpdateDto;
+import ma.ac.inpt.authservice.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,10 +37,19 @@ public interface UserService {
      * Updates a user's details by their username.
      *
      * @param username      the username of the user to update
-     * @param userUpdateDto the DTO containing the updated user details
+     * @param userUpdateRequest the DTO containing the updated user details
      * @return a UserDetailsDto object containing the updated user's details
      */
-    UserDetailsDto updateUserByUsername(String username, UserUpdateDto userUpdateDto);
+    UserUpdateResponse updateUserByUsername(String username, UserUpdateRequest userUpdateRequest);
+
+    /**
+     * Updates a user's profile by their username.
+     *
+     * @param username      the username of the user to update
+     * @param profileUpdateRequest the DTO containing the updated user details
+     * @return a UserDetailsDto object containing the updated user's details
+     */
+    ProfileUpdateResponse updateProfileByUsername(String username, ProfileUpdateRequest profileUpdateRequest);
 
     /**
      * Updates a user's profile picture by their username.
@@ -50,7 +58,7 @@ public interface UserService {
      * @param file     the profile picture file to update
      * @return a UserDetailsDto object containing the updated user's details
      */
-    UserDetailsDto updateProfilePicture(String username, MultipartFile file);
+    ProfilePictureUpdateResponse updateProfilePicture(String username, MultipartFile file);
 
     /**
      * Updates a user's enabled status by their username.

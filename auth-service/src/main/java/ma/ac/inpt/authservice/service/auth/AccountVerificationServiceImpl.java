@@ -2,6 +2,8 @@ package ma.ac.inpt.authservice.service.auth;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.ac.inpt.authservice.dto.EmailVerificationType;
+import ma.ac.inpt.authservice.exception.registration.InvalidRequestException;
 import ma.ac.inpt.authservice.messaging.UserEventMessagingService;
 import ma.ac.inpt.authservice.model.User;
 import ma.ac.inpt.authservice.model.VerificationToken;
@@ -32,6 +34,7 @@ public class AccountVerificationServiceImpl extends AbstractTokenService<Verific
     private final UserEventMessagingService userEventSender; // Service for sending user-related events
 
     private final ApplicationBaseUrlRetriever applicationBaseUrlRetriever; // Service for retrieving application base url
+
     /**
      * Returns the EmailService implementation to be used by this account verification service.
      *
@@ -84,7 +87,6 @@ public class AccountVerificationServiceImpl extends AbstractTokenService<Verific
     protected void handleValidToken(User user, String value) {
         user.setEnabled(true); // Enable the user's account
         userRepository.save(user); // Save the updated user to the database
-        userEventSender.sendUserCreated(user); // Send a UserCreated event
         log.info("User {} has been successfully verified", user.getUsername());
     }
 
@@ -95,9 +97,9 @@ public class AccountVerificationServiceImpl extends AbstractTokenService<Verific
      * @return the created verification token
      */
     @Override
-    protected VerificationToken createToken(User user) {
+    protected VerificationToken createToken(User user, EmailVerificationType emailVerificationType) {
         String tokenString = UUID.randomUUID().toString(); // Generate a random token string
-        return verificationTokenRepository.save(VerificationToken.builder().user(user).token(tokenString).build()); // Create and save a new verification token
+        return verificationTokenRepository.save(VerificationToken.builder().user(user).token(tokenString).emailVerificationType(emailVerificationType).build());
     }
 
     /**
@@ -133,21 +135,28 @@ public class AccountVerificationServiceImpl extends AbstractTokenService<Verific
      * @return the result message of the email sending operation
      */
     @Override
-    public String sendVerificationEmail(User user) {
+    public String sendVerificationEmail(User user, EmailVerificationType emailVerificationType) {
         log.info("Sending verification email to user {}", user.getUsername());
-        return sendTokenEmail(user, "Account verification", "A verification email");
+        return sendTokenEmail(user, "Account verification", "A verification email", emailVerificationType);
     }
 
     /**
      * Verifies the account associated with the specified token.
      *
-     * @param token the token to verify the account for
+     * @param tokenString the token to verify the account for
      * @return the result message of the account verification operation
      */
     @Override
-    public String verifyAccount(String token) {
-        log.info("Verifying account with token {}", token);
-        return verifyToken(token, null);
+    public String verifyAccount(String tokenString) {
+        log.info("Verifying account with token {}", tokenString);
+        var token = getTokenRepository().findByToken(tokenString).orElseThrow(() -> new InvalidRequestException("Invalid Token"));
+        String message = verifyToken(token, null);
+        var user = getUserFromToken(token);
+        switch (token.getEmailVerificationType()) {
+            case REGISTRATION -> userEventSender.sendUserCreated(user);
+            case UPDATING -> userEventSender.sendUserUpdated(user);
+        }
+        return message;
     }
 }
 

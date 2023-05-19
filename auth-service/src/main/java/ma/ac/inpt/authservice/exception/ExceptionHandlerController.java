@@ -4,19 +4,19 @@ import lombok.Builder;
 import lombok.Data;
 import ma.ac.inpt.authservice.exception.auth.AccountNotEnabledException;
 import ma.ac.inpt.authservice.exception.auth.InvalidRefreshTokenException;
+import ma.ac.inpt.authservice.exception.file.DeleteFileException;
+import ma.ac.inpt.authservice.exception.file.UploadFileException;
+import ma.ac.inpt.authservice.exception.role.RoleAlreadyExistException;
+import ma.ac.inpt.authservice.exception.role.RoleNotFoundException;
+import ma.ac.inpt.authservice.exception.user.PasswordInvalidException;
+import ma.ac.inpt.authservice.exception.user.UsernameAlreadyExistsException;
 import ma.ac.inpt.authservice.exception.email.EmailAlreadyExistsException;
 import ma.ac.inpt.authservice.exception.email.EmailSendingException;
 import ma.ac.inpt.authservice.exception.email.EmailTemplateLoadingException;
-import ma.ac.inpt.authservice.exception.file.DeleteFileException;
-import ma.ac.inpt.authservice.exception.file.UploadFileException;
 import ma.ac.inpt.authservice.exception.oauth2.EmailNotVerifiedException;
 import ma.ac.inpt.authservice.exception.oauth2.GoogleAuthorizationCodeTokenRequestException;
 import ma.ac.inpt.authservice.exception.registration.InvalidRequestException;
 import ma.ac.inpt.authservice.exception.registration.RegistrationException;
-import ma.ac.inpt.authservice.exception.role.RoleAlreadyExistException;
-import ma.ac.inpt.authservice.exception.role.RoleNotFoundException;
-import ma.ac.inpt.authservice.exception.user.UserNotFoundException;
-import ma.ac.inpt.authservice.exception.user.UsernameAlreadyExistsException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -42,7 +42,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
      * Handles authentication-related exceptions, such as when a user provides invalid credentials or an expired refresh token.
      * Returns an HTTP 401 UNAUTHORIZED response with a custom error message.
      */
-    @ExceptionHandler({InvalidRefreshTokenException.class, AccountNotEnabledException.class, EmailNotVerifiedException.class, AuthenticationException.class})
+    @ExceptionHandler({InvalidRefreshTokenException.class, AccountNotEnabledException.class, EmailNotVerifiedException.class, AuthenticationException.class, PasswordInvalidException.class})
     public ResponseEntity<Object> handleAuthenticationException(ApplicationException ex, WebRequest request) {
         return buildResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage(), request);
     }

@@ -1,6 +1,6 @@
 package ma.ac.inpt.authservice.service.oauth2;
 
-import ma.ac.inpt.authservice.payload.AuthenticationRequest;
+import ma.ac.inpt.authservice.dto.AuthenticationRequest;
 
 /**
  * Interface for an OAuth2 provider that can authenticate users.

@@ -1,7 +1,7 @@
 package ma.ac.inpt.authservice.service.auth;
 
-import ma.ac.inpt.authservice.payload.ForgotPasswordRequest;
-import ma.ac.inpt.authservice.payload.ResetPasswordRequest;
+import ma.ac.inpt.authservice.dto.ForgotPasswordRequest;
+import ma.ac.inpt.authservice.dto.ResetPasswordRequest;
 
 /**
  * Service interface for resetting passwords.

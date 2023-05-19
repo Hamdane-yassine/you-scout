@@ -1,6 +1,6 @@
 package ma.ac.inpt.authservice.util;
 
-import ma.ac.inpt.authservice.payload.AuthenticationRequest;
+import ma.ac.inpt.authservice.dto.AuthenticationRequest;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

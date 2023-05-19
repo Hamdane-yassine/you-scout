@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -72,14 +71,15 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 // Permits access to /api/v1/auth/** for all
                 .authorizeRequests(auth -> auth.antMatchers("/api/v1/auth/**").permitAll())
+                .authorizeRequests(auth -> auth.antMatchers("/api/v1/auth/logout").authenticated())
                 // Requires authentication for all other requests
                 .authorizeRequests(auth -> auth.anyRequest().authenticated())
                 // Configures session management to be stateless
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // Configures JWT as the OAuth2 resource server
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-                // Enables HTTP Basic authentication
-                .httpBasic(Customizer.withDefaults())
+                // Disables HTTP Basic authentication
+                .httpBasic(AbstractHttpConfigurer::disable)
                 // Builds the security filter chain
                 .build();
     }
