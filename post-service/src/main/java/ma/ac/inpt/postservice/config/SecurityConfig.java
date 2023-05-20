@@ -22,7 +22,7 @@ public class SecurityConfig {
                 // Disables CSRF protection
                 .csrf(AbstractHttpConfigurer::disable)
                 // Requires authentication for all other requests
-                .authorizeRequests(auth -> auth.anyRequest().authenticated())
+                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 // Configures JWT as the OAuth2 resource server
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 // Builds the security filter chain
