@@ -66,8 +66,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String grantType = request.getGrantType().toUpperCase();
         if (grantType.equals("PASSWORD")) {
             return authenticatePasswordGrant(request);
-        }
-        return authenticateRefreshTokenGrant(request);
+        } else if(grantType.equals("REFRESH_TOKEN"))
+            return authenticateRefreshTokenGrant(request);
+        throw new IllegalArgumentException("Unsupported grant type : "+grantType);
     }
 
     /**
@@ -183,7 +184,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         log.info("Authentication response generated for user: {}", subject);
         return AuthenticationResponse.builder().accessToken(jwtAccessToken).refreshToken(jwtRefreshToken.orElse(null)).build();
     }
-
 
 }
 
