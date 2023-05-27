@@ -77,12 +77,12 @@ public class UserServiceImpl implements UserService {
      * @param username the username of the user
      * @return the UserDetailsDto containing user information
      */
-    @Override
-    public UserDetailsDto getUserDetailsByUsername(String username) {
-        log.info("Fetching user details by username: {}", username);
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
-        return userMapper.userToUserDetailsDto(user);
-    }
+        @Override
+        public UserDetailsDto getUserDetailsByUsername(String username) {
+            log.info("Fetching user details by username: {}", username);
+            User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
+            return userMapper.userToUserDetailsDto(user);
+        }
 
     /**
      * Update user information by username.
@@ -187,7 +187,7 @@ public class UserServiceImpl implements UserService {
     private void updateUserFields(User user, UserUpdateRequest userUpdateRequest) {
         checkUserPassword(user, userUpdateRequest.getPassword());
         updateIfNotNull(userUpdateRequest.getUsername(), () -> updateUsername(user, userUpdateRequest.getUsername()));
-        updateIfNotNull(userUpdateRequest.getPassword(), () -> user.setPassword(passwordEncoder.encode(userUpdateRequest.getNewPassword())));
+        updateIfNotNull(userUpdateRequest.getNewPassword(), () -> user.setPassword(passwordEncoder.encode(userUpdateRequest.getNewPassword())));
         updateIfNotNull(userUpdateRequest.getEmail(), () -> updateEmail(user, userUpdateRequest.getEmail()));
     }
 
