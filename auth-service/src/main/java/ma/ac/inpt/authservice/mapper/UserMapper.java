@@ -7,8 +7,8 @@ import ma.ac.inpt.authservice.model.User;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
@@ -18,6 +18,20 @@ public interface UserMapper {
      * The INSTANCE of the UserMapper which will be used to access the mapper methods.
      */
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+
+
+    /**
+     * Method used to map from Set of Role to List of role names (String).
+     *
+     * @param roles Set of Role entities
+     * @return List of role names
+     */
+    @Named("rolesToRoleNames")
+    static List<String> rolesToRoleNames(Collection<Role> roles) {
+        return roles.stream()
+                .map(Role::getRoleName)
+                .collect(Collectors.toList());
+    }
 
     /**
      * Map from User entity to UserDetailsDto.
@@ -34,20 +48,8 @@ public interface UserMapper {
     @Mapping(source = "profile.bio", target = "bio")
     @Mapping(source = "profile.socialMediaLinks", target = "socialMediaLinks")
     @Mapping(source = "roles", target = "roles", qualifiedByName = "rolesToRoleNames")
+    @Mapping(target = "isEnabled", expression = "java(user.isEnabled())") // Map isEnabled property
     UserDetailsDto userToUserDetailsDto(User user);
-
-    /**
-     * Method used to map from Set of Role to List of role names (String).
-     *
-     * @param roles Set of Role entities
-     * @return List of role names
-     */
-    @Named("rolesToRoleNames")
-    static List<String> rolesToRoleNames(Set<Role> roles) {
-        return roles.stream()
-                .map(Role::getRoleName)
-                .collect(Collectors.toList());
-    }
 
     /**
      * Map from User entity to UserUpdateResponse.

@@ -17,9 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-import java.util.Set;
 
 /**
  * Service implementation for handling registration functionality.
@@ -33,7 +30,6 @@ public class RegistrationServiceImpl implements RegistrationService {
     // Dependencies
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final Validator validator;
     private final RoleService roleService;
     private final AccountVerificationService accountVerificationService;
 
@@ -49,15 +45,7 @@ public class RegistrationServiceImpl implements RegistrationService {
      */
     @Override
     public String register(RegistrationRequest request) {
-        // Validate the registration request
-        Set<ConstraintViolation<RegistrationRequest>> violations = validator.validate(request);
-        if (!violations.isEmpty()) {
-            log.error("Invalid registration request: {}", violations);
-            throw new InvalidRequestException("Invalid registration request");
-        }
-
         String message;
-
         try {
             validateRegistrationRequest(request);
             // Save the user and send a verification email
@@ -69,7 +57,6 @@ public class RegistrationServiceImpl implements RegistrationService {
             log.error("Registration failed with error: {}", ex.getMessage());
             throw new RegistrationException("Registration failed with error: " + ex.getMessage());
         }
-
         log.info("Verification email has been sent to user: {}", request.getUsername());
         return message;
     }

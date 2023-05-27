@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
         updateUserFields(user, userUpdateRequest);
         userRepository.save(user);
-        if(userUpdateRequest.getUsername()!=null)userEventMessagingService.sendUserUpdated(user);
+        if(userUpdateRequest.getUsername()!=null && userUpdateRequest.getEmail() == null)userEventMessagingService.sendUserUpdated(user);
         authenticationService.logout(username);
         log.info("User with username '{}' has been updated.", username);
         return userMapper.userToUserUpdateResponse(user);

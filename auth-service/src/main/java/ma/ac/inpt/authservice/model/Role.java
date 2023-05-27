@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * The Role entity represents the different roles available in the application.
@@ -30,6 +31,7 @@ public class Role {
      * duplicate roles in the database.
      */
     @Column(unique = true)
+    @NotNull
     private String roleName;
 }
 
