@@ -1,5 +1,6 @@
 package ma.ac.inpt.authservice.service.role;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.ac.inpt.authservice.exception.role.RoleAlreadyExistException;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
+@Data
 @Slf4j
 @Transactional
 public class RoleServiceImpl implements RoleService {
