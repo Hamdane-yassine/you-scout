@@ -16,10 +16,9 @@ class AgeValidatorTest {
     @DisplayName("Should return true when birthdate is null")
     void testNullBirthdate() {
         // given
-        LocalDate birthdate = null;
 
         // when
-        boolean isValid = ageValidator.isValid(birthdate, null);
+        boolean isValid = ageValidator.isValid(null, null);
 
         // then
         assertTrue(isValid);
