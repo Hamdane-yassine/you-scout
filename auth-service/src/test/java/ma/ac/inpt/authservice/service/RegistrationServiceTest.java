@@ -6,7 +6,7 @@ import ma.ac.inpt.authservice.exception.registration.RegistrationException;
 import ma.ac.inpt.authservice.exception.user.UsernameAlreadyExistsException;
 import ma.ac.inpt.authservice.model.User;
 import ma.ac.inpt.authservice.repository.UserRepository;
-import ma.ac.inpt.authservice.service.auth.AccountVerificationService;
+import ma.ac.inpt.authservice.service.auth.EmailVerificationService;
 import ma.ac.inpt.authservice.service.auth.RegistrationServiceImpl;
 import ma.ac.inpt.authservice.service.role.RoleService;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +32,7 @@ public class RegistrationServiceTest {
     @Mock
     private RoleService roleService;
     @Mock
-    private AccountVerificationService accountVerificationService;
+    private EmailVerificationService emailVerificationService;
 
     @InjectMocks
     private RegistrationServiceImpl registrationService;
@@ -50,7 +50,7 @@ public class RegistrationServiceTest {
         when(userRepository.existsByUsername(anyString())).thenReturn(false);
         when(userRepository.existsByEmail(anyString())).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
-        when(accountVerificationService.sendVerificationEmail(any(), any())).thenReturn("Email sent");
+        when(emailVerificationService.sendVerificationEmail(any(), any())).thenReturn("Email sent");
         when(userRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When

@@ -3,7 +3,7 @@ package ma.ac.inpt.authservice.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.ac.inpt.authservice.dto.*;
-import ma.ac.inpt.authservice.service.auth.AccountVerificationService;
+import ma.ac.inpt.authservice.service.auth.EmailVerificationService;
 import ma.ac.inpt.authservice.service.auth.AuthenticationService;
 import ma.ac.inpt.authservice.service.auth.PasswordResetService;
 import ma.ac.inpt.authservice.service.auth.RegistrationService;
@@ -25,7 +25,7 @@ public class AuthController {
     // Services for registration, authentication, account verification, and password reset
     private final RegistrationService registrationService;
     private final AuthenticationService authenticationService;
-    private final AccountVerificationService accountVerificationService;
+    private final EmailVerificationService emailVerificationService;
     private final PasswordResetService passwordResetService;
 
     /**
@@ -70,7 +70,7 @@ public class AuthController {
      */
     @GetMapping("/confirm")
     public ResponseEntity<String> confirmRegistration(@RequestParam("token") String token) {
-        String message = accountVerificationService.verifyAccount(token);
+        String message = emailVerificationService.verifyAccount(token);
         log.info("Account verification successful for token {}", token);
         return ResponseEntity.ok(message);
     }

@@ -38,18 +38,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtDecoder jwtDecoder; // Component for decoding JWT tokens
     private final AuthenticationManager authenticationManager; // Spring's authentication manager
     private final UserRepository userRepository; // Custom user details service for loading user data
-    private final AccountVerificationService accountVerificationService; // Service for handling account verification
+    private final EmailVerificationService emailVerificationService; // Service for handling account verification
     private final Map<String, OAuth2Provider> oAuth2Providers; // Map of supported OAuth2 providers
     private final RefreshTokenRepository refreshTokenRepository;
     private final static Integer REFRESH_TOKEN_EXPIRE_DATE_IN_DAYS = 7;
     private final static Integer ACCESS_TOKEN_EXPIRE_DATE_IN_MINUTES = 15;
 
-    public AuthenticationServiceImpl(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder, AuthenticationManager authenticationManager, UserRepository userRepository, AccountVerificationService accountVerificationService, List<OAuth2Provider> oAuth2Providers,RefreshTokenRepository refreshTokenRepository) {
+    public AuthenticationServiceImpl(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder, AuthenticationManager authenticationManager, UserRepository userRepository, EmailVerificationService emailVerificationService, List<OAuth2Provider> oAuth2Providers, RefreshTokenRepository refreshTokenRepository) {
         this.jwtEncoder = jwtEncoder;
         this.jwtDecoder = jwtDecoder;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
-        this.accountVerificationService = accountVerificationService;
+        this.emailVerificationService = emailVerificationService;
         this.oAuth2Providers = oAuth2Providers.stream().collect(Collectors.toMap(OAuth2Provider::getName, Function.identity()));
         this.refreshTokenRepository = refreshTokenRepository;
     }
@@ -112,7 +112,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return buildAuthenticationResponse(request.isWithRefreshToken(), subject, scope);
         } catch (DisabledException e) {
             User user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            String message = accountVerificationService.sendVerificationEmail(user, EmailVerificationType.RESEND);
+            String message = emailVerificationService.sendVerificationEmail(user, EmailVerificationType.RESEND);
             throw new AccountNotEnabledException(message);
         } catch (AuthenticationException e) {
             log.error("Authentication failed for user: {}", request.getUsername(), e);

@@ -6,7 +6,7 @@ import ma.ac.inpt.authservice.model.User;
 /**
  * Service interface for handling account verification functionality.
  */
-public interface AccountVerificationService {
+public interface EmailVerificationService {
 
     /**
      * Sends an account verification email to the specified user.

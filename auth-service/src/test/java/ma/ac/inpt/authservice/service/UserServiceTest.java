@@ -22,7 +22,7 @@ import ma.ac.inpt.authservice.mapper.UserMapper;
 import ma.ac.inpt.authservice.messaging.UserEventMessagingService;
 import ma.ac.inpt.authservice.model.User;
 import ma.ac.inpt.authservice.repository.UserRepository;
-import ma.ac.inpt.authservice.service.auth.AccountVerificationService;
+import ma.ac.inpt.authservice.service.auth.EmailVerificationService;
 import ma.ac.inpt.authservice.service.auth.AuthenticationService;
 import ma.ac.inpt.authservice.service.media.MediaService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,7 +48,7 @@ public class UserServiceTest {
     @Mock
     private UserEventMessagingService userEventMessagingService;
     @Mock
-    private AccountVerificationService accountVerificationService;
+    private EmailVerificationService emailVerificationService;
     @Mock
     private AuthenticationService authenticationService;
     @Mock
@@ -165,7 +165,7 @@ public class UserServiceTest {
         verify(userRepository, times(1)).save(user);
         verify(userEventMessagingService, never()).sendUserUpdated(user);
         verify(authenticationService, times(1)).logout(username);
-        verify(accountVerificationService,times(1)).sendVerificationEmail(user,EmailVerificationType.UPDATING);
+        verify(emailVerificationService,times(1)).sendVerificationEmail(user,EmailVerificationType.UPDATING);
         assertEquals(expectedResponse, response);
     }
 
@@ -189,7 +189,7 @@ public class UserServiceTest {
         verify(userRepository, times(1)).save(user);
         verify(userEventMessagingService,times(1)).sendUserUpdated(user);
         verify(authenticationService, times(1)).logout(username);
-        verify(accountVerificationService,never()).sendVerificationEmail(any(),any());
+        verify(emailVerificationService,never()).sendVerificationEmail(any(),any());
         assertEquals(expectedResponse, response);
     }
 

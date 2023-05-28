@@ -31,7 +31,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
-    private final AccountVerificationService accountVerificationService;
+    private final EmailVerificationService emailVerificationService;
 
     /**
      * Registers a new user with the given registration request.
@@ -50,7 +50,7 @@ public class RegistrationServiceImpl implements RegistrationService {
             validateRegistrationRequest(request);
             // Save the user and send a verification email
             var user = saveUser(request, false);
-            message = accountVerificationService.sendVerificationEmail(user, EmailVerificationType.REGISTRATION);
+            message = emailVerificationService.sendVerificationEmail(user, EmailVerificationType.REGISTRATION);
         } catch (UsernameAlreadyExistsException | EmailAlreadyExistsException ex) {
             throw ex;
         } catch (Exception ex) {

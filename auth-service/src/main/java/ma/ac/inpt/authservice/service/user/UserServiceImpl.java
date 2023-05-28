@@ -9,7 +9,7 @@ import ma.ac.inpt.authservice.exception.user.UsernameAlreadyExistsException;
 import ma.ac.inpt.authservice.mapper.UserMapper;
 import ma.ac.inpt.authservice.messaging.UserEventMessagingService;
 import ma.ac.inpt.authservice.repository.UserRepository;
-import ma.ac.inpt.authservice.service.auth.AccountVerificationService;
+import ma.ac.inpt.authservice.service.auth.EmailVerificationService;
 import ma.ac.inpt.authservice.service.auth.AuthenticationService;
 import ma.ac.inpt.authservice.service.media.MediaService;
 import ma.ac.inpt.authservice.model.User;
@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     private final MediaService mediaService;
     private final PasswordEncoder passwordEncoder;
     private final UserEventMessagingService userEventMessagingService;
-    private final AccountVerificationService accountVerificationService;
+    private final EmailVerificationService emailVerificationService;
     private final AuthenticationService authenticationService;
     private final UserMapper userMapper;
 
@@ -231,7 +231,7 @@ public class UserServiceImpl implements UserService {
         } else {
             user.setEmail(email);
             user.setEnabled(false);
-            accountVerificationService.sendVerificationEmail(user,EmailVerificationType.UPDATING);
+            emailVerificationService.sendVerificationEmail(user,EmailVerificationType.UPDATING);
         }
     }
 }

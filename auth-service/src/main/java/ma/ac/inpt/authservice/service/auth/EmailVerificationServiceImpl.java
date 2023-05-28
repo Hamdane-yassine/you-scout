@@ -26,7 +26,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-public class AccountVerificationServiceImpl extends AbstractTokenService<VerificationToken> implements AccountVerificationService {
+public class EmailVerificationServiceImpl extends AbstractTokenService<VerificationToken> implements EmailVerificationService {
 
     private final EmailService emailService; // Email service to send verification emails
     private final VerificationTokenRepository verificationTokenRepository; // Repository for verification tokens

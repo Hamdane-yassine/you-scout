@@ -6,7 +6,7 @@ import ma.ac.inpt.authservice.model.Role;
 import ma.ac.inpt.authservice.model.User;
 import ma.ac.inpt.authservice.repository.RefreshTokenRepository;
 import ma.ac.inpt.authservice.repository.UserRepository;
-import ma.ac.inpt.authservice.service.auth.AccountVerificationService;
+import ma.ac.inpt.authservice.service.auth.EmailVerificationService;
 import ma.ac.inpt.authservice.service.auth.AuthenticationServiceImpl;
 import ma.ac.inpt.authservice.service.oauth2.OAuth2Provider;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +46,7 @@ public class AuthenticationServiceTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private AccountVerificationService accountVerificationService;
+    private EmailVerificationService emailVerificationService;
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
     private AuthenticationServiceImpl authenticationService;
@@ -58,7 +58,7 @@ public class AuthenticationServiceTest {
     public void setUp() {
         oAuth2Providers = Collections.singletonList(oAuth2Provider);
 
-        authenticationService = new AuthenticationServiceImpl(jwtEncoder, jwtDecoder, authenticationManager, userRepository, accountVerificationService, oAuth2Providers, refreshTokenRepository);
+        authenticationService = new AuthenticationServiceImpl(jwtEncoder, jwtDecoder, authenticationManager, userRepository, emailVerificationService, oAuth2Providers, refreshTokenRepository);
 
         // Create a Jwt mock object
         Map<String, Object> headers = new HashMap<>();
@@ -154,7 +154,7 @@ public class AuthenticationServiceTest {
         when(oAuth2Provider.getName()).thenReturn(provider);
 
         // Create the service here, after the mocks have been configured
-        authenticationService = new AuthenticationServiceImpl(jwtEncoder, jwtDecoder, authenticationManager, userRepository, accountVerificationService, oAuth2Providers, refreshTokenRepository);
+        authenticationService = new AuthenticationServiceImpl(jwtEncoder, jwtDecoder, authenticationManager, userRepository, emailVerificationService, oAuth2Providers, refreshTokenRepository);
 
         when(oAuth2Provider.authenticate(authorizationCode)).thenReturn(AuthenticationRequest.builder().username("testUser").build());
         when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
