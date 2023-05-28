@@ -22,7 +22,6 @@
         <module name="comments-service" />
         <module name="auth-service" />
         <module name="skills-service" />
-        <module name="social-graph-service" />
         <module name="api-gateway" />
         <module name="social-graph-service" />
         <module name="chat-service" />
