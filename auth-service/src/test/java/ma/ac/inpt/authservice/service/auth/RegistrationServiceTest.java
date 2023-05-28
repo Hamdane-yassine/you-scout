@@ -1,4 +1,4 @@
-package ma.ac.inpt.authservice.service;
+package ma.ac.inpt.authservice.service.auth;
 
 import ma.ac.inpt.authservice.dto.RegistrationRequest;
 import ma.ac.inpt.authservice.exception.email.EmailAlreadyExistsException;
@@ -6,8 +6,6 @@ import ma.ac.inpt.authservice.exception.registration.RegistrationException;
 import ma.ac.inpt.authservice.exception.user.UsernameAlreadyExistsException;
 import ma.ac.inpt.authservice.model.User;
 import ma.ac.inpt.authservice.repository.UserRepository;
-import ma.ac.inpt.authservice.service.auth.EmailVerificationService;
-import ma.ac.inpt.authservice.service.auth.RegistrationServiceImpl;
 import ma.ac.inpt.authservice.service.role.RoleService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

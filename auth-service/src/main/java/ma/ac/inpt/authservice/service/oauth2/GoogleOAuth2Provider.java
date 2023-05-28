@@ -57,19 +57,11 @@ public class GoogleOAuth2Provider implements OAuth2Provider {
      */
     @Override
     public AuthenticationRequest authenticate(String authorizationCode) {
-        JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
         GoogleTokenResponse tokenResponse;
         GoogleIdToken idToken;
 
         try {
-            tokenResponse = new GoogleAuthorizationCodeTokenRequest(
-                    new NetHttpTransport(),
-                    jsonFactory,
-                    clientId,
-                    clientSecret,
-                    authorizationCode,
-                    redirectUri)
-                    .execute();
+            tokenResponse = getGoogleAuthorizationCodeTokenRequest(authorizationCode).execute();
             idToken = tokenResponse.parseIdToken();
         } catch (IOException e) {
             log.error("Unable to request or parse Google authorization code", e);
@@ -103,5 +95,17 @@ public class GoogleOAuth2Provider implements OAuth2Provider {
                 .grantType("PASSWORD")
                 .password(password)
                 .build();
+    }
+
+    // Make this method protected for testability
+    public GoogleAuthorizationCodeTokenRequest getGoogleAuthorizationCodeTokenRequest(String authorizationCode) {
+        JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
+        return new GoogleAuthorizationCodeTokenRequest(
+                new NetHttpTransport(),
+                jsonFactory,
+                clientId,
+                clientSecret,
+                authorizationCode,
+                redirectUri);
     }
 }

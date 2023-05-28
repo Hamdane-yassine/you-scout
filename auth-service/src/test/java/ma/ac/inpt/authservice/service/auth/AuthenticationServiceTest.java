@@ -1,4 +1,4 @@
-package ma.ac.inpt.authservice.service;
+package ma.ac.inpt.authservice.service.auth;
 
 import ma.ac.inpt.authservice.dto.AuthenticationRequest;
 import ma.ac.inpt.authservice.dto.AuthenticationResponse;
@@ -6,8 +6,6 @@ import ma.ac.inpt.authservice.model.Role;
 import ma.ac.inpt.authservice.model.User;
 import ma.ac.inpt.authservice.repository.RefreshTokenRepository;
 import ma.ac.inpt.authservice.repository.UserRepository;
-import ma.ac.inpt.authservice.service.auth.EmailVerificationService;
-import ma.ac.inpt.authservice.service.auth.AuthenticationServiceImpl;
 import ma.ac.inpt.authservice.service.oauth2.OAuth2Provider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

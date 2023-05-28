@@ -1,8 +1,7 @@
-package ma.ac.inpt.authservice.service;
+package ma.ac.inpt.authservice.service.media;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
-import ma.ac.inpt.authservice.service.media.S3MediaServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

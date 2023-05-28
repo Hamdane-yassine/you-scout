@@ -1,4 +1,4 @@
-package ma.ac.inpt.authservice.service;
+package ma.ac.inpt.authservice.service.auth;
 
 import ma.ac.inpt.authservice.dto.ForgotPasswordRequest;
 import ma.ac.inpt.authservice.dto.ResetPasswordRequest;
@@ -7,7 +7,6 @@ import ma.ac.inpt.authservice.model.User;
 import ma.ac.inpt.authservice.repository.PasswordResetTokenRepository;
 import ma.ac.inpt.authservice.repository.UserRepository;
 import ma.ac.inpt.authservice.repository.VerificationTokenRepository;
-import ma.ac.inpt.authservice.service.auth.PasswordResetServiceImpl;
 import ma.ac.inpt.authservice.service.email.EmailService;
 import ma.ac.inpt.authservice.util.ApplicationBaseUrlRetriever;
 import org.junit.jupiter.api.BeforeEach;

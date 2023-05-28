@@ -1,7 +1,6 @@
-package ma.ac.inpt.authservice.service;
+package ma.ac.inpt.authservice.service.email;
 
 import ma.ac.inpt.authservice.dto.EmailPayload;
-import ma.ac.inpt.authservice.service.email.EmailServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

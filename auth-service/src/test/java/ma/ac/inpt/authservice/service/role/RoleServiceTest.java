@@ -1,4 +1,4 @@
-package ma.ac.inpt.authservice.service;
+package ma.ac.inpt.authservice.service.role;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -9,7 +9,6 @@ import ma.ac.inpt.authservice.model.Role;
 import ma.ac.inpt.authservice.model.User;
 import ma.ac.inpt.authservice.repository.RoleRepository;
 import ma.ac.inpt.authservice.repository.UserRepository;
-import ma.ac.inpt.authservice.service.role.RoleServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

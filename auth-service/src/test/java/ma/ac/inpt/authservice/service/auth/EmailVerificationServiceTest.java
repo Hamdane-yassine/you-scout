@@ -1,4 +1,4 @@
-package ma.ac.inpt.authservice.service;
+package ma.ac.inpt.authservice.service.auth;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -10,7 +10,6 @@ import ma.ac.inpt.authservice.model.User;
 import ma.ac.inpt.authservice.model.VerificationToken;
 import ma.ac.inpt.authservice.repository.UserRepository;
 import ma.ac.inpt.authservice.repository.VerificationTokenRepository;
-import ma.ac.inpt.authservice.service.auth.EmailVerificationServiceImpl;
 import ma.ac.inpt.authservice.service.email.EmailService;
 import ma.ac.inpt.authservice.util.ApplicationBaseUrlRetriever;
 import org.junit.jupiter.api.BeforeEach;

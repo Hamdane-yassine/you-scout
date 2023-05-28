@@ -1,10 +1,9 @@
-package ma.ac.inpt.authservice.service;
+package ma.ac.inpt.authservice.service.user;
 
 import ma.ac.inpt.authservice.exception.email.EmailAlreadyExistsException;
 import ma.ac.inpt.authservice.exception.user.PasswordInvalidException;
 import ma.ac.inpt.authservice.exception.user.UsernameAlreadyExistsException;
 import ma.ac.inpt.authservice.model.Profile;
-import ma.ac.inpt.authservice.service.user.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
