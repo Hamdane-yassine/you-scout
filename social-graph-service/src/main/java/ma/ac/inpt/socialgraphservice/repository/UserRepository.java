@@ -5,7 +5,6 @@ import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Set;
 
 public interface UserRepository extends Neo4jRepository<User, Long> {
@@ -47,8 +46,5 @@ public interface UserRepository extends Neo4jRepository<User, Long> {
 
     @Query("MATCH (user:User {username: $username})-[:BLOCKS]->(:User) RETURN count(*)")
     int countBlockedUsers(@Param("username") String username);
-
-    @Query("MATCH (user:User) RETURN user")
-    List<User> getAllUsers();
 
 }
