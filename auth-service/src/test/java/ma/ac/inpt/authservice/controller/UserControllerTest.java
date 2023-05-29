@@ -166,7 +166,7 @@ class UserControllerTest {
     @Test
     void testUpdateProfilePicture() throws Exception {
         String username = "username";
-        MockMultipartFile file = new MockMultipartFile("file", "test.jpg", MediaType.IMAGE_JPEG_VALUE, "test image content".getBytes());
+        MockMultipartFile file = new MockMultipartFile("file", "teddst.jpg", MediaType.IMAGE_JPEG_VALUE, "test image content".getBytes());
         ProfilePictureUpdateResponse response = ProfilePictureUpdateResponse.builder()
                 .username(username)
                 .profilePictureUrl("https://test.com/newtestpicture.jpg")

@@ -68,11 +68,11 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         // Create test objects
-        user = User.builder().username(username).password("password").email("test@gmail.com").profile(Profile.builder().profilePicture("test.jpg").build()).build();
+        user = User.builder().username(username).password("password").email("test@gmail.com").profile(Profile.builder().profilePicture("teddst.jpg").build()).build();
         userDetailsDto = UserDetailsDto.builder().build();
         profileUpdateRequest = new ProfileUpdateRequest();
         userUpdateRequest = new UserUpdateRequest();
-        file = new MockMultipartFile("file", "test.jpg", "image/jpeg", "test image".getBytes());
+        file = new MockMultipartFile("file", "teddst.jpg", "image/jpeg", "test image".getBytes());
     }
 
     // Testing 'getAllUsers' method
