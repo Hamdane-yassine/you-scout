@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class RegistrationServiceTest {
+class RegistrationServiceTest {
 
     @Mock
     private UserRepository userRepository;
@@ -37,7 +37,7 @@ public class RegistrationServiceTest {
 
     @DisplayName("Test normal registration")
     @Test
-    public void shouldRegisterUser() {
+    void shouldRegisterUser() {
         // Given
         RegistrationRequest request = new RegistrationRequest();
         request.setUsername("testUser");
@@ -61,7 +61,7 @@ public class RegistrationServiceTest {
 
     @DisplayName("Test registration with existing username")
     @Test
-    public void shouldThrowUsernameAlreadyExists() {
+    void shouldThrowUsernameAlreadyExists() {
         // Given
         RegistrationRequest request = new RegistrationRequest();
         request.setUsername("existingUser");
@@ -75,7 +75,7 @@ public class RegistrationServiceTest {
 
     @DisplayName("Test registration with existing email")
     @Test
-    public void shouldThrowEmailAlreadyExists() {
+    void shouldThrowEmailAlreadyExists() {
         // Given
         RegistrationRequest request = new RegistrationRequest();
         request.setUsername("testUser");
@@ -90,7 +90,7 @@ public class RegistrationServiceTest {
 
     @DisplayName("Test registration with general error")
     @Test
-    public void shouldThrowRegistrationException() {
+    void shouldThrowRegistrationException() {
         // Given
         RegistrationRequest request = new RegistrationRequest();
         request.setUsername("testUser");
@@ -106,7 +106,7 @@ public class RegistrationServiceTest {
 
     @DisplayName("Test OAuth2 registration with new email")
     @Test
-    public void shouldRegisterOauth2User() {
+    void shouldRegisterOauth2User() {
         // Given
         RegistrationRequest request = new RegistrationRequest();
         request.setUsername("testUser");
@@ -128,7 +128,7 @@ public class RegistrationServiceTest {
 
     @DisplayName("Test OAuth2 registration with existing email")
     @Test
-    public void shouldNotRegisterOauth2User() {
+    void shouldNotRegisterOauth2User() {
         // Given
         RegistrationRequest request = new RegistrationRequest();
         request.setUsername("testUser");

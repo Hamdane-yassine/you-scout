@@ -17,7 +17,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
-public class RefreshTokenRepositoryTest {
+class RefreshTokenRepositoryTest {
 
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
@@ -30,7 +30,7 @@ public class RefreshTokenRepositoryTest {
     private RefreshToken testToken;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         // Create a user for testing
         testUser = User.builder().username("testUser").email("test@example.com").isEnabled(true).build();
 
@@ -50,13 +50,13 @@ public class RefreshTokenRepositoryTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         // Clean up the database after each test
         refreshTokenRepository.deleteAll();
     }
 
     @Test
-    public void deleteByUserTest() {
+    void deleteByUserTest() {
         // Delete the refresh token by the associated user
         refreshTokenRepository.deleteByUser(testUser);
 
@@ -68,7 +68,7 @@ public class RefreshTokenRepositoryTest {
     }
 
     @Test
-    public void existsByTokenUuidTest() {
+    void existsByTokenUuidTest() {
         // Check if the refresh token exists by its token UUID
         boolean exists = refreshTokenRepository.existsByTokenUuid(testToken.getTokenUuid());
 

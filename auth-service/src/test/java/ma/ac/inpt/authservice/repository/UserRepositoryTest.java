@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
-public class UserRepositoryTest {
+class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -20,7 +20,7 @@ public class UserRepositoryTest {
     private User testUser;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         // Create a user for testing
         testUser = User.builder().username("testUser").email("test@example.com").isEnabled(true).build();
 
@@ -29,13 +29,13 @@ public class UserRepositoryTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         // Clean up the database after each test
         userRepository.deleteAll();
     }
 
     @Test
-    public void findByUsernameOrEmailWithUsernameTest() {
+    void findByUsernameOrEmailWithUsernameTest() {
         // Test findByUsernameOrEmail method with username
         Optional<User> foundUser = userRepository.findByUsernameOrEmail(testUser.getUsername());
         assertTrue(foundUser.isPresent(), "Expected a valid user when searching by username");
@@ -43,7 +43,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void findByUsernameOrEmailWithEmailTest() {
+    void findByUsernameOrEmailWithEmailTest() {
         // Test findByUsernameOrEmail method with email
         Optional<User> foundUser = userRepository.findByUsernameOrEmail(testUser.getEmail());
         assertTrue(foundUser.isPresent(), "Expected a valid user when searching by email");
@@ -51,27 +51,27 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void findByUsernameTest() {
+    void findByUsernameTest() {
         Optional<User> foundUser = userRepository.findByUsername(testUser.getUsername());
         assertTrue(foundUser.isPresent(), "Expected a valid user");
         assertEquals(testUser, foundUser.get(), "Expected User should match the returned user");
     }
 
     @Test
-    public void findByEmailTest() {
+    void findByEmailTest() {
         Optional<User> foundUser = userRepository.findByEmail(testUser.getEmail());
         assertTrue(foundUser.isPresent(), "Expected a valid user");
         assertEquals(testUser, foundUser.get(), "Expected User should match the returned user");
     }
 
     @Test
-    public void existsByUsernameTest() {
+    void existsByUsernameTest() {
         Boolean exists = userRepository.existsByUsername(testUser.getUsername());
         assertTrue(exists, "Expected user to exist");
     }
 
     @Test
-    public void existsByEmailTest() {
+    void existsByEmailTest() {
         Boolean exists = userRepository.existsByEmail(testUser.getEmail());
         assertTrue(exists, "Expected user to exist");
     }

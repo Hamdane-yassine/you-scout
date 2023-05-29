@@ -30,11 +30,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthenticationServiceTest {
+class AuthenticationServiceTest {
 
     @Mock
-    OAuth2Provider oAuth2Provider;
-    List<OAuth2Provider> oAuth2Providers;
+    private OAuth2Provider oAuth2Provider;
+    private List<OAuth2Provider> oAuth2Providers;
     @Mock
     private JwtEncoder jwtEncoder;
     @Mock
@@ -53,7 +53,7 @@ public class AuthenticationServiceTest {
     private User user;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         oAuth2Providers = Collections.singletonList(oAuth2Provider);
 
         authenticationService = new AuthenticationServiceImpl(jwtEncoder, jwtDecoder, authenticationManager, userRepository, emailVerificationService, oAuth2Providers, refreshTokenRepository);
@@ -85,7 +85,7 @@ public class AuthenticationServiceTest {
 
     @DisplayName("Test authenticate with password grant")
     @Test
-    public void authenticate_withPasswordGrant_successful() {
+    void authenticate_withPasswordGrant_successful() {
         //Given
         AuthenticationRequest request = new AuthenticationRequest();
         request.setGrantType("password");
@@ -110,7 +110,7 @@ public class AuthenticationServiceTest {
 
     @DisplayName("Test authenticate with refresh token grant")
     @Test
-    public void authenticate_withRefreshTokenGrant_successful() {
+    void authenticate_withRefreshTokenGrant_successful() {
         // Given
         AuthenticationRequest request = new AuthenticationRequest();
         request.setGrantType("refresh_token");
@@ -130,7 +130,7 @@ public class AuthenticationServiceTest {
 
     @DisplayName("Test authenticate with unsupported grant type")
     @Test
-    public void authenticate_withUnsupportedGrantType_throwsException() {
+    void authenticate_withUnsupportedGrantType_throwsException() {
         //Given
         AuthenticationRequest request = new AuthenticationRequest();
         request.setGrantType("unsupported");
@@ -144,7 +144,7 @@ public class AuthenticationServiceTest {
 
     @DisplayName("Test authenticateOAuth2 with valid provider and authorization code")
     @Test
-    public void authenticateOAuth2_withValidProviderAndAuthorizationCode_successful() {
+    void authenticateOAuth2_withValidProviderAndAuthorizationCode_successful() {
         //Given
         String provider = "google";
         String authorizationCode = "authorizationCode";
@@ -167,7 +167,7 @@ public class AuthenticationServiceTest {
 
     @DisplayName("Test authenticateOAuth2 with invalid provider")
     @Test
-    public void authenticateOAuth2_withInvalidProvider_throwsException() {
+    void authenticateOAuth2_withInvalidProvider_throwsException() {
         //Given
         String provider = "invalid";
         String authorizationCode = "authorizationCode";
@@ -181,7 +181,7 @@ public class AuthenticationServiceTest {
 
     @DisplayName("Test logout with valid refresh token")
     @Test
-    public void shouldLogout() {
+    void shouldLogout() {
         //Given
         String username = "testUser";
 

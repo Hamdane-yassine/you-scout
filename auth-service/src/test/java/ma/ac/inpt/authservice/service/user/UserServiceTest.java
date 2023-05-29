@@ -35,7 +35,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+class UserServiceTest {
 
     // Mock dependencies
     @Mock
@@ -66,7 +66,7 @@ public class UserServiceTest {
     private final String username = "testUsername";
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         // Create test objects
         user = User.builder().username(username).password("password").email("test@gmail.com").profile(Profile.builder().profilePicture("test.jpg").build()).build();
         userDetailsDto = UserDetailsDto.builder().build();
@@ -77,7 +77,7 @@ public class UserServiceTest {
 
     // Testing 'getAllUsers' method
     @Test
-    public void shouldGetAllUsers() {
+    void shouldGetAllUsers() {
         // Given
         List<User> users = new ArrayList<>();
         users.add(user);
@@ -95,7 +95,7 @@ public class UserServiceTest {
 
     // Testing 'deleteUserByUsername' method when profile picture is not null
     @Test
-    public void shouldDeleteUserWithProfilePictureByUsername() {
+    void shouldDeleteUserWithProfilePictureByUsername() {
         // Given
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
@@ -111,7 +111,7 @@ public class UserServiceTest {
 
     // Testing 'deleteUserByUsername' method when profile picture is null
     @Test
-    public void shouldDeleteUserWithoutProfilePictureByUsername() {
+    void shouldDeleteUserWithoutProfilePictureByUsername() {
         // Given
         user.getProfile().setProfilePicture(null);
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
@@ -129,7 +129,7 @@ public class UserServiceTest {
 
     // Testing 'getUserDetailsByUsername' method
     @Test
-    public void shouldGetUserDetailsByUsername() {
+    void shouldGetUserDetailsByUsername() {
         // Given
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
         when(userMapper.userToUserDetailsDto(user)).thenReturn(userDetailsDto);
@@ -145,7 +145,7 @@ public class UserServiceTest {
 
     // Testing 'updateUserByUsername' method - Updating user with username and email
     @Test
-    public void shouldUpdateUserByUsernameWithUsernameAndEmail() {
+    void shouldUpdateUserByUsernameWithUsernameAndEmail() {
         // Given
         userUpdateRequest.setPassword("password");
         userUpdateRequest.setUsername("newUsername");
@@ -170,7 +170,7 @@ public class UserServiceTest {
 
     // Testing 'updateUserByUsername' method - Updating user with only the username
     @Test
-    public void shouldUpdateUserByUsernameWithUsernameOnly() {
+    void shouldUpdateUserByUsernameWithUsernameOnly() {
         // Given
         userUpdateRequest.setPassword("password");
         userUpdateRequest.setUsername("newUsername");
@@ -194,7 +194,7 @@ public class UserServiceTest {
 
     // Testing 'updateUserByUsername' method - Incorrect password
     @Test
-    public void shouldThrowExceptionWhenPasswordIsIncorrect() {
+    void shouldThrowExceptionWhenPasswordIsIncorrect() {
         // Given
         String incorrectPassword = "incorrectPassword";
         userUpdateRequest.setPassword(incorrectPassword);
@@ -210,7 +210,7 @@ public class UserServiceTest {
 
     // Testing 'updateUserByUsername' method - Username already exists
     @Test
-    public void shouldThrowExceptionWhenUsernameAlreadyExists() {
+    void shouldThrowExceptionWhenUsernameAlreadyExists() {
         // Given
         String existingUsername = "existingUser";
         userUpdateRequest.setPassword("password");
@@ -230,7 +230,7 @@ public class UserServiceTest {
 
     // Testing 'updateUserByUsername' method - Email already exists
     @Test
-    public void shouldThrowExceptionWhenEmailAlreadyExists() {
+    void shouldThrowExceptionWhenEmailAlreadyExists() {
         // Given
         String existingEmail = "existingEmail";
         userUpdateRequest.setPassword("password");
@@ -250,7 +250,7 @@ public class UserServiceTest {
 
     // Testing 'updateProfileByUsername' method
     @Test
-    public void shouldUpdateProfileByUsername() {
+    void shouldUpdateProfileByUsername() {
         // Given
         profileUpdateRequest.setFullName("test");
         ProfileUpdateResponse expectedResponse = ProfileUpdateResponse.builder().fullName("test").build();
@@ -270,7 +270,7 @@ public class UserServiceTest {
 
     // Testing 'updateProfilePicture' method
     @Test
-    public void shouldUpdateProfilePictureWithUserHasOldPicture() {
+    void shouldUpdateProfilePictureWithUserHasOldPicture() {
         // Given
         String fileUrl = "testUrl";
         ProfilePictureUpdateResponse expectedResponse = ProfilePictureUpdateResponse.builder().username(username).profilePictureUrl("testUrl").build();
@@ -290,7 +290,7 @@ public class UserServiceTest {
 
     // Testing 'updateUserEnabledStatus' method
     @Test
-    public void shouldUpdateUserEnabledStatus() {
+    void shouldUpdateUserEnabledStatus() {
         // Given
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
@@ -304,7 +304,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenUserNotFound() {
+    void shouldThrowExceptionWhenUserNotFound() {
         // Given
         when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
 

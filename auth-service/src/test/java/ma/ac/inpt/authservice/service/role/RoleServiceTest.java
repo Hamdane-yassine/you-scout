@@ -24,7 +24,7 @@ import java.util.*;
 
 @DisplayName("Role Service Test")
 @ExtendWith(MockitoExtension.class)
-public class RoleServiceTest {
+class RoleServiceTest {
 
     @Mock
     private RoleRepository roleRepository;
@@ -42,7 +42,7 @@ public class RoleServiceTest {
     private final String username = "testUsername";
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
 
         role = Role.builder().roleName(roleName).build();
         user = User.builder().username(username).password("password").email("test@gmail.com").roles(new HashSet<>()).build();
@@ -52,7 +52,7 @@ public class RoleServiceTest {
     // Test for the saveRole() method
     @DisplayName("saveRole() - Given a new Role, should save the Role and return it")
     @Test
-    public void shouldSaveRole() {
+    void shouldSaveRole() {
         // given
         when(roleRepository.findByRoleNameIgnoreCase(anyString())).thenReturn(Optional.empty());
         when(roleRepository.save(any(Role.class))).thenReturn(role);
@@ -67,7 +67,7 @@ public class RoleServiceTest {
     // Test for the saveRole() method when an existing Role is provided
     @DisplayName("saveRole() - Given an existing Role, should throw RoleAlreadyExistException")
     @Test
-    public void shouldThrowRoleAlreadyExistExceptionWhenSavingExistingRole() {
+    void shouldThrowRoleAlreadyExistExceptionWhenSavingExistingRole() {
         // given
         when(roleRepository.findByRoleNameIgnoreCase(anyString())).thenReturn(Optional.of(role));
 
@@ -78,7 +78,7 @@ public class RoleServiceTest {
     // Test for the assignRoleToUser() method
     @DisplayName("assignRoleToUser() - Given a UserRoleRequest with valid username and role, should add the role to the user's roles and save the user")
     @Test
-    public void shouldAssignRoleToUser() {
+    void shouldAssignRoleToUser() {
         // given
         when(userRepository.findByUsernameOrEmail(anyString())).thenReturn(Optional.of(user));
         when(roleRepository.findByRoleNameIgnoreCase(anyString())).thenReturn(Optional.of(role));
@@ -95,7 +95,7 @@ public class RoleServiceTest {
     // Test for the assignDefaultRolesToUser() method
     @DisplayName("assignDefaultRolesToUser() - Given a user, should assign default roles to the user")
     @Test
-    public void shouldAssignDefaultRolesToUser() {
+    void shouldAssignDefaultRolesToUser() {
         // given
         List<Role> defaultRoles = Collections.singletonList(Role.builder().roleName("USER").build());
         List<String> defaultUserRoles = Collections.singletonList("USER");
@@ -114,7 +114,7 @@ public class RoleServiceTest {
     // Test for the getRoleById() method
     @DisplayName("getRoleById() - Given a role ID, should return the role")
     @Test
-    public void shouldGetRoleById() {
+    void shouldGetRoleById() {
         // given
         when(roleRepository.findById(anyLong())).thenReturn(Optional.of(role));
 
@@ -128,7 +128,7 @@ public class RoleServiceTest {
     // Test for the updateRole() method
     @DisplayName("updateRole() - Given a role ID and an updated Role, should return the updated role")
     @Test
-    public void shouldUpdateRole() {
+    void shouldUpdateRole() {
         // given
         Role updatedRole = Role.builder().roleName("updatedRole").build();
         when(roleRepository.findById(anyLong())).thenReturn(Optional.of(role));
@@ -144,7 +144,7 @@ public class RoleServiceTest {
     // Test for the deleteRoleById() method
     @DisplayName("deleteRoleById() - Given a role ID, should delete the role")
     @Test
-    public void shouldDeleteRoleById() {
+    void shouldDeleteRoleById() {
         // given
         when(roleRepository.findById(anyLong())).thenReturn(Optional.of(role));
 
@@ -155,7 +155,7 @@ public class RoleServiceTest {
     // Test for the getAllRoles() method
     @DisplayName("getAllRoles() - should return a page of all roles")
     @Test
-    public void shouldGetAllRoles() {
+    void shouldGetAllRoles() {
         // given
         List<Role> roles = Collections.singletonList(role);
         Page<Role> pageRoles = new PageImpl<>(roles);
@@ -172,7 +172,7 @@ public class RoleServiceTest {
     // Test for the removeRoleFromUser() method
     @DisplayName("removeRoleFromUser() - Given a UserRoleRequest with valid username and role, should remove the role from the user's roles")
     @Test
-    public void shouldRemoveRoleFromUser() {
+    void shouldRemoveRoleFromUser() {
         // given
         user.getRoles().add(role);
 

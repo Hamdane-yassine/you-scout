@@ -16,7 +16,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-public class TokenRepositoryTest {
+class TokenRepositoryTest {
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
 
@@ -32,7 +32,7 @@ public class TokenRepositoryTest {
     private PasswordResetToken passwordResetToken;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         // Create a user for testing
         testUser = User.builder().username("testUser").email("test@example.com").isEnabled(true).build();
 
@@ -51,35 +51,35 @@ public class TokenRepositoryTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         // Clean up the database after each test
         verificationTokenRepository.deleteAll();
         passwordResetTokenRepository.deleteAll();
     }
 
     @Test
-    public void findByTokenVerificationTokenRepositoryTest() {
+    void findByTokenVerificationTokenRepositoryTest() {
         Optional<VerificationToken> foundToken = verificationTokenRepository.findByToken(verificationToken.getToken());
         assertTrue(foundToken.isPresent(), "Expected a valid token");
         assertEquals(verificationToken, foundToken.get(), "Expected VerificationToken should match the returned token");
     }
 
     @Test
-    public void findByUserVerificationTokenRepositoryTest() {
+    void findByUserVerificationTokenRepositoryTest() {
         Optional<VerificationToken> foundToken = verificationTokenRepository.findByUser(testUser);
         assertTrue(foundToken.isPresent(), "Expected a valid token");
         assertEquals(verificationToken, foundToken.get(), "Expected VerificationToken should match the returned token");
     }
 
     @Test
-    public void findByTokenPasswordResetTokenRepositoryTest() {
+    void findByTokenPasswordResetTokenRepositoryTest() {
         Optional<PasswordResetToken> foundToken = passwordResetTokenRepository.findByToken(passwordResetToken.getToken());
         assertTrue(foundToken.isPresent(), "Expected a valid token");
         assertEquals(passwordResetToken, foundToken.get(), "Expected PasswordResetToken should match the returned token");
     }
 
     @Test
-    public void findByUserPasswordResetTokenRepositoryTest() {
+    void findByUserPasswordResetTokenRepositoryTest() {
         Optional<PasswordResetToken> foundToken = passwordResetTokenRepository.findByUser(testUser);
         assertTrue(foundToken.isPresent(), "Expected a valid token");
         assertEquals(passwordResetToken, foundToken.get(), "Expected PasswordResetToken should match the returned token");
