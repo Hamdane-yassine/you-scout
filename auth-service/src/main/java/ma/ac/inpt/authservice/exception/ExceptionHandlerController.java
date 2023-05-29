@@ -5,7 +5,6 @@ import lombok.Data;
 import ma.ac.inpt.authservice.exception.auth.AccountNotEnabledException;
 import ma.ac.inpt.authservice.exception.auth.InvalidRefreshTokenException;
 import ma.ac.inpt.authservice.exception.file.DeleteFileException;
-import ma.ac.inpt.authservice.exception.file.InvalidImageException;
 import ma.ac.inpt.authservice.exception.file.UploadFileException;
 import ma.ac.inpt.authservice.exception.role.RoleAlreadyExistException;
 import ma.ac.inpt.authservice.exception.role.RoleNotFoundException;
@@ -71,7 +70,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
      * Handles exceptions when a request is invalid, such as when missing required request parameters.
      * Returns an HTTP 400 BAD REQUEST response with a custom error message.
      */
-    @ExceptionHandler({InvalidRequestException.class, InvalidImageException.class})
+    @ExceptionHandler({InvalidRequestException.class})
     public ResponseEntity<Object> handleBadRequestException(ApplicationException ex, WebRequest request) {
         return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
     }
