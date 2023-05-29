@@ -15,7 +15,7 @@ public class UserMapperTest {
 
     @Test
     @DisplayName("Test mapping from UserEventPayload to User")
-    public void testUserEventPayloadToUser() {
+    void testUserEventPayloadToUser() {
         // Given
         UserEventPayload payload = new UserEventPayload();
         payload.setId(1L);
@@ -35,7 +35,7 @@ public class UserMapperTest {
 
     @Test
     @DisplayName("Test mapping from User to UserEventPayload")
-    public void testUserToUserEventPayload() {
+    void testUserToUserEventPayload() {
         // Given
         User user = new User();
         user.setId(1L);

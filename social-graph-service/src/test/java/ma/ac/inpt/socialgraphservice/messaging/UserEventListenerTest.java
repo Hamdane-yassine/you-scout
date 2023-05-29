@@ -26,7 +26,7 @@ public class UserEventListenerTest {
 
     @Test
     @DisplayName("Test if consume method adds a user on CREATED event type")
-    public void testConsume_UserCreated() {
+    void testConsume_UserCreated() {
         // Given
         UserEventPayload payload = new UserEventPayload();
         payload.setUserEventType(UserEventType.CREATED);
@@ -42,7 +42,7 @@ public class UserEventListenerTest {
 
     @Test
     @DisplayName("Test if consume method updates a user on UPDATED event type")
-    public void testConsume_UserUpdated() {
+    void testConsume_UserUpdated() {
         // Given
         UserEventPayload payload = new UserEventPayload();
         payload.setUserEventType(UserEventType.UPDATED);
@@ -58,7 +58,7 @@ public class UserEventListenerTest {
 
     @Test
     @DisplayName("Test if consume method deletes a user on DELETED event type")
-    public void testConsume_UserDeleted() {
+    void testConsume_UserDeleted() {
         // Given
         UserEventPayload payload = new UserEventPayload();
         payload.setUserEventType(UserEventType.DELETED);
@@ -74,7 +74,7 @@ public class UserEventListenerTest {
 
     @Test
     @DisplayName("Test if consume method does nothing on null event type")
-    public void testConsume_NullEventType() {
+    void testConsume_NullEventType() {
         // Given
         UserEventPayload payload = new UserEventPayload();
         payload.setUserEventType(null);

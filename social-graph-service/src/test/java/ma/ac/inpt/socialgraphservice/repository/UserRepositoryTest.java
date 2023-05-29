@@ -48,7 +48,7 @@ public class UserRepositoryTest {
     }
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         // Clear the user repository before each test
         userRepository.deleteAll();
     }
@@ -62,7 +62,7 @@ public class UserRepositoryTest {
 
     @Test
     @DisplayName("Test if a user exists by username")
-    public void testExistsByUsername() {
+    void testExistsByUsername() {
         // Given
         createUser("testUser");
 
@@ -72,7 +72,7 @@ public class UserRepositoryTest {
 
     @Test
     @DisplayName("Test following a user")
-    public void testFollowUser() {
+    void testFollowUser() {
         // Given
         User user1 = createUser("testUser1");
         User user2 = createUser("testUser2");
@@ -86,7 +86,7 @@ public class UserRepositoryTest {
 
     @Test
     @DisplayName("Test unfollowing a user")
-    public void testUnfollowUser() {
+    void testUnfollowUser() {
         // Given
         User user1 = createUser("testUser1");
         User user2 = createUser("testUser2");
@@ -101,7 +101,7 @@ public class UserRepositoryTest {
 
     @Test
     @DisplayName("Test retrieving followers of a user")
-    public void testFindFollowers() {
+    void testFindFollowers() {
         // Given
         User user1 = createUser("testUser1");
         User user2 = createUser("testUser2");
@@ -118,7 +118,7 @@ public class UserRepositoryTest {
 
     @Test
     @DisplayName("Test retrieving users that a user is following")
-    public void testFindFollowing() {
+    void testFindFollowing() {
         // Given
         User user1 = createUser("testUser1");
         User user2 = createUser("testUser2");
@@ -135,7 +135,7 @@ public class UserRepositoryTest {
 
     @Test
     @DisplayName("Test blocking a user")
-    public void testBlockUser() {
+    void testBlockUser() {
         // Given
         User user1 = createUser("testUser1");
         User user2 = createUser("testUser2");
@@ -149,7 +149,7 @@ public class UserRepositoryTest {
 
     @Test
     @DisplayName("Test retrieving users that a user has blocked")
-    public void testGetBlockedUsers() {
+    void testGetBlockedUsers() {
         // Given
         User user1 = createUser("testUser1");
         User user2 = createUser("testUser2");
@@ -166,7 +166,7 @@ public class UserRepositoryTest {
 
     @Test
     @DisplayName("Test unblocking a user")
-    public void testUnblockUser() {
+    void testUnblockUser() {
         // Given
         User user1 = createUser("testUser1");
         User user2 = createUser("testUser2");
@@ -181,7 +181,7 @@ public class UserRepositoryTest {
 
     @Test
     @DisplayName("Test count of followers")
-    public void testCountFollowers() {
+    void testCountFollowers() {
         // Given
         User user1 = createUser("testUser1");
         User user2 = createUser("testUser2");
@@ -193,7 +193,7 @@ public class UserRepositoryTest {
 
     @Test
     @DisplayName("Test count of following")
-    public void testCountFollowing() {
+    void testCountFollowing() {
         // Given
         User user1 = createUser("testUser1");
         User user2 = createUser("testUser2");
@@ -205,7 +205,7 @@ public class UserRepositoryTest {
 
     @Test
     @DisplayName("Test count of blocked users")
-    public void testCountBlockedUsers() {
+    void testCountBlockedUsers() {
         // Given
         User user1 = createUser("testUser1");
         User user2 = createUser("testUser2");

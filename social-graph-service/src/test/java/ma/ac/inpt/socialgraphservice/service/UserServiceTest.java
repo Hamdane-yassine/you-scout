@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
@@ -32,7 +32,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Test Add User")
-    public void testAddUser() {
+    void testAddUser() {
         // Given
         User user = new User();
         user.setUsername("username");
@@ -48,7 +48,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Test Update User")
-    public void testUpdateUser() {
+    void testUpdateUser() {
         // Given
         User user = new User();
         user.setId(1L);
@@ -63,7 +63,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Test Follow User")
-    public void testFollowUser() {
+    void testFollowUser() {
         // When
         when(userRepository.existsByUsername(anyString())).thenReturn(true);
         userService.followUser("username1", "username2");
@@ -74,7 +74,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Test Unfollow User")
-    public void testUnfollowUser() {
+    void testUnfollowUser() {
         // When
         when(userRepository.isFollowing(anyString(), anyString())).thenReturn(true);
         when(userRepository.existsByUsername(anyString())).thenReturn(true);
@@ -86,7 +86,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Test Is Following")
-    public void testIsFollowing() {
+    void testIsFollowing() {
         // When
         when(userRepository.isFollowing(anyString(), anyString())).thenReturn(true);
         when(userRepository.existsByUsername(anyString())).thenReturn(true);
@@ -98,7 +98,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Test Block User")
-    public void testBlockUser() {
+    void testBlockUser() {
         // When
         when(userRepository.existsByUsername(anyString())).thenReturn(true);
         userService.blockUser("username1", "username2");
@@ -109,7 +109,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Test Unblock User")
-    public void testUnblockUser() {
+    void testUnblockUser() {
         // When
         when(userRepository.isBlocking(anyString(), anyString())).thenReturn(true);
         when(userRepository.existsByUsername(anyString())).thenReturn(true);
@@ -121,7 +121,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Test Is Blocking")
-    public void testIsBlocking() {
+    void testIsBlocking() {
         // When
         when(userRepository.isBlocking(anyString(), anyString())).thenReturn(true);
         when(userRepository.existsByUsername(anyString())).thenReturn(true);
@@ -133,7 +133,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Test Find Followers")
-    public void testFindFollowers() {
+    void testFindFollowers() {
         // When
         when(userRepository.findFollowers(anyString())).thenReturn(Set.of());
         when(userRepository.existsByUsername(anyString())).thenReturn(true);
@@ -145,7 +145,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Test Find Following")
-    public void testFindFollowing() {
+    void testFindFollowing() {
         // When
         when(userRepository.findFollowing(anyString())).thenReturn(Set.of());
         when(userRepository.existsByUsername(anyString())).thenReturn(true);
@@ -157,7 +157,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Test Get Blocked Users")
-    public void testGetBlockedUsers() {
+    void testGetBlockedUsers() {
         // When
         when(userRepository.getBlockedUsers(anyString())).thenReturn(Set.of());
         when(userRepository.existsByUsername(anyString())).thenReturn(true);
@@ -169,7 +169,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Test Delete User")
-    public void testDeleteUser() {
+    void testDeleteUser() {
         // Given
         User user = new User();
         user.setId(1L);
@@ -184,7 +184,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Test Count Followers")
-    public void testCountFollowers() {
+    void testCountFollowers() {
         // When
         when(userRepository.countFollowers(anyString())).thenReturn(1);
         when(userRepository.existsByUsername(anyString())).thenReturn(true);
@@ -196,7 +196,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Test Count Following")
-    public void testCountFollowing() {
+    void testCountFollowing() {
         // When
         when(userRepository.countFollowing(anyString())).thenReturn(1);
         when(userRepository.existsByUsername(anyString())).thenReturn(true);
@@ -208,7 +208,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Test Count Blocked Users")
-    public void testCountBlockedUsers() {
+    void testCountBlockedUsers() {
         // When
         when(userRepository.countBlockedUsers(anyString())).thenReturn(1);
         when(userRepository.existsByUsername(anyString())).thenReturn(true);
@@ -220,7 +220,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Should throw UserAlreadyExistsException when trying to add a user that already exists")
-    public void testAddUser_UserAlreadyExists() {
+    void testAddUser_UserAlreadyExists() {
         // Given
         User user = new User();
         when(userRepository.existsByUsername(user.getUsername())).thenReturn(true);
@@ -231,7 +231,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Should throw UserNotFoundException when trying to update a user that doesn't exist")
-    public void testUpdateUser_UserNotFound() {
+    void testUpdateUser_UserNotFound() {
         // Given
         User user = new User();
         user.setId(1L);
@@ -243,7 +243,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Should throw UserOperationNotAllowedException when trying to follow user that's already followed")
-    public void testFollowUser_UserAlreadyFollowed() {
+    void testFollowUser_UserAlreadyFollowed() {
         // Given
         String followerUsername = "Follower";
         String followeeUsername = "Followee";
@@ -257,7 +257,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Should throw UserOperationNotAllowedException when trying to unfollow user that's not followed")
-    public void testUnfollowUser_UserNotFollowed() {
+    void testUnfollowUser_UserNotFollowed() {
         // Given
         String followerUsername = "Follower";
         String followeeUsername = "Followee";
@@ -271,7 +271,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Should throw UserNotFoundException when trying to delete user that doesn't exist")
-    public void testDeleteUser_UserNotFound() {
+    void testDeleteUser_UserNotFound() {
         // Given
         Long id = 1L;
         when(userRepository.findById(id)).thenReturn(Optional.empty());
@@ -282,7 +282,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Should throw UserOperationNotAllowedException when trying to unblock user that's not blocked")
-    public void testUnblockUser_UserNotBlocked() {
+    void testUnblockUser_UserNotBlocked() {
         // Given
         String blockerUsername = "Blocker";
         String blockedUsername = "Blocked";
@@ -296,7 +296,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Should throw UserOperationNotAllowedException when trying to block user that's already blocked")
-    public void testBlockUser_UserAlreadyBlocked() {
+    void testBlockUser_UserAlreadyBlocked() {
         // Given
         String blockerUsername = "Blocker";
         String blockedUsername = "Blocked";
