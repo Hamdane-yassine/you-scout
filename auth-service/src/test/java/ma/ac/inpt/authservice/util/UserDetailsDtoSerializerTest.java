@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import ma.ac.inpt.authservice.dto.UserDetailsDto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -23,13 +24,14 @@ import static org.mockito.Mockito.when;
 @DisplayName("UserDetailsDtoSerializer Test")
 class UserDetailsDtoSerializerTest {
 
-    ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
-    UserDetailsDtoSerializer serializer = new UserDetailsDtoSerializer();
+    private final UserDetailsDtoSerializer serializer = new UserDetailsDtoSerializer();
 
-    Authentication authentication = Mockito.mock(Authentication.class);
+    private final Authentication authentication = Mockito.mock(Authentication.class);
 
-    public UserDetailsDtoSerializerTest() {
+    @BeforeEach
+    void setUp() {
         mapper.registerModule(new JavaTimeModule());
     }
 

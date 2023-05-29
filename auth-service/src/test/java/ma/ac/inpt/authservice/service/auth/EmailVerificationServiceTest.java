@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-public class EmailVerificationServiceTest {
+class EmailVerificationServiceTest {
 
     @Mock
     private EmailService emailService;
@@ -47,7 +47,7 @@ public class EmailVerificationServiceTest {
     private VerificationToken testToken;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         testUser = User.builder().username("testUsername").email("test@test.com").build();
 
         testToken = VerificationToken.builder().
@@ -58,7 +58,7 @@ public class EmailVerificationServiceTest {
     }
 
     @Test
-    public void testSendVerificationEmail() {
+    void testSendVerificationEmail() {
         // Given
         when(verificationTokenRepository.findByUser(any())).thenReturn(Optional.empty());
         when(verificationTokenRepository.save(any())).thenReturn(testToken);
@@ -71,7 +71,7 @@ public class EmailVerificationServiceTest {
     }
 
     @Test
-    public void testVerifyAccount() {
+    void testVerifyAccount() {
         // Given
         when(verificationTokenRepository.findByToken(any())).thenReturn(Optional.of(testToken));
 

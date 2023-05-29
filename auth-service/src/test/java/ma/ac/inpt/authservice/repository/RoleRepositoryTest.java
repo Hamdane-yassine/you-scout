@@ -14,7 +14,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-public class RoleRepositoryTest {
+class RoleRepositoryTest {
 
     @Autowired
     private RoleRepository roleRepository;
@@ -22,7 +22,7 @@ public class RoleRepositoryTest {
     private Role testRole1, testRole2;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         // Create roles for testing
         testRole1 = Role.builder().roleName("SCOPE_ADMIN").build();
         testRole2 = Role.builder().roleName("SCOPE_USER").build();
@@ -33,13 +33,13 @@ public class RoleRepositoryTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         // Clean up the database after each test
         roleRepository.deleteAll();
     }
 
     @Test
-    public void findByRoleNameIgnoreCaseTest() {
+    void findByRoleNameIgnoreCaseTest() {
         // Check that we can find a role case insensitively
         Optional<Role> foundRole = roleRepository.findByRoleNameIgnoreCase(testRole1.getRoleName().toLowerCase());
 
@@ -48,7 +48,7 @@ public class RoleRepositoryTest {
     }
 
     @Test
-    public void findByRoleNameInTest() {
+    void findByRoleNameInTest() {
         // Check that we can find multiple roles by their names
         List<String> roleNames = Arrays.asList(testRole1.getRoleName(), testRole2.getRoleName());
         List<Role> foundRoles = roleRepository.findByRoleNameIn(roleNames);
