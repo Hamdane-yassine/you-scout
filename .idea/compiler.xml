@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="post-service" />
       </profile>
       <profile name="Annotation profile for you-scout" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -18,12 +19,12 @@
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar" />
         </processorPath>
-        <module name="social-graph-service" />
         <module name="comments-service" />
-        <module name="post-service" />
         <module name="auth-service" />
         <module name="skills-service" />
+        <module name="social-graph-service" />
         <module name="api-gateway" />
+        <module name="social-graph-service" />
         <module name="chat-service" />
         <module name="service-discovery" />
         <module name="user-feed-service" />
@@ -31,7 +32,6 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="feed-service" target="17" />
-      <module name="social-graph-service" target="17" />
       <module name="test-listener" target="17" />
     </bytecodeTargetLevel>
   </component>
@@ -39,7 +39,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="auth-service" options="" />
       <module name="chat-service" options="" />
-      <module name="post-service" options="" />
+      <module name="post-service" options="-parameters" />
     </option>
   </component>
 </project>
