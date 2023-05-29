@@ -70,7 +70,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
      * Handles exceptions when a request is invalid, such as when missing required request parameters.
      * Returns an HTTP 400 BAD REQUEST response with a custom error message.
      */
-    @ExceptionHandler(InvalidRequestException.class)
+    @ExceptionHandler({InvalidRequestException.class})
     public ResponseEntity<Object> handleBadRequestException(ApplicationException ex, WebRequest request) {
         return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
     }
