@@ -28,7 +28,8 @@ public class AuthenticationRequestValidator implements ConstraintValidator<Valid
     @Override
     public boolean isValid(AuthenticationRequest value, ConstraintValidatorContext context) {
         if (value.getGrantType() != null) {
-            return switch (value.getGrantType()) {
+            String grantType = value.getGrantType().toUpperCase();
+            return switch (grantType) {
                 case "PASSWORD" -> validatePasswordGrantRequest(value);
                 case "REFRESH_TOKEN" -> validateRefreshTokenRequest(value);
                 default -> false;

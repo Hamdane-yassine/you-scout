@@ -5,47 +5,29 @@ import ma.ac.inpt.authservice.config.SecurityTestConfig;
 import ma.ac.inpt.authservice.dto.UserRoleRequest;
 import ma.ac.inpt.authservice.model.Role;
 import ma.ac.inpt.authservice.service.role.RoleService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 
-@ExtendWith(MockitoExtension.class)
 @WebMvcTest(RoleController.class)
 @Import(SecurityTestConfig.class)
 class RoleControllerTest {
-
-    @Autowired
-    private WebApplicationContext context;
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private RoleService roleService;
-
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .apply(SecurityMockMvcConfigurers.springSecurity())
-                .build();
-    }
 
     @DisplayName("Test adding a new role")
     @Test
