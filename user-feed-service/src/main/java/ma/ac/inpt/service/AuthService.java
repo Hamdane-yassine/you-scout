@@ -1,6 +1,7 @@
 package ma.ac.inpt.service;
 
 
+import lombok.RequiredArgsConstructor;
 import ma.ac.inpt.exceptions.UnableToGetUsersException;
 import lombok.extern.slf4j.Slf4j;
 import ma.ac.inpt.feignClient.AuthClient;
@@ -10,14 +11,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import static java.util.stream.Collectors.toMap;
 
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class AuthService {
 
-    @Autowired private AuthClient authClient;
+    private final AuthClient authClient;
 //    @Autowired private ServiceLoginRequest serviceLoginRequest;
 
 //    public String getAccessToken() {
@@ -50,10 +54,10 @@ public class AuthService {
             throw new UnableToGetUsersException(message);
         }
 
-        return response
-                .getBody()
-                .stream()
-                .collect(toMap(UserSummary::getUsername,
-                        UserSummary::getProfilePicture));
+        return Objects.requireNonNull(response
+                        .getBody())
+                        .stream()
+                        .collect(toMap(UserSummary::getUsername,
+                                UserSummary::getProfilePicture));
     }
 }

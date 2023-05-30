@@ -17,10 +17,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -54,7 +51,7 @@ public class FeedService {
         String pageState = null;
 
         if(!page.isLast()) {
-            pageState = ((CassandraPageRequest)page.getPageable())
+            pageState = ((CassandraPageRequest) page.getPageable())
                     .getPagingState().toString();
         }
 
@@ -73,7 +70,7 @@ public class FeedService {
 //        String token = authService.getAccessToken();
 
         List<String> postIds = page.stream()
-                .map(feed -> feed.getPostId())
+                .map(UserFeedEntity::getPostId)
                 .collect(toList());
 
         List<Post> posts = postService.findPostsIn( postIds);
@@ -81,7 +78,7 @@ public class FeedService {
         List<String> usernames = posts.stream()
                 .map(Post::getUsername)
                 .distinct()
-                .collect(toList());
+                .toList();
 
         Map<String, String> usersProfilePics =
                 authService.usersProfilePic( new ArrayList<>(usernames));
