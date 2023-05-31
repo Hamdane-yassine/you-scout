@@ -30,13 +30,6 @@ public class RefreshToken {
     private String tokenUuid;
 
     /**
-     * The user associated with the refresh token.
-     */
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
-
-    /**
      * The expiry date of the refresh token.
      */
     @Column(nullable = false)
