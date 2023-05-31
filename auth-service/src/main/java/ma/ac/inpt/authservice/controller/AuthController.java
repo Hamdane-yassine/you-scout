@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 /**
  * Controller class for managing user authentication and authorization.
@@ -128,11 +129,12 @@ public class AuthController {
      * Invalidates the refresh token for the user, effectively logging them out.
      * Returns HTTP 200 OK status with a success message on successful logout.
      *
-     * @param username The username of the user to logout.
+     * @param principal The current user.
      * @return A response entity with a success message.
      */
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestParam("username") String username) {
+    public ResponseEntity<String> logout(Principal principal) {
+        String username = principal.getName();
         log.info("Received logout request for username {}", username);
         authenticationService.logout(username);
         log.info("User {} logged out successfully", username);
