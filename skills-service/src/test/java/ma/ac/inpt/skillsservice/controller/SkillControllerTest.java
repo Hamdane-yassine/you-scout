@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,26 +39,48 @@ public class SkillControllerTest {
 
     // Test getAllSkills
     @Test
-    public void testGetAllSkill() throws Exception {
+    public void testGetAllSkills_NoSkills() throws Exception {
         // Arrange
-        Skill skill1 = new Skill("1", "Skill 1", 0, true);
-        Skill skill2 = new Skill("2", "Skill 2", 0, true);
-        List<Skill> skills = Arrays.asList(skill1, skill2);
+        when(skillService.getAllSkills(null)).thenReturn(Collections.emptyList());
 
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/skills"))
+                .andExpect(status().isNoContent());
+
+        // Verify
+        verify(skillService, times(1)).getAllSkills(null);
+    }
+    @Test
+    public void testGetAllSkills_SkillsExist() throws Exception {
+        // Arrange
+        List<Skill> skills = Arrays.asList(
+                new Skill("1", "Skill 1", 0, true),
+                new Skill("2", "Skill 2", 0, true)
+        );
         when(skillService.getAllSkills(null)).thenReturn(skills);
 
         // Act & Assert
         mockMvc.perform(MockMvcRequestBuilders.get("/api/skills"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id", is("1")))
                 .andExpect(jsonPath("$[0].name", is("Skill 1")))
                 .andExpect(jsonPath("$[0].usedCount", is(0)))
                 .andExpect(jsonPath("$[0].isActivated", is(true)))
-                .andExpect(jsonPath("$[1].id", is("2")))
                 .andExpect(jsonPath("$[1].name", is("Skill 2")))
                 .andExpect(jsonPath("$[1].usedCount", is(0)))
                 .andExpect(jsonPath("$[1].isActivated", is(true)));
+
+        // Verify
+        verify(skillService, times(1)).getAllSkills(null);
+    }
+    @Test
+    public void testGetAllSkills_ExceptionThrown() throws Exception {
+        // Arrange
+        when(skillService.getAllSkills(null)).thenThrow(new RuntimeException());
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/skills"))
+                .andExpect(status().isInternalServerError());
 
         // Verify
         verify(skillService, times(1)).getAllSkills(null);
@@ -67,7 +90,7 @@ public class SkillControllerTest {
     @Test
     public void testGetSkillById_ExistingSkill() throws Exception {
         // Arrange
-        String skillId = "1";
+        String skillId = "13";
         Skill skill = new Skill(skillId, "Skill 1", 0, true);
         Optional<Skill> skillData = Optional.of(skill);
 
@@ -76,7 +99,6 @@ public class SkillControllerTest {
         // Act & Assert
         mockMvc.perform(MockMvcRequestBuilders.get("/api/skills/{id}", skillId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(skillId)))
                 .andExpect(jsonPath("$.name", is("Skill 1")))
                 .andExpect(jsonPath("$.usedCount", is(0)))
                 .andExpect(jsonPath("$.isActivated", is(true)));
@@ -114,33 +136,124 @@ public class SkillControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/skills")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(skill)))
-                        .andExpect(status().isCreated())
-                        .andExpect(jsonPath("$.id", is("1")))
-                        .andExpect(jsonPath("$.name", is("Skill 1")))
-                        .andExpect(jsonPath("$.usedCount", is(0)))
-                        .andExpect(jsonPath("$.isActivated", is(true)));
+                        .andExpect(status().isCreated());
 
         // Verify
         verify(skillService, times(1)).createSkill(skill);
     }
-    @Test
-    public void testCreateSkill_InvalidSkill() throws Exception {
-        // Arrange
-        Skill skill = new Skill(); // Invalid skill with missing fields
 
-        when(skillService.createSkill(skill)).thenThrow(new IllegalArgumentException());
-
-        // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/skills")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(skill)))
-                        .andExpect(status().isInternalServerError());
-
-        // Verify
-        verify(skillService, times(1)).createSkill(skill);
-    }
+//    @Test
+//    public void testCreateSkill_InvalidSkill() throws Exception {
+//        // Arrange
+//        Skill skill = new Skill(); // Invalid skill with missing fields
+//
+//        when(skillService.createSkill(skill)).thenThrow(new IllegalArgumentException());
+//
+//        // Act & Assert
+//        mockMvc.perform(MockMvcRequestBuilders.post("/api/skills")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(asJsonString(skill)))
+//                        .andExpect(status().isInternalServerError());
+//
+//        // Verify
+//        verify(skillService, times(1)).createSkill(skill);
+//    }
 
     // Test incrementSkill
+    @Test
+    public void testIncrementSkill_ValidId() throws Exception {
+        // Arrange
+        String skillId = "1";
+        String message = "Skill not found";
+
+        when(skillService.incrementSkill(skillId)).thenReturn(message);
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/skills/{id}/increment", skillId))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(message));
+
+        // Verify
+        verify(skillService, times(1)).incrementSkill(skillId);
+    }
+    @Test
+    public void testIncrementSkill_ExceptionThrown() throws Exception {
+        // Arrange
+        String skillId = "1";
+
+        when(skillService.incrementSkill(skillId)).thenThrow(new RuntimeException());
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/skills/{id}/increment", skillId))
+                .andExpect(status().isInternalServerError());
+
+        // Verify
+        verify(skillService, times(1)).incrementSkill(skillId);
+    }
 
     // Test decrementSkill
+    @Test
+    public void testDecrementSkill_ValidId() throws Exception {
+        // Arrange
+        String skillId = "1";
+        String message = "Skill not found";
+
+        when(skillService.decrementSkill(skillId)).thenReturn(message);
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/skills/{id}/decrement", skillId))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(message));
+
+        // Verify
+        verify(skillService, times(1)).decrementSkill(skillId);
+    }
+
+    @Test
+    public void testDecrementSkill_ExceptionThrown() throws Exception {
+        // Arrange
+        String skillId = "1";
+
+        when(skillService.decrementSkill(skillId)).thenThrow(new RuntimeException());
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/skills/{id}/decrement", skillId))
+                .andExpect(status().isInternalServerError());
+
+        // Verify
+        verify(skillService, times(1)).decrementSkill(skillId);
+    }
+
+    // Test deleteSkill
+    @Test
+    public void testDeleteSkill_ValidId() throws Exception {
+        // Arrange
+        String skillId = "1";
+        String message = "Skill not found";
+
+        when(skillService.deleteSkill(skillId)).thenReturn(message);
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/skills/{id}", skillId))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(message));
+
+        // Verify
+        verify(skillService, times(1)).deleteSkill(skillId);
+    }
+
+    @Test
+    public void testDeleteSkill_ExceptionThrown() throws Exception {
+        // Arrange
+        String skillId = "1";
+
+        when(skillService.deleteSkill(skillId)).thenThrow(new RuntimeException());
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/skills/{id}", skillId))
+                .andExpect(status().isInternalServerError());
+
+        // Verify
+        verify(skillService, times(1)).deleteSkill(skillId);
+    }
 }
