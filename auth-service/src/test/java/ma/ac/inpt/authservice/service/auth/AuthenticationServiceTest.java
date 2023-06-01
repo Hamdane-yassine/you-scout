@@ -191,7 +191,7 @@ class AuthenticationServiceTest {
         authenticationService.logout(username);
 
         //Then
-        verify(refreshTokenRepository,times(1)).deleteByUser(any());
+        verify(userRepository,times(1)).save(any());
     }
 }
 
