@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Data
@@ -26,4 +27,16 @@ public class User {
     @Relationship(type = "BLOCKS", direction = Relationship.Direction.OUTGOING)
     private Set<User> blockedUsers;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return username.equals(user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, following, followers, blockedUsers);
+    }
 }

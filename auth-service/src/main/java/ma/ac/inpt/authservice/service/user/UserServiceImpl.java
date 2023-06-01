@@ -9,7 +9,7 @@ import ma.ac.inpt.authservice.exception.user.UsernameAlreadyExistsException;
 import ma.ac.inpt.authservice.mapper.UserMapper;
 import ma.ac.inpt.authservice.messaging.UserEventMessagingService;
 import ma.ac.inpt.authservice.repository.UserRepository;
-import ma.ac.inpt.authservice.service.auth.AccountVerificationService;
+import ma.ac.inpt.authservice.service.auth.EmailVerificationService;
 import ma.ac.inpt.authservice.service.auth.AuthenticationService;
 import ma.ac.inpt.authservice.service.media.MediaService;
 import ma.ac.inpt.authservice.model.User;
@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     private final MediaService mediaService;
     private final PasswordEncoder passwordEncoder;
     private final UserEventMessagingService userEventMessagingService;
-    private final AccountVerificationService accountVerificationService;
+    private final EmailVerificationService emailVerificationService;
     private final AuthenticationService authenticationService;
     private final UserMapper userMapper;
 
@@ -77,12 +77,12 @@ public class UserServiceImpl implements UserService {
      * @param username the username of the user
      * @return the UserDetailsDto containing user information
      */
-    @Override
-    public UserDetailsDto getUserDetailsByUsername(String username) {
-        log.info("Fetching user details by username: {}", username);
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
-        return userMapper.userToUserDetailsDto(user);
-    }
+        @Override
+        public UserDetailsDto getUserDetailsByUsername(String username) {
+            log.info("Fetching user details by username: {}", username);
+            User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
+            return userMapper.userToUserDetailsDto(user);
+        }
 
     /**
      * Update user information by username.
@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
         updateUserFields(user, userUpdateRequest);
         userRepository.save(user);
-        if(userUpdateRequest.getUsername()!=null)userEventMessagingService.sendUserUpdated(user);
+        if(userUpdateRequest.getUsername()!=null && userUpdateRequest.getEmail() == null)userEventMessagingService.sendUserUpdated(user);
         authenticationService.logout(username);
         log.info("User with username '{}' has been updated.", username);
         return userMapper.userToUserUpdateResponse(user);
@@ -187,7 +187,7 @@ public class UserServiceImpl implements UserService {
     private void updateUserFields(User user, UserUpdateRequest userUpdateRequest) {
         checkUserPassword(user, userUpdateRequest.getPassword());
         updateIfNotNull(userUpdateRequest.getUsername(), () -> updateUsername(user, userUpdateRequest.getUsername()));
-        updateIfNotNull(userUpdateRequest.getPassword(), () -> user.setPassword(passwordEncoder.encode(userUpdateRequest.getNewPassword())));
+        updateIfNotNull(userUpdateRequest.getNewPassword(), () -> user.setPassword(passwordEncoder.encode(userUpdateRequest.getNewPassword())));
         updateIfNotNull(userUpdateRequest.getEmail(), () -> updateEmail(user, userUpdateRequest.getEmail()));
     }
 
@@ -231,7 +231,7 @@ public class UserServiceImpl implements UserService {
         } else {
             user.setEmail(email);
             user.setEnabled(false);
-            accountVerificationService.sendVerificationEmail(user,EmailVerificationType.UPDATING);
+            emailVerificationService.sendVerificationEmail(user,EmailVerificationType.UPDATING);
         }
     }
 }

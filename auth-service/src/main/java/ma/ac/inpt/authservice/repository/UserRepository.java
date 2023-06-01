@@ -2,7 +2,6 @@ package ma.ac.inpt.authservice.repository;
 
 import ma.ac.inpt.authservice.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -54,15 +53,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return true if a user with the specified email exists, false otherwise
      */
     Boolean existsByEmail(String email);
-
-    /**
-     * Removes the role with the specified ID from all users that have that role.
-     *
-     * @param roleId the ID of the role to remove
-     * @return the number of users from which the role was removed
-     */
-    @Modifying
-    @Query(value = "DELETE FROM users_roles where users_roles.roles_id = :roleId", nativeQuery = true)
-    int removeRoleFromUsersByRoleId(@Param("roleId") Long roleId);
 
 }

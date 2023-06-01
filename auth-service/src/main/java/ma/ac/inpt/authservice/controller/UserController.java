@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.ac.inpt.authservice.dto.*;
 import ma.ac.inpt.authservice.service.user.UserServiceImpl;
+import ma.ac.inpt.authservice.util.ValidImage;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -151,7 +152,7 @@ public class UserController {
      * @return A response entity with the updated UserDetailsDto.
      */
     @PostMapping("/me/profile/picture")
-    public ResponseEntity<ProfilePictureUpdateResponse> updateProfilePicture(Principal principal, @RequestPart("file") MultipartFile file) {
+    public ResponseEntity<ProfilePictureUpdateResponse> updateProfilePicture(Principal principal, @ValidImage @RequestPart("file") MultipartFile file) {
         log.info("Received request to update profile picture for the current user");
         ProfilePictureUpdateResponse profilePictureUpdateResponse = userServiceImpl.updateProfilePicture(principal.getName(), file);
         log.info("Updated profile picture for the current user");
