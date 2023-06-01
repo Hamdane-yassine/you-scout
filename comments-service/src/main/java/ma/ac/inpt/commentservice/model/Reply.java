@@ -1,4 +1,4 @@
-package ma.ac.inpt.model;
+package ma.ac.inpt.commentservice.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
