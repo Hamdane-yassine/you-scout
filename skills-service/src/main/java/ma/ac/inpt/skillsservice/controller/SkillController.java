@@ -34,6 +34,8 @@ public class SkillController {
         }
     }
 
+    //
+
     @GetMapping("/skills/{id}")
     public ResponseEntity<?> getSkillById(@PathVariable("id") String id) {
         Optional<Skill> skillData = skillService.getSkillById(id);

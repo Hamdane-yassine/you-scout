@@ -38,10 +38,12 @@ public class ReplyService {
         User user = providedUser.orElseThrow(() -> new UserException("User not found"));
 
         Reply newReply = new Reply(ID, user, reply.getBody(), commentId, LocalDateTime.now());
-        replyRepository.save(newReply);
 
         Optional<Comment> providedComment = commentRepository.findById(commentId);
         Comment comment = providedComment.orElseThrow(() -> new CommentException("Comment not found"));
+
+        // Save reply only if comment exists
+        replyRepository.save(newReply);
 
         // Append the reply ID in the comment's replies' List
         List<String> newReplies = comment.getReplies();

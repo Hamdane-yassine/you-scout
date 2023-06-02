@@ -21,9 +21,6 @@ public class Skill {
         this.isActivated = isActivated;
     }
 
-    public String getId() {
-        return id;
-    }
 
     public String getName() {
         return name;

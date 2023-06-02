@@ -23,9 +23,9 @@ public class SkillService {
     public List<Skill> getAllSkills(String name) {
         List<Skill> skills = new ArrayList<>();
         if (name == null)
-            skillRepository.findAll().forEach(skills::add);
+            skills.addAll(skillRepository.findAll());
         else
-            skillRepository.findByName(name).forEach(skills::add);
+            skills.addAll(skillRepository.findByName(name));
         return skills;
     }
 
