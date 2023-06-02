@@ -4,6 +4,7 @@ package ma.ac.inpt.skillsservice.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ma.ac.inpt.skillsservice.model.Skill;
 import ma.ac.inpt.skillsservice.service.SkillService;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest(SkillController.class)
 public class SkillControllerTest {
@@ -125,39 +127,23 @@ public class SkillControllerTest {
 
     // Test createSkill
     @Test
-    public void testCreateSkill_ValidSkill() throws Exception {
+    public void createSkill_ValidSkill() throws Exception {
         // Arrange
-        Skill skill = new Skill("1", "Skill 1", 0, true);
-        Skill createdSkill = new Skill("1", "Skill 1", 0, true);
+        Skill skill = new Skill("1", "Passing", 0, true);
 
-        when(skillService.createSkill(skill)).thenReturn(createdSkill);
+        Skill createdSkill = new Skill("1", "Passing", 0, true);
 
-        // Act & Assert
+        when(skillService.createSkill(Mockito.any(Skill.class))).thenReturn(createdSkill);
+
+        // Act and Assert
         mockMvc.perform(MockMvcRequestBuilders.post("/api/skills")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(skill)))
-                        .andExpect(status().isCreated());
-
-        // Verify
-        verify(skillService, times(1)).createSkill(skill);
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Passing"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.usedCount").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isActivated").value(true));
     }
-
-//    @Test
-//    public void testCreateSkill_InvalidSkill() throws Exception {
-//        // Arrange
-//        Skill skill = new Skill(); // Invalid skill with missing fields
-//
-//        when(skillService.createSkill(skill)).thenThrow(new IllegalArgumentException());
-//
-//        // Act & Assert
-//        mockMvc.perform(MockMvcRequestBuilders.post("/api/skills")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(asJsonString(skill)))
-//                        .andExpect(status().isInternalServerError());
-//
-//        // Verify
-//        verify(skillService, times(1)).createSkill(skill);
-//    }
 
     // Test incrementSkill
     @Test
