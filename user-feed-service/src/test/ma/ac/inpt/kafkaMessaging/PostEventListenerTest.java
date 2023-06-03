@@ -1,8 +1,7 @@
 package ma.ac.inpt.kafkaMessaging;
-import ma.ac.inpt.kafkaMessaging.PostEventListener;
 import ma.ac.inpt.models.Post;
 import ma.ac.inpt.payload.PostEvent;
-import ma.ac.inpt.service.FeedGenService;
+import ma.ac.inpt.postservice.FeedGenService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

@@ -1,15 +1,13 @@
 package ma.ac.inpt.controller;
 
 import ma.ac.inpt.model.Skill;
-import ma.ac.inpt.repository.SkillRepository;
-import ma.ac.inpt.service.SkillService;
+import ma.ac.inpt.postservice.SkillService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

@@ -1,10 +1,7 @@
 package ma.ac.inpt.postservice.model;
 
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -18,6 +15,7 @@ import java.util.ArrayList;
 public class Post {
 
     @Id
+    @NonNull
     private String id;
 
     @CreatedDate
@@ -27,6 +25,7 @@ public class Post {
     private Instant updatedAt;
 
     @CreatedBy
+    @NonNull
     private String username;
 
     @LastModifiedBy

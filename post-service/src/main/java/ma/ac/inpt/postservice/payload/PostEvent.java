@@ -1,6 +1,6 @@
 package ma.ac.inpt.postservice.payload;
 
-import ma.ac.inpt.postservice.messaging.PostEventType;
+import ma.ac.inpt.postservice.postMessaging.PostEventType;
 import lombok.Builder;
 import lombok.Data;
 import java.time.Instant;

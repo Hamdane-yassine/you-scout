@@ -3,15 +3,10 @@ package ma.ac.inpt.kafkaMessaging;
 import lombok.RequiredArgsConstructor;
 import ma.ac.inpt.models.Post;
 import ma.ac.inpt.payload.PostEvent;
-import ma.ac.inpt.service.FeedGenService;
+import ma.ac.inpt.postservice.FeedGenService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 @Component
 @Slf4j

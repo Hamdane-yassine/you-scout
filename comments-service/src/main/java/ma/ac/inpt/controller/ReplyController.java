@@ -1,7 +1,7 @@
 package ma.ac.inpt.controller;
 
 import ma.ac.inpt.model.Reply;
-import ma.ac.inpt.service.ReplyService;
+import ma.ac.inpt.postservice.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

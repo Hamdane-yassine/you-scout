@@ -4,7 +4,7 @@ package ma.ac.inpt.postservice.service;
 import lombok.RequiredArgsConstructor;
 import ma.ac.inpt.postservice.exception.NotAllowedException;
 import ma.ac.inpt.postservice.exception.ResourceNotFoundException;
-import ma.ac.inpt.postservice.messaging.PostEventSender;
+import ma.ac.inpt.postservice.postMessaging.PostEventSender;
 import ma.ac.inpt.postservice.model.Post;
 import ma.ac.inpt.postservice.payload.PostRequest;
 import ma.ac.inpt.postservice.repository.PostRepo;
@@ -26,7 +26,7 @@ public class PostService {
     public Post createPost(PostRequest postRequest) {
         log.info("creating post image url {}", postRequest.getImageUrl());
 
-        Post post = new Post(postRequest.getImageUrl(), postRequest.getCaption());
+        Post post = new Post(postRequest.getId(),postRequest.getUserName(),postRequest.getImageUrl(), postRequest.getCaption());
 
         post = postRepository.save(post);
         postEventSender.sendPostCreated(post);

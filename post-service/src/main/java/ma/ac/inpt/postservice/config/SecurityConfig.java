@@ -14,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final RsaKeysConfig rsakeysConfig;
+//    private final RsaKeysConfig rsakeysConfig;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -32,9 +32,9 @@ public class SecurityConfig {
     /**
      * Configures JWT decoder with the RSA public key.
      */
-    @Bean
-    JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withPublicKey(rsakeysConfig.publicKey()).build();
-    }
+//    @Bean
+//    JwtDecoder jwtDecoder() {
+//        return NimbusJwtDecoder.withPublicKey(rsakeysConfig.publicKey()).build();
+//    }
 
 }

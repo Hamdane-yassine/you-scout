@@ -2,7 +2,7 @@ package ma.ac.inpt.controller;
 
 import ma.ac.inpt.model.Comment;
 import ma.ac.inpt.model.User;
-import ma.ac.inpt.service.CommentService;
+import ma.ac.inpt.postservice.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
