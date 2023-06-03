@@ -37,12 +37,13 @@ public class FeedControllerTest {
         SlicedResult<Post> feedResult = SlicedResult.<Post>builder().content(List.of(Post.builder().id("the one").build())).build();
         System.out.println(feedResult.toString());
         when(feedService.getUserFeed(username, pagingState)).thenReturn(feedResult);
+        String expectedJson = "{\"pagingState\":null,\"content\":[{\"id\":\"the one\",\"createdAt\":null,\"username\":null,\"userProfilePic\":null,\"updatedAt\":null,\"lastModifiedBy\":null,\"imageUrl\":null,\"caption\":null,\"commentsNum\":0}],\"last\":false}";
 
         // Act and Assert
         mockMvc.perform(MockMvcRequestBuilders.get("/feed/{username}", username)
-                        .param("ps", pagingState.orElse(""))
+
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json("[{\"id\":\"the one\"}]")); // replace with expected JSON response
+                .andExpect(MockMvcResultMatchers.content().json(expectedJson)); // replace with expected JSON response
     }
 }
