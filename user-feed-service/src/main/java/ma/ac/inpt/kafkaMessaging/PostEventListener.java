@@ -15,47 +15,28 @@ public class PostEventListener {
 
     private final FeedGenService feedGeneratorService;
 
-
     @KafkaListener(topics = "post", groupId = "posts", containerFactory = "factory")
-//    public void onMessage(Message<PostEvent> message) {
-        public void consume(PostEvent message) {
+    public void consume(PostEvent message) {
         log.info(message.toString());
-            PostEventType eventType = message.getEventType();
-            switch (eventType) {
-                case CREATED:
-                    feedGeneratorService.addToFeed(convertTo(message));
-                    break;
-                case DELETED:
-                    break;
-            }
-        }
-//        PostEventType eventType = message.getPayload().getEventType();
-//
-//        log.info("received message to process post {} for user {} eventType {}",
-//                message.getPayload().getId(),
-//                message.getPayload().getUsername(),
-//                eventType.name());
-//
-//        Acknowledgment acknowledgment =
-//                message.getHeaders().get(KafkaHeaders.ACKNOWLEDGMENT, Acknowledgment.class);
-//
-//
-//        switch (eventType) {
-//            case CREATED:
-//                feedGeneratorService.addToFeed(convertTo(message.getPayload()));
-//                break;
-//            case DELETED:
-//                break;
-//        }
-//
-//        if(acknowledgment != null) {
-//            acknowledgment.acknowledge();
-//        }
 
+        // Extract the event type from the message
+        PostEventType eventType = message.getEventType();
+
+        // Process the event based on its type
+        switch (eventType) {
+            case CREATED:
+                // Convert the PostEvent to a Post object and add it to the feed
+                feedGeneratorService.addToFeed(convertTo(message));
+                break;
+            case DELETED:
+                // Handle the deletion event
+                break;
+        }
+    }
 
     private Post convertTo(PostEvent payload) {
-        return Post
-                .builder()
+        // Convert the PostEvent to a Post object
+        return Post.builder()
                 .id(payload.getId())
                 .createdAt(payload.getCreatedAt())
                 .username(payload.getUsername())

@@ -23,21 +23,27 @@ import java.util.Map;
 
 @Configuration
 public class KafkaConsumerConfig {
-//    @Value(value = "${spring.kafka.bootstrap-servers}")
-//    private String bootstrapAddress;
-
 
     public Map<String, Object> consumerConfig() {
         HashMap<String, Object> configProps = new HashMap<>();
+
+        // Configure the Kafka bootstrap servers
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+
+        // Configure the deserializers for key and value
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+
+        // Configure the specific deserializer classes
         configProps.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
         configProps.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
+
+        // Configure trusted packages for the JsonDeserializer
         configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+
+        // Configure type mappings for the JsonSerializer
         configProps.put(JsonSerializer.TYPE_MAPPINGS, "PostEvent:ma.ac.inpt.payload.PostEvent");
-//        configProps.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
-//        configProps.put(JsonDeserializer.VALUE_DEFAULT_TYPE, PostEvent.class);
+
         return configProps;
     }
 
@@ -47,7 +53,8 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, PostEvent>> factory(ConsumerFactory<String, PostEvent> consumerFactory) {
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, PostEvent>> factory(
+            ConsumerFactory<String, PostEvent> consumerFactory) {
         ConcurrentKafkaListenerContainerFactory<String, PostEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         return factory;

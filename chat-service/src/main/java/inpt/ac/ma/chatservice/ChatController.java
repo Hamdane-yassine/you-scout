@@ -27,7 +27,7 @@ public class ChatController {
     private final ChatService chatMessageService;
     private final RoomService chatRoomService;
 
-    @MessageMapping("/chat")
+    @MessageMapping("/sockjs/chat")
     public void processMessage(@Payload Chat chatMessage) {
         var chatId = chatRoomService.getChatId(chatMessage.getSenderId(), chatMessage.getRecipientId(), true);
         chatMessage.setChatId(chatId.get());

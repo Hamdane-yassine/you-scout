@@ -1,6 +1,6 @@
 package ma.ac.inpt.postservice;
 
-import ma.ac.inpt.UserFeedEntity;
+import ma.ac.inpt.models.UserFeedEntity;
 import ma.ac.inpt.exceptions.UnableToGetFollowersException;
 import ma.ac.inpt.feignClient.Graph;
 import ma.ac.inpt.models.Post;
