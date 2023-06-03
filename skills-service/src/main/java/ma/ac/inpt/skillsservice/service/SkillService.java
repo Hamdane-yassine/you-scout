@@ -1,3 +1,4 @@
+
 package ma.ac.inpt.skillsservice.service;
 
 import ma.ac.inpt.skillsservice.model.Skill;

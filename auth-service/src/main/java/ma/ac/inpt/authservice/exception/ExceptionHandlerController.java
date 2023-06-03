@@ -1,5 +1,6 @@
 package ma.ac.inpt.authservice.exception;
 
+import com.couchbase.client.core.error.UserNotFoundException;
 import lombok.Builder;
 import lombok.Data;
 import ma.ac.inpt.authservice.exception.auth.AccountNotEnabledException;

@@ -4,14 +4,19 @@ package ma.ac.inpt.postservice.service;
 import lombok.RequiredArgsConstructor;
 import ma.ac.inpt.postservice.exception.NotAllowedException;
 import ma.ac.inpt.postservice.exception.ResourceNotFoundException;
-import ma.ac.inpt.postservice.messaging.PostEventSender;
+import ma.ac.inpt.postservice.payload.RatingRequest;
+import ma.ac.inpt.postservice.postMessaging.PostEventSender;
 import ma.ac.inpt.postservice.model.Post;
 import ma.ac.inpt.postservice.payload.PostRequest;
 import ma.ac.inpt.postservice.repository.PostRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -24,9 +29,9 @@ public class PostService {
     private final PostEventSender postEventSender;
 
     public Post createPost(PostRequest postRequest) {
-        log.info("creating post image url {}", postRequest.getImageUrl());
+        log.info("creating post video url {}", postRequest.getVideo());
 
-        Post post = new Post(postRequest.getImageUrl(), postRequest.getCaption());
+        Post post = new Post(postRequest.getId(), Instant.now(), postRequest.getUsername(),postRequest.getUserProfilePic(),postRequest.getVideo(), postRequest.getCaption(),postRequest.getLikes().orElse(new ArrayList<>()),0,postRequest.getSkills().orElse(new ArrayList<>()), new HashMap<>());
 
         post = postRepository.save(post);
         postEventSender.sendPostCreated(post);
@@ -53,7 +58,7 @@ public class PostService {
                     return post;
                 })
                 .orElseThrow(() -> {
-                    log.warn("post not found id {}", postId);
+                    log.warn("Post not found id {}", postId);
                     return new ResourceNotFoundException(postId);
                 });
     }
@@ -72,7 +77,8 @@ public class PostService {
                     log.warn("post not found id {}", postId);
                     return new ResourceNotFoundException(postId);
                 });
-    }public void removeLikePost(String postId, String username){
+    }
+    public void removeLikePost(String postId, String username){
         log.info("removing like post {} by {}", postId, username);
         postRepository
                 .findById(postId)
@@ -99,6 +105,24 @@ public class PostService {
     public List<Post> postsByIdIn(List<String> ids) {
         return postRepository.findByIdInOrderByCreatedAtDesc(ids);
     }
+
+    public void ratePost(String postId, RatingRequest ratingRequest, String username){
+        log.info("rating post {} in service", postId);
+        Map<String, Integer> rating = new HashMap<>();
+        rating.put(username, ratingRequest.getRating());
+        postRepository
+                .findById(postId)
+                .map(post-> {
+                    post.getRates().put(username, ratingRequest.getRating());
+                    postRepository.save(post);
+                    return post;
+                })
+                .orElseThrow(() -> {
+                    log.warn("Post not found id {}", postId);
+                    return new ResourceNotFoundException(postId);
+                });
+    }
+
 
     public void updateCommentNum(String id, int num){
         log.info("updating number of comments in post {}", id);

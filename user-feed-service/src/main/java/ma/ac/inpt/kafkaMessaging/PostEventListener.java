@@ -3,7 +3,7 @@ package ma.ac.inpt.kafkaMessaging;
 import lombok.RequiredArgsConstructor;
 import ma.ac.inpt.models.Post;
 import ma.ac.inpt.payload.PostEvent;
-import ma.ac.inpt.service.FeedGenService;
+import ma.ac.inpt.postservice.FeedGenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ public class PostEventListener {
     private final FeedGenService feedGeneratorService;
 
 
-    @KafkaListener(topics = "amigoscode", groupId = "post", containerFactory = "factory")
+    @KafkaListener(topics = "post", groupId = "posts", containerFactory = "factory")
 //    public void onMessage(Message<PostEvent> message) {
         public void consume(PostEvent message) {
         log.info(message.toString());

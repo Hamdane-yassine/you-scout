@@ -3,7 +3,7 @@ package ma.ac.inpt;
 import ma.ac.inpt.models.Post;
 import lombok.extern.slf4j.Slf4j;
 import ma.ac.inpt.payload.SlicedResult;
-import ma.ac.inpt.service.FeedService;
+import ma.ac.inpt.postservice.FeedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;

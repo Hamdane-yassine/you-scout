@@ -1,9 +1,10 @@
+
 package ma.ac.inpt.commentservice.service;
 
 import ma.ac.inpt.commentservice.exceptions.CommentException;
 import ma.ac.inpt.commentservice.exceptions.PostException;
 import ma.ac.inpt.commentservice.exceptions.UserException;
-import ma.ac.inpt.commentservice.messaging.PostEventSender;
+import ma.ac.inpt.commentservice.messaging.CommentEventSender;
 import ma.ac.inpt.commentservice.model.Comment;
 import ma.ac.inpt.commentservice.model.Post;
 import ma.ac.inpt.commentservice.model.User;
@@ -25,16 +26,16 @@ public class CommentService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final ReplyRepository replyRepository;
-    private final PostEventSender postEventSender;
+    private final CommentEventSender commentEventSender;
 
     public CommentService(CommentRepository commentRepository, UserRepository userRepository,
                           PostRepository postRepository,
-                          ReplyRepository replyRepository, PostEventSender postEventSender) {
+                          ReplyRepository replyRepository, CommentEventSender commentEventSender) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.postRepository = postRepository;
         this.replyRepository = replyRepository;
-        this.postEventSender = postEventSender;
+        this.commentEventSender = commentEventSender;
     }
 
     public Comment createComment(Comment comment){
@@ -55,7 +56,7 @@ public class CommentService {
         post.setComments(postComments);
 
         Comment newComment = new Comment(ID, user, comment.getBody(), replies, comment.getPostId(), LocalDateTime.now(), likes);
-        postEventSender.sendCommentNum(post);
+        commentEventSender.sendCommentNum(post);
         commentRepository.save(newComment);
         postRepository.save(post);
         return newComment;
