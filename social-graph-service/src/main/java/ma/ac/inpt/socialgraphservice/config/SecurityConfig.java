@@ -10,12 +10,22 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Configuration class for security.
+ */
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final RsaKeysConfig rsakeysConfig;
 
+    /**
+     * Creates the security filter chain.
+     *
+     * @param httpSecurity the HttpSecurity object
+     * @return the security filter chain
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -30,7 +40,9 @@ public class SecurityConfig {
     }
 
     /**
-     * Configures JWT decoder with the RSA public key.
+     * Configures the JWT decoder with the RSA public key.
+     *
+     * @return the JWT decoder
      */
     @Bean
     JwtDecoder jwtDecoder() {
