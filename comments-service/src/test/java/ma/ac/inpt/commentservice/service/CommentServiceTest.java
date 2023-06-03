@@ -3,7 +3,7 @@ package ma.ac.inpt.commentservice.service;
 import ma.ac.inpt.commentservice.exceptions.CommentException;
 import ma.ac.inpt.commentservice.exceptions.PostException;
 import ma.ac.inpt.commentservice.exceptions.UserException;
-import ma.ac.inpt.commentservice.messaging.PostEventSender;
+import ma.ac.inpt.commentservice.messaging.CommentEventSender;
 import ma.ac.inpt.commentservice.model.Comment;
 import ma.ac.inpt.commentservice.model.Post;
 import ma.ac.inpt.commentservice.model.User;
@@ -39,7 +39,7 @@ public class CommentServiceTest {
     private ReplyRepository replyRepository;
 
     @Mock
-    private PostEventSender postEventSender;
+    private CommentEventSender postEventSender;
 
     private CommentService commentService;
 
