@@ -14,7 +14,7 @@ public class PostEventListener {
 
     private final PostService postService;
 
-    @KafkaListener(topics = "comments", groupId = "post", containerFactory = "factory")
+    @KafkaListener(topics = "comments", groupId = "comment", containerFactory = "factory")
 //    public void onMessage(Message<PostEvent> message) {
         public void consume(CommentNumEvent message) {
         log.info("received the updated number of comments for post {}", message.getCommentNum());

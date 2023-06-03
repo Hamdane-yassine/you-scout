@@ -15,9 +15,6 @@ import org.springframework.stereotype.Service;
 public class PostEventSender {
 
     private final KafkaTemplate<String, PostEvent> kafkaTemplate;
-//    public PostEventSender(KafkaTemplate<String, PostEvent> kafkaTemplate){
-//        log.info(kafkaTemplate.toString());
-//    }
     public void sendPostCreated(Post post) {
         log.info("sending post created event for post id {}", post.getId());
         sendPostChangedEvent(convertTo(post, PostEventType.CREATED));
@@ -35,18 +32,8 @@ public class PostEventSender {
 
     private void sendPostChangedEvent(PostEvent payload) {
 
-//        Message<PostEvent> message =
-//                MessageBuilder
-//                        .withPayload(payload)
-//                        .setHeader(KafkaHeaders.MESSAGE_KEY, payload.getId())
-//                        .build();
         kafkaTemplate.send("amigoscode",payload);
 
-//        log.info("post event {} sent to topic {} for post {} and user {}",
-//                message.getPayload().getEventType().name(),
-//                kafkaTemplate.toString(),
-//                message.getPayload().getId(),
-//                message.getPayload().getUsername());
     }
 
     private PostEvent convertTo(Post post, PostEventType eventType) {
@@ -55,11 +42,9 @@ public class PostEventSender {
                 .eventType(eventType)
                 .id(post.getId())
                 .username(post.getUsername())
-                .caption(post.getCaption())
                 .createdAt(post.getCreatedAt())
-                .updatedAt(post.getUpdatedAt())
-                .lastModifiedBy(post.getLastModifiedBy())
-                .imageUrl(post.getImageUrl())
+                .comments(post.getCommentsNum())
+                .likes(post.getLikes().size())
                 .build();
     }
 }

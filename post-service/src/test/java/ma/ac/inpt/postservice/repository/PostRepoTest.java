@@ -1,6 +1,5 @@
 package ma.ac.inpt.postservice.repository;
 
-import lombok.RequiredArgsConstructor;
 import ma.ac.inpt.postservice.model.Post;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

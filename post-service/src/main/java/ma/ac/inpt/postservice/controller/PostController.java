@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 import ma.ac.inpt.postservice.model.Post;
 import ma.ac.inpt.postservice.payload.ApiResponse;
 import ma.ac.inpt.postservice.payload.PostRequest;
+import ma.ac.inpt.postservice.payload.RatingRequest;
 import ma.ac.inpt.postservice.service.PostService;
 import lombok.extern.slf4j.Slf4j;
 //import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,7 +30,7 @@ public class PostController {
 
     @PostMapping("/posts")
     public ResponseEntity<?> createPost(@RequestBody PostRequest postRequest){
-        log.info("received a request to create a post for image {}", postRequest.getImageUrl());
+        log.info("received a request to create a post for video {}", postRequest.getVideo());
 
         Post post = postService.createPost(postRequest);
 
@@ -44,7 +44,6 @@ public class PostController {
     }
 
     @DeleteMapping("/posts/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePost(@PathVariable("id") String id, @AuthenticationPrincipal Principal user) {
         log.info("received a delete request for post id {} from user {}", id, user.getName());
         postService.deletePost(id, user.getName());
@@ -57,11 +56,19 @@ public class PostController {
     }
 
     @DeleteMapping("/posts/{id}/removelike")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeLikePost(@PathVariable("id") String id, @AuthenticationPrincipal Principal user) {
         log.info("received a remove post liking request for post id {} from user {}", id, user.getName());
         postService.removeLikePost(id, user.getName());
     }
+
+    @PostMapping("/posts/{id}/rate")
+    public void ratePost(@PathVariable("id") String id, @RequestBody RatingRequest ratingRequest, @AuthenticationPrincipal Principal user) {
+        log.info("received a rating post request for post id {} from user {}", id, user.getName());
+        postService.ratePost(id, ratingRequest, user.getName());
+    }
+
+
 //
 //    @GetMapping("/posts/me")
 //    public ResponseEntity<?> findCurrentUserPosts(@AuthenticationPrincipal Principal principal) {

@@ -7,10 +7,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Map;
 
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Document
 public class Post {
 
@@ -21,23 +23,23 @@ public class Post {
     @CreatedDate
     private Instant createdAt;
 
-    @LastModifiedDate
-    private Instant updatedAt;
-
     @CreatedBy
     @NonNull
     private String username;
 
-    @LastModifiedBy
-    private String lastModifiedBy;
-
-    private ArrayList<String> likes;
-
     @NonNull
-    private String imageUrl; //for now post will contain only one image
+    private String userProfilePic;
+
+    private String video;
 
     @NonNull
     private String caption;
+    @NonNull
+    private ArrayList<String> likes;
 
     private int commentsNum;
+    @NonNull
+    private ArrayList<String> skills;
+
+    private Map<String, Integer> rates;
 }
