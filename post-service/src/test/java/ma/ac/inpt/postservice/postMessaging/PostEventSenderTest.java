@@ -29,13 +29,11 @@ public class PostEventSenderTest {
         Post post = new Post();
         post.setId("post-id");
         post.setUsername("user1");
-        post.setCaption("Hello, world!");
 
         PostEvent expectedPostEvent = PostEvent.builder()
                 .eventType(PostEventType.CREATED)
                 .id(post.getId())
                 .username(post.getUsername())
-                .caption(post.getCaption())
                 .build();
 
         // Act

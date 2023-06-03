@@ -25,11 +25,7 @@ public class KafkaConsumerConfig {
 //    @Value(value = "${spring.kafka.bootstrap-servers}")
 //    private String bootstrapAddress;
 
-    @Bean
-    public NewTopic commentsTopic(){
-        return TopicBuilder.name("comments")
-                .build();
-    }
+
     public Map<String, Object> consumerConfig() {
         HashMap<String, Object> configProps = new HashMap<>();
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");

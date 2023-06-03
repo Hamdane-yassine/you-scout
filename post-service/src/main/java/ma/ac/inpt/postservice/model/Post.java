@@ -42,4 +42,12 @@ public class Post {
     private ArrayList<String> skills;
 
     private Map<String, Integer> rates;
+
+    public Post(String id, String username, String profilePic, String video, String s) {
+        this.id=id;
+        this.username=username;
+        this.userProfilePic=profilePic;
+        this.video=video;
+        this.caption=s;
+    }
 }

@@ -17,11 +17,13 @@ public class UserEventListener {
     @KafkaListener(topics = "${spring.kafka.topic.name}", groupId = "social-graph-service",containerFactory = "factory")
     public void consume(UserEventPayload userEventPayload) {
         UserEventType eventType = userEventPayload.getUserEventType();
-        User user = UserMapper.INSTANCE.userEventPayloadToUser(userEventPayload);
-        switch (eventType) {
-            case CREATED -> userService.addUser(user);
-            case UPDATED -> userService.updateUser(user);
-            case DELETED -> userService.deleteUser(user.getId());
+        if(eventType !=null ) {
+            User user = UserMapper.INSTANCE.userEventPayloadToUser(userEventPayload);
+            switch (eventType) {
+                case CREATED -> userService.addUser(user);
+                case UPDATED -> userService.updateUser(user);
+                case DELETED -> userService.deleteUser(user.getId());
+            }
         }
     }
 

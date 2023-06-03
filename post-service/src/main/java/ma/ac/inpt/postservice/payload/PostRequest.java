@@ -2,23 +2,27 @@ package ma.ac.inpt.postservice.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 @Data
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class PostRequest {
 
-    private String id;
 
-    private String username;
 
-    private String userProfilePic;
+    private final String id;
 
-    private String video;
+    private final String username;
 
-    private String caption;
+    private final String userProfilePic;
+
+    private final String video;
+
+    private final String caption;
 
     private Optional<ArrayList<String>> likes;
 

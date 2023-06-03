@@ -20,6 +20,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -38,18 +39,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtDecoder jwtDecoder; // Component for decoding JWT tokens
     private final AuthenticationManager authenticationManager; // Spring's authentication manager
     private final UserRepository userRepository; // Custom user details service for loading user data
-    private final AccountVerificationService accountVerificationService; // Service for handling account verification
+    private final EmailVerificationService emailVerificationService; // Service for handling account verification
     private final Map<String, OAuth2Provider> oAuth2Providers; // Map of supported OAuth2 providers
     private final RefreshTokenRepository refreshTokenRepository;
     private final static Integer REFRESH_TOKEN_EXPIRE_DATE_IN_DAYS = 7;
     private final static Integer ACCESS_TOKEN_EXPIRE_DATE_IN_MINUTES = 15;
 
-    public AuthenticationServiceImpl(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder, AuthenticationManager authenticationManager, UserRepository userRepository, AccountVerificationService accountVerificationService, List<OAuth2Provider> oAuth2Providers,RefreshTokenRepository refreshTokenRepository) {
+
+    public AuthenticationServiceImpl(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder, AuthenticationManager authenticationManager, UserRepository userRepository, EmailVerificationService emailVerificationService, List<OAuth2Provider> oAuth2Providers, RefreshTokenRepository refreshTokenRepository) {
         this.jwtEncoder = jwtEncoder;
         this.jwtDecoder = jwtDecoder;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
-        this.accountVerificationService = accountVerificationService;
+        this.emailVerificationService = emailVerificationService;
         this.oAuth2Providers = oAuth2Providers.stream().collect(Collectors.toMap(OAuth2Provider::getName, Function.identity()));
         this.refreshTokenRepository = refreshTokenRepository;
     }
@@ -61,13 +63,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @return the authentication response containing the generated access token and optional refresh token
      */
     @Override
+    @Transactional
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         log.info("Authenticating user with grant type: {}", request.getGrantType().toUpperCase());
         String grantType = request.getGrantType().toUpperCase();
         if (grantType.equals("PASSWORD")) {
             return authenticatePasswordGrant(request);
-        }
-        return authenticateRefreshTokenGrant(request);
+        } else if(grantType.equals("REFRESH_TOKEN"))
+            return authenticateRefreshTokenGrant(request);
+        throw new IllegalArgumentException("Unsupported grant type : "+grantType);
     }
 
     /**
@@ -78,6 +82,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @return the authentication response containing the generated access token and optional refresh token
      */
     @Override
+    @Transactional
     public AuthenticationResponse authenticateOAuth2(String provider, String authorizationCode) {
         OAuth2Provider oAuth2Provider = oAuth2Providers.get(provider);
         if (oAuth2Provider == null) {
@@ -91,10 +96,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @Transactional
     public void logout(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        refreshTokenRepository.deleteByUser(user);
+        log.info("Username is {}", user.getUsername());
+        user.setRefreshToken(null);
+        userRepository.save(user);
     }
+
 
     /**
      * Authenticates the user using password grant type.
@@ -111,7 +120,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return buildAuthenticationResponse(request.isWithRefreshToken(), subject, scope);
         } catch (DisabledException e) {
             User user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            String message = accountVerificationService.sendVerificationEmail(user, EmailVerificationType.RESEND);
+            String message = emailVerificationService.sendVerificationEmail(user, EmailVerificationType.RESEND);
             throw new AccountNotEnabledException(message);
         } catch (AuthenticationException e) {
             log.error("Authentication failed for user: {}", request.getUsername(), e);
@@ -166,18 +175,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             // Retrieve the user from the subject (username)
             User user = userRepository.findByUsername(subject).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-            // Delete the existing refresh token for the user
-            refreshTokenRepository.deleteByUser(user);
+            if (user.getRefreshToken() != null) {
+                // Update the existing refresh token
+                user.getRefreshToken().setTokenUuid(refreshTokenUuid);
+                user.getRefreshToken().setExpiryDate(instant.plus(REFRESH_TOKEN_EXPIRE_DATE_IN_DAYS, ChronoUnit.DAYS));
 
-            // Create a new RefreshToken instance
-            RefreshToken refreshToken = RefreshToken.builder()
-                    .tokenUuid(refreshTokenUuid)
-                    .user(user)
-                    .expiryDate(instant.plus(REFRESH_TOKEN_EXPIRE_DATE_IN_DAYS, ChronoUnit.DAYS))
-                    .build();
+                // Save the updated refresh token
+                userRepository.save(user);
+            } else {
+                // If there's no existing refresh token, create a new one
+                RefreshToken refreshToken = RefreshToken.builder()
+                        .tokenUuid(refreshTokenUuid)
+                        .expiryDate(instant.plus(REFRESH_TOKEN_EXPIRE_DATE_IN_DAYS, ChronoUnit.DAYS))
+                        .build();
 
-            // Save the new refresh token to the database
-            refreshTokenRepository.save(refreshToken);
+                user.setRefreshToken(refreshToken);
+                // Save the new refresh token to the database
+                userRepository.save(user);
+            }
+
         }
 
         log.info("Authentication response generated for user: {}", subject);

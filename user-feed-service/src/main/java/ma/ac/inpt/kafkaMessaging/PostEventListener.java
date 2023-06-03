@@ -16,7 +16,7 @@ public class PostEventListener {
     private final FeedGenService feedGeneratorService;
 
 
-    @KafkaListener(topics = "amigoscode", groupId = "post", containerFactory = "factory")
+    @KafkaListener(topics = "post", groupId = "posts", containerFactory = "factory")
 //    public void onMessage(Message<PostEvent> message) {
         public void consume(PostEvent message) {
         log.info(message.toString());

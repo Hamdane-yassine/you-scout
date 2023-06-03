@@ -32,7 +32,7 @@ public class PostEventSender {
 
     private void sendPostChangedEvent(PostEvent payload) {
 
-        kafkaTemplate.send("amigoscode",payload);
+        kafkaTemplate.send("post",payload);
 
     }
 

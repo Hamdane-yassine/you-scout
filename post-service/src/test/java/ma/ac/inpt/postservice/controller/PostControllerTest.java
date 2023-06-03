@@ -17,6 +17,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 public class PostControllerTest {
@@ -36,10 +37,10 @@ public class PostControllerTest {
     @Test
     public void testCreatePost() {
         // Create a test PostRequest
-        PostRequest postRequest = new PostRequest("id","username","urlImage","that's the stuff");
+        PostRequest postRequest = new PostRequest("id","username","urlImage","video","that's the stuff");
 
         // Mock the postService.createPost method
-        Post post = new Post("id","username","urlImage","that's the stuff");
+        Post post = new Post("id","username","profilePic","video","that's the stuff");
         post.setId("postId");
         when(postService.createPost(postRequest)).thenReturn(post);
 

@@ -17,9 +17,9 @@ public class PostRepoTest {
     @Test
     public void testFindByUsernameOrderByCreatedAtDesc() {
         // Create some test posts
-        Post post1 = new Post("afdafa","username1","afdsaf ", "Post 1");
+        Post post1 = new Post("id","username","profilePic","video","that's the stuff");
         postRepo.save(post1);
-        Post post2 = new Post("afdaf5","username2","afdsaf ", "Post 1");
+        Post post2 = new Post("id2","username2","profilePic","video","that's the stuff");
         postRepo.save(post2);
 
 
@@ -34,9 +34,9 @@ public class PostRepoTest {
     @Test
     public void testFindByIdInOrderByCreatedAtDesc() {
         // Create some test posts
-        Post post1 = new Post("afdafa","username1","afdsaf ", "Post 1");
+        Post post1 = new Post("id","username","profilePic","video","that's the stuff");
         postRepo.save(post1);
-        Post post2 = new Post("afdaf5","username2","afdsaf ", "Post 1");
+        Post post2 = new Post("id2","username2","profilePic","video","that's the stuff");
         postRepo.save(post2);
 
         List<String> ids = Arrays.asList(post1.getId(), post2.getId());

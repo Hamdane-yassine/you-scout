@@ -23,6 +23,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -52,7 +53,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
      * Handles exceptions when a requested resource is not found in the system, such as when a requested user or role does not exist.
      * Returns an HTTP 404 NOT FOUND response with a custom error message.
      */
-    @ExceptionHandler({UserNotFoundException.class, RoleNotFoundException.class})
+    @ExceptionHandler({UsernameNotFoundException.class, RoleNotFoundException.class})
     public ResponseEntity<Object> handleNotFoundException(ApplicationException ex, WebRequest request) {
         return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage(), request);
     }
@@ -70,7 +71,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
      * Handles exceptions when a request is invalid, such as when missing required request parameters.
      * Returns an HTTP 400 BAD REQUEST response with a custom error message.
      */
-    @ExceptionHandler(InvalidRequestException.class)
+    @ExceptionHandler({InvalidRequestException.class})
     public ResponseEntity<Object> handleBadRequestException(ApplicationException ex, WebRequest request) {
         return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
     }
