@@ -7,15 +7,18 @@ import org.neo4j.harness.Neo4j;
 import org.neo4j.harness.Neo4jBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.neo4j.DataNeo4jTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test class for UserRepository.
+ */
 @DataNeo4jTest
 @Transactional(propagation = Propagation.NEVER)
 public class UserRepositoryTest {
@@ -100,7 +103,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    @DisplayName("Test retrieving followers of a user")
+    @DisplayName("Test retrieving followers of a user with pagination")
     void testFindFollowers() {
         // Given
         User user1 = createUser("testUser1");
@@ -108,16 +111,16 @@ public class UserRepositoryTest {
         userRepository.followUser(user1.getUsername(), user2.getUsername());
 
         // When
-        Set<User> followers = userRepository.findFollowers(user2.getUsername());
+        Page<String> followers = userRepository.findFollowerUsernamesByUsername(user2.getUsername(), PageRequest.of(0, 10));
 
         // Then
-        assertNotNull(followers);
-        assertEquals(1, followers.size());
-        assertTrue(followers.contains(user1));
+        assertNotNull(followers.getContent());
+        assertEquals(1, followers.getContent().size());
+        assertTrue(followers.getContent().contains(user1.getUsername()));
     }
 
     @Test
-    @DisplayName("Test retrieving users that a user is following")
+    @DisplayName("Test retrieving users that a user is following with pagination")
     void testFindFollowing() {
         // Given
         User user1 = createUser("testUser1");
@@ -125,13 +128,14 @@ public class UserRepositoryTest {
         userRepository.followUser(user1.getUsername(), user2.getUsername());
 
         // When
-        Set<User> following = userRepository.findFollowing(user1.getUsername());
+        Page<String> following = userRepository.findFollowingUsernamesByUsername(user1.getUsername(), PageRequest.of(0, 10));
 
         // Then
-        assertNotNull(following);
-        assertEquals(1, following.size());
-        assertTrue(following.contains(user2));
+        assertNotNull(following.getContent());
+        assertEquals(1, following.getContent().size());
+        assertTrue(following.getContent().contains(user2.getUsername()));
     }
+
 
     @Test
     @DisplayName("Test blocking a user")
@@ -148,7 +152,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    @DisplayName("Test retrieving users that a user has blocked")
+    @DisplayName("Test retrieving users that a user has blocked with pagination")
     void testGetBlockedUsers() {
         // Given
         User user1 = createUser("testUser1");
@@ -156,13 +160,14 @@ public class UserRepositoryTest {
         userRepository.blockUser(user1.getUsername(), user2.getUsername());
 
         // When
-        Set<User> blockedUsers = userRepository.getBlockedUsers(user1.getUsername());
+        Page<String> blockedUsers = userRepository.getBlockedUsernamesByUsername(user1.getUsername(), PageRequest.of(0, 10));
 
         // Then
-        assertNotNull(blockedUsers);
-        assertEquals(1, blockedUsers.size());
-        assertTrue(blockedUsers.contains(user2));
+        assertNotNull(blockedUsers.getContent());
+        assertEquals(1, blockedUsers.getContent().size());
+        assertTrue(blockedUsers.getContent().contains(user2.getUsername()));
     }
+
 
     @Test
     @DisplayName("Test unblocking a user")

@@ -16,20 +16,31 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Configuration class for Kafka consumer.
+ */
 @Configuration
 public class KafkaConsumerConfig {
 
     @Value(value = "${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
 
-
+    /**
+     * Returns the configuration properties for the Kafka consumer.
+     *
+     * @return the configuration properties for the Kafka consumer
+     */
     public Map<String, Object> consumerConfig() {
         HashMap<String, Object> configProps = new HashMap<>();
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         return configProps;
     }
 
-
+    /**
+     * Creates the Kafka consumer factory.
+     *
+     * @return the Kafka consumer factory
+     */
     @Bean
     public ConsumerFactory<String, UserEventPayload> consumerFactory() {
         JsonDeserializer<UserEventPayload> jsonDeserializer = new JsonDeserializer<>(UserEventPayload.class);
@@ -42,6 +53,12 @@ public class KafkaConsumerConfig {
         );
     }
 
+    /**
+     * Creates the Kafka listener container factory.
+     *
+     * @param consumerFactory the Kafka consumer factory
+     * @return the Kafka listener container factory
+     */
     @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, UserEventPayload>> factory(
             ConsumerFactory<String, UserEventPayload> consumerFactory
@@ -51,3 +68,4 @@ public class KafkaConsumerConfig {
         return factory;
     }
 }
+

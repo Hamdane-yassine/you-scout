@@ -1,11 +1,5 @@
 package ma.ac.inpt.socialgraphservice.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.any;
-
 import ma.ac.inpt.socialgraphservice.exception.UserAlreadyExistsException;
 import ma.ac.inpt.socialgraphservice.exception.UserNotFoundException;
 import ma.ac.inpt.socialgraphservice.exception.UserOperationNotAllowedException;
@@ -13,14 +7,24 @@ import ma.ac.inpt.socialgraphservice.model.User;
 import ma.ac.inpt.socialgraphservice.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+/**
+ * Test class for UserService.
+ */
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
@@ -134,37 +138,57 @@ class UserServiceTest {
     @Test
     @DisplayName("Test Find Followers")
     void testFindFollowers() {
+        // Given
+        String username = "username";
+        int page = 0;
+        int size = 10;
+        Page<String> pageOfUsernames = new PageImpl<>(List.of("follower1"), PageRequest.of(page, size), 1);
+
         // When
-        when(userRepository.findFollowers(anyString())).thenReturn(Set.of());
-        when(userRepository.existsByUsername(anyString())).thenReturn(true);
-        Set<User> result = userService.findFollowers("username");
+        when(userRepository.existsByUsername(username)).thenReturn(true);
+        when(userRepository.findFollowerUsernamesByUsername(username, PageRequest.of(page, size)))
+                .thenReturn(pageOfUsernames);
+        Page<String> result = userService.findFollowers(username, page, size);
 
         // Verify
         assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
     }
 
     @Test
     @DisplayName("Test Find Following")
     void testFindFollowing() {
+        // Given
+        String username = "username";
+        Page<String> expectedPage = new PageImpl<>(List.of("following1"), PageRequest.of(0, 10), 1);
+
         // When
-        when(userRepository.findFollowing(anyString())).thenReturn(Set.of());
-        when(userRepository.existsByUsername(anyString())).thenReturn(true);
-        Set<User> result = userService.findFollowing("username");
+        when(userRepository.existsByUsername(username)).thenReturn(true);
+        when(userRepository.findFollowingUsernamesByUsername(username, PageRequest.of(0, 10)))
+                .thenReturn(expectedPage);
+        Page<String> result = userService.findFollowing(username, 0, 10);
 
         // Verify
         assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
     }
 
     @Test
     @DisplayName("Test Get Blocked Users")
     void testGetBlockedUsers() {
+        // Given
+        String username = "username";
+        Page<String> expectedPage = new PageImpl<>(List.of("blocked1"), PageRequest.of(0, 10), 1);
+
         // When
-        when(userRepository.getBlockedUsers(anyString())).thenReturn(Set.of());
-        when(userRepository.existsByUsername(anyString())).thenReturn(true);
-        Set<User> result = userService.getBlockedUsers("username");
+        when(userRepository.existsByUsername(username)).thenReturn(true);
+        when(userRepository.getBlockedUsernamesByUsername(username, PageRequest.of(0, 10)))
+                .thenReturn(expectedPage);
+        Page<String> result = userService.getBlockedUsers(username, 0, 10);
 
         // Verify
         assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
     }
 
     @Test

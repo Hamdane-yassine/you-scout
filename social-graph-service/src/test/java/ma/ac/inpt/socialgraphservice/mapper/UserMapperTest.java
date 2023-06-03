@@ -11,8 +11,14 @@ import java.util.HashSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+/**
+ * Test class for UserMapper.
+ */
 public class UserMapperTest {
 
+    /**
+     * Test mapping from UserEventPayload to User.
+     */
     @Test
     @DisplayName("Test mapping from UserEventPayload to User")
     void testUserEventPayloadToUser() {
@@ -33,6 +39,9 @@ public class UserMapperTest {
         assertNull(user.getBlockedUsers());
     }
 
+    /**
+     * Test mapping from User to UserEventPayload.
+     */
     @Test
     @DisplayName("Test mapping from User to UserEventPayload")
     void testUserToUserEventPayload() {

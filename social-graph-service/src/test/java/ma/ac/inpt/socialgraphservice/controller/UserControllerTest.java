@@ -2,7 +2,6 @@ package ma.ac.inpt.socialgraphservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.ac.inpt.socialgraphservice.config.SecurityTestConfig;
-import ma.ac.inpt.socialgraphservice.model.User;
 import ma.ac.inpt.socialgraphservice.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,23 +10,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Test class for UserController.
+ */
 @WebMvcTest(UserController.class)
 @Import(SecurityTestConfig.class)
 class UserControllerTest {
 
-    private final User user1 = new User();
-    private final User user2 = new User();
-    private final Set<User> users = new HashSet<>();
+
+    private final List<String> users = new ArrayList<>();
+
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -35,12 +39,10 @@ class UserControllerTest {
 
     @BeforeEach
     void setup() {
-        user1.setUsername("user1");
-        user1.setId(1L);
-        user2.setUsername("user2");
-        user2.setId(2L);
-        users.add(user1);
-        users.add(user2);
+        String username1 = "user1";
+        users.add(username1);
+        String username2 = "user2";
+        users.add(username2);
     }
 
     @DisplayName("Test follow user endpoint")
@@ -90,28 +92,40 @@ class UserControllerTest {
     @Test
     void testFindFollowers() throws Exception {
         String username = "username";
+        int page = 0;
+        int size = 10;
 
-        when(userService.findFollowers(username)).thenReturn(users);
+        Page<String> pageUsers = new PageImpl<>(users);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/" + username + "/followers"))
+        when(userService.findFollowers(username, page, size)).thenReturn(pageUsers);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/" + username + "/followers")
+                        .param("page", String.valueOf(page))
+                        .param("size", String.valueOf(size)))
                 .andExpect(status().isOk())
-                .andExpect(content().json(new ObjectMapper().writeValueAsString(users)));
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(pageUsers)));
 
-        verify(userService, times(1)).findFollowers(username);
+        verify(userService, times(1)).findFollowers(username, page, size);
     }
 
     @DisplayName("Test findFollowing endpoint")
     @Test
     void testFindFollowing() throws Exception {
         String username = "username";
+        int page = 0;
+        int size = 10;
 
-        when(userService.findFollowing(username)).thenReturn(users);
+        Page<String> pageUsers = new PageImpl<>(users);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/" + username + "/following"))
+        when(userService.findFollowing(username, page, size)).thenReturn(pageUsers);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/" + username + "/following")
+                        .param("page", String.valueOf(page))
+                        .param("size", String.valueOf(size)))
                 .andExpect(status().isOk())
-                .andExpect(content().json(new ObjectMapper().writeValueAsString(users)));
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(pageUsers)));
 
-        verify(userService, times(1)).findFollowing(username);
+        verify(userService, times(1)).findFollowing(username, page, size);
     }
 
     @DisplayName("Test blockUser endpoint")
@@ -161,14 +175,20 @@ class UserControllerTest {
     @Test
     void testGetBlockedUsers() throws Exception {
         String username = "username";
+        int page = 0;
+        int size = 10;
 
-        when(userService.getBlockedUsers(username)).thenReturn(users);
+        Page<String> pageUsers = new PageImpl<>(users);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/" + username + "/blocked"))
+        when(userService.getBlockedUsers(username, page, size)).thenReturn(pageUsers);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/" + username + "/blocked")
+                        .param("page", String.valueOf(page))
+                        .param("size", String.valueOf(size)))
                 .andExpect(status().isOk())
-                .andExpect(content().json(new ObjectMapper().writeValueAsString(users)));
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(pageUsers)));
 
-        verify(userService, times(1)).getBlockedUsers(username);
+        verify(userService, times(1)).getBlockedUsers(username, page, size);
     }
 
     @DisplayName("Test countFollowers endpoint")
