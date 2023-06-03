@@ -22,9 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/**
- * Service implementation for resetting passwords.
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -135,23 +132,23 @@ public class PasswordResetServiceImpl extends AbstractTokenService<PasswordReset
     }
 
     /**
-     * Finds the user by email, generates a password reset token, and sends a password reset email to the user.
+     * Sends a password reset email to the user with the provided email address.
      *
-     * @param request the forgot password request object
-     * @return the password reset token email message
+     * @param request the forgot password request object containing the user's email
+     * @return the result message of the email sending operation
      */
     @Override
     public String sendPasswordResetEmail(ForgotPasswordRequest request) {
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return sendTokenEmail(user, "Password Reset", "A password reset email",EmailVerificationType.PASSWORD_RESET);
+        return sendTokenEmail(user, "Password Reset", "A password reset email", EmailVerificationType.PASSWORD_RESET);
     }
 
     /**
-     * Verifies the token, sets the new password for the user, and returns a success message.
+     * Resets the password for the user associated with the provided token.
      *
-     * @param request the reset password request object containing the new password
-     * @param tokenString   the password reset token
-     * @return success message
+     * @param request     the reset password request object containing the new password
+     * @param tokenString the password reset token
+     * @return the result message of the password reset operation
      */
     @Override
     public String resetPassword(ResetPasswordRequest request, String tokenString) {

@@ -25,6 +25,11 @@ public interface AuthenticationService {
      */
     AuthenticationResponse authenticateOAuth2(String provider, String authorizationCode);
 
+    /**
+     * Logs out the user with the given username.
+     *
+     * @param username the username of the user to be logged out
+     */
     void logout(String username);
 }
 

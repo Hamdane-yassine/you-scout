@@ -20,9 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-/**
- * Service implementation for handling email sending functionality.
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j

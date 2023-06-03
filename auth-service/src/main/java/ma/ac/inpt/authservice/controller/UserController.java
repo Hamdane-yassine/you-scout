@@ -135,6 +135,15 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
+    /**
+     * Endpoint for updating the details of the currently authenticated user.
+     * Validates user update request using the UserUpdateRequest.
+     * Returns HTTP 200 OK status with the updated UserUpdateResponse on successful update.
+     *
+     * @param principal The principal object representing the authenticated user.
+     * @param userUpdateRequest The updated user data.
+     * @return A response entity with the updated UserUpdateResponse.
+     */
     @PatchMapping("/me")
     public ResponseEntity<UserUpdateResponse> updateCurrentUserDetails(Principal principal, @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
         log.info("Received request to update current user profile");

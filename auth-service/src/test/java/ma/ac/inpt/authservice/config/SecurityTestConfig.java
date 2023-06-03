@@ -10,9 +10,19 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Test configuration class for security-related tests.
+ */
 @TestConfiguration
 public class SecurityTestConfig {
 
+    /**
+     * Configures the security filter chain for testing purposes.
+     *
+     * @param httpSecurity the HttpSecurity object to configure
+     * @return the configured SecurityFilterChain
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -22,15 +32,21 @@ public class SecurityTestConfig {
                 .build();
     }
 
+    /**
+     * Provides an in-memory UserDetailsService for testing purposes.
+     *
+     * @return the UserDetailsService implementation
+     */
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails user = User
-                        .withUsername("user")
-                        .password("password")
-                        .roles("USER")
-                        .build();
+                .withUsername("user")
+                .password("password")
+                .roles("USER")
+                .build();
 
         return new InMemoryUserDetailsManager(user);
     }
 }
+
 

@@ -11,7 +11,8 @@ public interface EmailVerificationService {
     /**
      * Sends an account verification email to the specified user.
      *
-     * @param user the user to send the email to
+     * @param user                    the user to send the email to
+     * @param emailVerificationType   the type of email verification (e.g. registration, password reset, updating, resend)
      * @return a message indicating the status of the email sending process
      */
     String sendVerificationEmail(User user, EmailVerificationType emailVerificationType);
@@ -24,4 +25,5 @@ public interface EmailVerificationService {
      */
     String verifyAccount(String token);
 }
+
 

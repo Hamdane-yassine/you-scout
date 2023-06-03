@@ -75,7 +75,7 @@ public class RoleController {
     @GetMapping
     public ResponseEntity<Page<Role>> getAllRoles(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "20") Integer size) {
         log.info("Received request to retrieve all roles");
-        return ResponseEntity.ok(roleService.getAllRoles(page,size));
+        return ResponseEntity.ok(roleService.getAllRoles(page, size));
     }
 
     /**

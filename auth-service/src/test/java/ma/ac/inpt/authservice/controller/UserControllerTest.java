@@ -144,8 +144,8 @@ class UserControllerTest {
     void testUpdateCurrentUserDetails() throws Exception {
         String username = "username";
         UserUpdateRequest request = new UserUpdateRequest();
-        request.setEmail("newtestemail@domain.com");
-        request.setUsername("newTestUsername");
+        request.setNewEmail("newtestemail@domain.com");
+        request.setNewUsername("newTestUsername");
         request.setPassword("OldPassword1!");
         request.setNewPassword("NewPassword1!");
 
