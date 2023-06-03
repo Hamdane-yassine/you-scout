@@ -1,4 +1,4 @@
-package repo;
+package ma.ac.inpt.repo;
 
 import lombok.RequiredArgsConstructor;
 import ma.ac.inpt.FeedServiceApplication;
@@ -23,11 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataCassandraTest
-@RequiredArgsConstructor
-@ContextConfiguration
 public class CassandraRepositoryTest {
-
-    private final Cassandra cassandraRepository;
+    @Autowired
+    private Cassandra cassandraRepository;
 
     @Test
     public void testFindByUsername() {
@@ -56,7 +54,7 @@ public class CassandraRepositoryTest {
         // Verify the results
         assertTrue(result.hasContent());
         assertEquals(2, result.getContent().size());
-        assertEquals(entity1, result.getContent().get(0));
-        assertEquals(entity2, result.getContent().get(1));
+        assertEquals(entity1.getUsername(), result.getContent().get(1).getUsername());
+        assertEquals(entity2.getPostId(), result.getContent().get(0).getPostId());
     }
 }

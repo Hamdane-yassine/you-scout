@@ -1,4 +1,4 @@
-package service;
+package ma.ac.inpt.service;
 
 import ma.ac.inpt.exceptions.UnableToGetUsersException;
 import ma.ac.inpt.feignClient.AuthClient;

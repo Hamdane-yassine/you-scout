@@ -1,4 +1,4 @@
-package config;
+package ma.ac.inpt.config;
 
 
 import org.springframework.boot.test.context.TestConfiguration;

@@ -8,7 +8,7 @@ spring:
       #      username: qbAwSdWicJdORowhJlqxgbji
 #      password: 31DYwyowywH_n0nLHKtJ.z65pFEB2Ioe40cE2FM47bcxzdZvmeDMk_OuZmUCfZ8cpastxPrI.lShnaY1vsoyyhwavI5fwwuIO.IEygNq85SGuJReMMMxfde-Te4pFiJm
       port: 9042
-      schema-action: CREATE_IF_NOT_EXISTS
+      schema-action: RECREATE
       local-datacenter: datacenter1
       keyspace-name: youscoutfeed
   kafka:

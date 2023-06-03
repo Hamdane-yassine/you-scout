@@ -1,4 +1,4 @@
-package kafkaMessaging;
+package ma.ac.inpt.kafkaMessaging;
 import ma.ac.inpt.kafkaMessaging.PostEventListener;
 import ma.ac.inpt.models.Post;
 import ma.ac.inpt.payload.PostEvent;
