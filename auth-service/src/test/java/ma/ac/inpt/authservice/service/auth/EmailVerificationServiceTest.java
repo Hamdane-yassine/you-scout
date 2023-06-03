@@ -13,6 +13,7 @@ import ma.ac.inpt.authservice.repository.VerificationTokenRepository;
 import ma.ac.inpt.authservice.service.email.EmailService;
 import ma.ac.inpt.authservice.util.ApplicationBaseUrlRetriever;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Email Verification Service Test")
 class EmailVerificationServiceTest {
 
     @Mock
@@ -47,17 +49,19 @@ class EmailVerificationServiceTest {
     private VerificationToken testToken;
 
     @BeforeEach
+    @DisplayName("Setup for each test")
     void setup() {
         testUser = User.builder().username("testUsername").email("test@test.com").build();
 
         testToken = VerificationToken.builder().
-                    user(testUser).token("testToken").
-                    expiryDate(LocalDateTime.now().plusDays(1)).
-                    emailVerificationType(EmailVerificationType.REGISTRATION). // Set the EmailVerificationType
-                    build();
+                user(testUser).token("testToken").
+                expiryDate(LocalDateTime.now().plusDays(1)).
+                emailVerificationType(EmailVerificationType.REGISTRATION). // Set the EmailVerificationType
+                        build();
     }
 
     @Test
+    @DisplayName("Test Send Verification Email")
     void testSendVerificationEmail() {
         // Given
         when(verificationTokenRepository.findByUser(any())).thenReturn(Optional.empty());
@@ -71,6 +75,7 @@ class EmailVerificationServiceTest {
     }
 
     @Test
+    @DisplayName("Test Verify Account")
     void testVerifyAccount() {
         // Given
         when(verificationTokenRepository.findByToken(any())).thenReturn(Optional.of(testToken));

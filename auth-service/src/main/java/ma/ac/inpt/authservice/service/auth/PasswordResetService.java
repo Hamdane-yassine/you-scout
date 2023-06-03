@@ -9,20 +9,21 @@ import ma.ac.inpt.authservice.dto.ResetPasswordRequest;
 public interface PasswordResetService {
 
     /**
-     * Sends a password reset email to the user associated with the provided email address.
+     * Sends a password reset email to the user with the provided email address.
      *
-     * @param request the request containing the user's email address
-     * @return a message indicating the result of the email sending operation
+     * @param request the forgot password request object containing the user's email
+     * @return the result message of the email sending operation
      */
     String sendPasswordResetEmail(ForgotPasswordRequest request);
 
     /**
-     * Resets the password of the user associated with the provided reset token.
+     * Resets the password for the user associated with the provided token.
      *
-     * @param request the request containing the new password and the reset token
-     * @param token   the reset token
-     * @return a message indicating the result of the password reset operation
+     * @param request     the reset password request object containing the new password
+     * @param tokenString the password reset token
+     * @return the result message of the password reset operation
      */
-    String resetPassword(ResetPasswordRequest request, String token);
+    String resetPassword(ResetPasswordRequest request, String tokenString);
 }
+
 

@@ -3,6 +3,7 @@ package ma.ac.inpt.authservice.exception;
 import lombok.Builder;
 import lombok.Data;
 import ma.ac.inpt.authservice.exception.auth.AccountNotEnabledException;
+import ma.ac.inpt.authservice.exception.auth.AuthenticationFailedException;
 import ma.ac.inpt.authservice.exception.auth.InvalidRefreshTokenException;
 import ma.ac.inpt.authservice.exception.file.DeleteFileException;
 import ma.ac.inpt.authservice.exception.file.UploadFileException;
@@ -21,6 +22,7 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -43,7 +45,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
      * Handles authentication-related exceptions, such as when a user provides invalid credentials or an expired refresh token.
      * Returns an HTTP 401 UNAUTHORIZED response with a custom error message.
      */
-    @ExceptionHandler({InvalidRefreshTokenException.class, AccountNotEnabledException.class, EmailNotVerifiedException.class, AuthenticationException.class, PasswordInvalidException.class})
+    @ExceptionHandler({AuthenticationFailedException.class,InvalidRefreshTokenException.class, AccountNotEnabledException.class, EmailNotVerifiedException.class, PasswordInvalidException.class})
     public ResponseEntity<Object> handleAuthenticationException(ApplicationException ex, WebRequest request) {
         return buildResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage(), request);
     }
@@ -52,7 +54,16 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
      * Handles exceptions when a requested resource is not found in the system, such as when a requested user or role does not exist.
      * Returns an HTTP 404 NOT FOUND response with a custom error message.
      */
-    @ExceptionHandler({UsernameNotFoundException.class, RoleNotFoundException.class})
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<Object> handleNotFoundException(UsernameNotFoundException ex, WebRequest request) {
+        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+    }
+
+    /**
+     * Handles exceptions when a requested resource is not found in the system, such as when a requested user or role does not exist.
+     * Returns an HTTP 404 NOT FOUND response with a custom error message.
+     */
+    @ExceptionHandler(RoleNotFoundException.class)
     public ResponseEntity<Object> handleNotFoundException(ApplicationException ex, WebRequest request) {
         return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage(), request);
     }

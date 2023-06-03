@@ -22,9 +22,10 @@ public class ApplicationConfig {
     private final UserRepository userRepository;
 
     /**
-     * Creates a new instance of the UserDetailsService using the user repository.
+     * Bean definition for the UserDetailsService.
+     * Retrieves user details from the UserRepository based on the provided username or email.
      *
-     * @return the UserDetailsService instance
+     * @return the UserDetailsService implementation
      */
     @Bean
     public UserDetailsService userDetailsService() {
@@ -33,13 +34,15 @@ public class ApplicationConfig {
     }
 
     /**
-     * Creates a new instance of the PasswordEncoder.
+     * Bean definition for the PasswordEncoder.
+     * Returns an instance of BCryptPasswordEncoder for password hashing.
      *
-     * @return the PasswordEncoder instance
+     * @return the PasswordEncoder implementation
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
+
 

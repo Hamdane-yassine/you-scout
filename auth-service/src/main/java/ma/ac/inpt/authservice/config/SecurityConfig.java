@@ -48,6 +48,9 @@ public class SecurityConfig {
 
     /**
      * Configures AuthenticationManager.
+     *
+     * @param userDetailsService the UserDetailsService implementation
+     * @return the configured AuthenticationManager instance
      */
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
@@ -63,14 +66,19 @@ public class SecurityConfig {
 
     /**
      * Configures the security filter chain.
+     *
+     * @param httpSecurity the HttpSecurity instance
+     * @return the configured SecurityFilterChain instance
+     * @throws Exception if an error occurs during configuration
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 // Disables CSRF protection
                 .csrf(AbstractHttpConfigurer::disable)
-                // Permits access to /api/v1/auth/** for all
+                // Permits access to /api/v1/auth/logout for authenticated users
                 .authorizeRequests(auth -> auth.antMatchers("/api/v1/auth/logout").authenticated())
+                // Permits access to /api/v1/auth/** for all
                 .authorizeRequests(auth -> auth.antMatchers("/api/v1/auth/**").permitAll())
                 // Requires authentication for all other requests
                 .authorizeRequests(auth -> auth.anyRequest().authenticated())
@@ -86,6 +94,8 @@ public class SecurityConfig {
 
     /**
      * Configures JWT decoder with the RSA public key.
+     *
+     * @return the configured JwtDecoder instance
      */
     @Bean
     JwtDecoder jwtDecoder() {
@@ -94,6 +104,8 @@ public class SecurityConfig {
 
     /**
      * Configures JWT encoder with the RSA key pair.
+     *
+     * @return the configured JwtEncoder instance
      */
     @Bean
     JwtEncoder jwtEncoder() {
@@ -105,4 +117,3 @@ public class SecurityConfig {
         return new NimbusJwtEncoder(jwkSource);
     }
 }
-

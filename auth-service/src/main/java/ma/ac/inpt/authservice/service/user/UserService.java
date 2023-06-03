@@ -36,7 +36,7 @@ public interface UserService {
     /**
      * Updates a user's details by their username.
      *
-     * @param username      the username of the user to update
+     * @param username          the username of the user to update
      * @param userUpdateRequest the DTO containing the updated user details
      * @return a UserDetailsDto object containing the updated user's details
      */
@@ -45,8 +45,8 @@ public interface UserService {
     /**
      * Updates a user's profile by their username.
      *
-     * @param username      the username of the user to update
-     * @param profileUpdateRequest the DTO containing the updated user details
+     * @param username               the username of the user to update
+     * @param profileUpdateRequest   the DTO containing the updated user details
      * @return a UserDetailsDto object containing the updated user's details
      */
     ProfileUpdateResponse updateProfileByUsername(String username, ProfileUpdateRequest profileUpdateRequest);
@@ -68,4 +68,5 @@ public interface UserService {
      */
     void updateUserEnabledStatus(String username, boolean isEnabled);
 }
+
 

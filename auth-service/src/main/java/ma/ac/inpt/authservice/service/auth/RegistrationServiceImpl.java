@@ -91,7 +91,7 @@ public class RegistrationServiceImpl implements RegistrationService {
      */
     private void validateUsername(String username) {
         if (userRepository.existsByUsername(username)) {
-            throw new UsernameAlreadyExistsException(String.format("Username '%s' already exists", username));
+            throw new UsernameAlreadyExistsException("The username is already taken");
         }
     }
 
@@ -102,7 +102,7 @@ public class RegistrationServiceImpl implements RegistrationService {
      */
     private void validateEmail(String email) {
         if (userRepository.existsByEmail(email)) {
-            throw new EmailAlreadyExistsException(String.format("Email '%s' already exists", email));
+            throw new EmailAlreadyExistsException("The email address is already taken");
         }
     }
 

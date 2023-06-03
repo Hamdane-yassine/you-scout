@@ -7,11 +7,13 @@ import java.util.Optional;
 import ma.ac.inpt.authservice.model.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
+@DisplayName("User Repository Test")
 class UserRepositoryTest {
 
     @Autowired
@@ -20,6 +22,7 @@ class UserRepositoryTest {
     private User testUser;
 
     @BeforeEach
+    @DisplayName("Setup for each test")
     void setup() {
         // Create a user for testing
         testUser = User.builder().username("testUser").email("test@example.com").isEnabled(true).build();
@@ -29,12 +32,14 @@ class UserRepositoryTest {
     }
 
     @AfterEach
+    @DisplayName("Tear down after each test")
     void tearDown() {
         // Clean up the database after each test
         userRepository.deleteAll();
     }
 
     @Test
+    @DisplayName("Find by Username Test")
     void findByUsernameOrEmailWithUsernameTest() {
         // Test findByUsernameOrEmail method with username
         Optional<User> foundUser = userRepository.findByUsernameOrEmail(testUser.getUsername());
@@ -43,6 +48,7 @@ class UserRepositoryTest {
     }
 
     @Test
+    @DisplayName("Find by Email Test")
     void findByUsernameOrEmailWithEmailTest() {
         // Test findByUsernameOrEmail method with email
         Optional<User> foundUser = userRepository.findByUsernameOrEmail(testUser.getEmail());
@@ -51,6 +57,7 @@ class UserRepositoryTest {
     }
 
     @Test
+    @DisplayName("Find by Username Test")
     void findByUsernameTest() {
         Optional<User> foundUser = userRepository.findByUsername(testUser.getUsername());
         assertTrue(foundUser.isPresent(), "Expected a valid user");
@@ -58,6 +65,7 @@ class UserRepositoryTest {
     }
 
     @Test
+    @DisplayName("Find by Email Test")
     void findByEmailTest() {
         Optional<User> foundUser = userRepository.findByEmail(testUser.getEmail());
         assertTrue(foundUser.isPresent(), "Expected a valid user");
@@ -65,17 +73,18 @@ class UserRepositoryTest {
     }
 
     @Test
+    @DisplayName("Exists by Username Test")
     void existsByUsernameTest() {
         Boolean exists = userRepository.existsByUsername(testUser.getUsername());
         assertTrue(exists, "Expected user to exist");
     }
 
     @Test
+    @DisplayName("Exists by Email Test")
     void existsByEmailTest() {
         Boolean exists = userRepository.existsByEmail(testUser.getEmail());
         assertTrue(exists, "Expected user to exist");
     }
-
 }
 
 

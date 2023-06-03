@@ -6,12 +6,7 @@ import ma.ac.inpt.authservice.dto.UserRoleRequest;
 import ma.ac.inpt.authservice.model.User;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
 
-
-/**
- * This interface defines methods for handling roles for users in the system.
- */
 public interface RoleService {
 
     /**
@@ -81,5 +76,6 @@ public interface RoleService {
      */
     Page<Role> getAllRoles(Integer page, Integer size);
 }
+
 
 

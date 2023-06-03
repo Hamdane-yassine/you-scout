@@ -34,17 +34,17 @@ import java.util.stream.Collectors;
 @Transactional
 public class RoleServiceImpl implements RoleService {
 
-    private final RoleRepository roleRepository;
-    private final UserRepository userRepository;
+    private final RoleRepository roleRepository; // Repository for accessing roles
+    private final UserRepository userRepository; // Repository for accessing users
 
     @Value("#{'${default.app.roles}'.split(',')}")
-    private List<String> defaultAppRoles;
+    private List<String> defaultAppRoles; // List of default application roles
 
     @Value("#{'${default.user.roles}'.split(',')}")
-    private List<String> defaultUserRoles;
+    private List<String> defaultUserRoles; // List of default user roles
 
     /**
-     * Save a new role.
+     * Save a new role in the system.
      *
      * @param role the role to be saved
      * @return the saved role
@@ -67,8 +67,12 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public String assignRoleToUser(UserRoleRequest request) {
-        User user = userRepository.findByUsernameOrEmail(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        Role role = roleRepository.findByRoleNameIgnoreCase(request.getRoleName()).orElseThrow(() -> new RoleNotFoundException("Role not found"));
+        User user = userRepository.findByUsernameOrEmail(request.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        Role role = roleRepository.findByRoleNameIgnoreCase(request.getRoleName())
+                .orElseThrow(() -> new RoleNotFoundException("Role not found"));
+
         if (!user.getRoles().contains(role)) {
             user.getRoles().add(role);
             userRepository.save(user);
@@ -78,7 +82,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     /**
-     * Assign default roles to a user.
+     * Assign default roles to a user when they register in the system.
      *
      * @param user the user to assign default roles to
      */
@@ -89,12 +93,20 @@ public class RoleServiceImpl implements RoleService {
     }
 
     /**
-     * Create default application roles.
+     * Create default application roles during application startup.
      */
     @PostConstruct
     public void createDefaultAppRoles() {
-        Set<String> existingRoleNames = roleRepository.findByRoleNameIn(defaultAppRoles).stream().map(Role::getRoleName).collect(Collectors.toSet());
-        List<Role> newRoles = defaultAppRoles.stream().filter(roleName -> !existingRoleNames.contains(roleName)).map(roleName -> Role.builder().roleName(roleName).build()).collect(Collectors.toList());
+        Set<String> existingRoleNames = roleRepository.findByRoleNameIn(defaultAppRoles)
+                .stream()
+                .map(Role::getRoleName)
+                .collect(Collectors.toSet());
+
+        List<Role> newRoles = defaultAppRoles.stream()
+                .filter(roleName -> !existingRoleNames.contains(roleName))
+                .map(roleName -> Role.builder().roleName(roleName).build())
+                .collect(Collectors.toList());
+
         roleRepository.saveAll(newRoles);
         log.info("Default application roles created");
     }
@@ -107,11 +119,12 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Role getRoleById(Long id) {
-        return roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException("Role Not found"));
+        return roleRepository.findById(id)
+                .orElseThrow(() -> new RoleNotFoundException("Role Not found"));
     }
 
     /**
-     * Update a role.
+     * Update a role in the system.
      *
      * @param id   the ID of the role to be updated
      * @param role the updated role information
@@ -119,44 +132,41 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Role updateRole(Long id, Role role) {
-        Role updatedRole = roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException("Role Not found"));
+        Role updatedRole = roleRepository.findById(id)
+                .orElseThrow(() -> new RoleNotFoundException("Role Not found"));
+
         updatedRole.setRoleName(role.getRoleName());
         log.info("Updating role with id: {}", id);
         return roleRepository.save(updatedRole);
     }
 
     /**
-     * Delete a role by its ID.
+     * Delete a role from the system by its ID.
      *
      * @param id the ID of the role to be deleted
      */
     @Override
     public void deleteRoleById(Long id) {
-        Role role = roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException("Role Not found"));
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> new RoleNotFoundException("Role Not found"));
+
         roleRepository.delete(role);
         log.info("Role with id {} deleted", id);
     }
 
     /**
-     * Get all roles.
-     *
-     * @return a list of all roles
-     */
-    @Override
-    public Page<Role> getAllRoles(Integer page, Integer size) {
-        return roleRepository.findAll(PageRequest.of(page, size));
-    }
-
-    /**
-     * Remove a role from a user.
+     * Remove a role from a user in the system.
      *
      * @param request the UserRoleRequest containing username and role name
      * @return a message indicating the success of the operation
      */
     @Override
     public String removeRoleFromUser(UserRoleRequest request) {
-        User user = userRepository.findByUsernameOrEmail(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        Role role = roleRepository.findByRoleNameIgnoreCase(request.getRoleName()).orElseThrow(() -> new RoleNotFoundException("Role not found"));
+        User user = userRepository.findByUsernameOrEmail(request.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        Role role = roleRepository.findByRoleNameIgnoreCase(request.getRoleName())
+                .orElseThrow(() -> new RoleNotFoundException("Role not found"));
 
         if (!user.getRoles().contains(role)) {
             return String.format("User %s does not have role %s", request.getUsername(), request.getRoleName());
@@ -166,6 +176,16 @@ public class RoleServiceImpl implements RoleService {
         userRepository.save(user);
         log.info("Role {} removed from user {}", request.getRoleName(), request.getUsername());
         return String.format("Role %s has been removed from user %s", request.getRoleName(), request.getUsername());
+    }
+
+    /**
+     * Get all roles in the system.
+     *
+     * @return a Page<Role> containing the list of all roles
+     */
+    @Override
+    public Page<Role> getAllRoles(Integer page, Integer size) {
+        return roleRepository.findAll(PageRequest.of(page, size));
     }
 }
 

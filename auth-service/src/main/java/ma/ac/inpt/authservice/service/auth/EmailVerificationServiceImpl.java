@@ -19,9 +19,6 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 
-/**
- * Service implementation for handling account verification functionality.
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j

@@ -5,6 +5,7 @@ import ma.ac.inpt.authservice.dto.AuthenticationRequest;
 import ma.ac.inpt.authservice.dto.AuthenticationResponse;
 import ma.ac.inpt.authservice.dto.EmailVerificationType;
 import ma.ac.inpt.authservice.exception.auth.AccountNotEnabledException;
+import ma.ac.inpt.authservice.exception.auth.AuthenticationFailedException;
 import ma.ac.inpt.authservice.exception.auth.InvalidRefreshTokenException;
 import ma.ac.inpt.authservice.model.RefreshToken;
 import ma.ac.inpt.authservice.model.User;
@@ -12,6 +13,7 @@ import ma.ac.inpt.authservice.repository.RefreshTokenRepository;
 import ma.ac.inpt.authservice.repository.UserRepository;
 import ma.ac.inpt.authservice.service.oauth2.OAuth2Provider;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -69,9 +71,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String grantType = request.getGrantType().toUpperCase();
         if (grantType.equals("PASSWORD")) {
             return authenticatePasswordGrant(request);
-        } else if(grantType.equals("REFRESH_TOKEN"))
+        } else if (grantType.equals("REFRESH_TOKEN")) {
             return authenticateRefreshTokenGrant(request);
-        throw new IllegalArgumentException("Unsupported grant type : "+grantType);
+        }
+        throw new IllegalArgumentException("Unsupported grant type : " + grantType);
     }
 
     /**
@@ -95,6 +98,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return buildAuthenticationResponse(authenticationRequest.isWithRefreshToken(), authenticationRequest.getUsername(), scope);
     }
 
+    /**
+     * Logs out the user with the given username.
+     *
+     * @param username the username of the user to be logged out
+     */
     @Override
     @Transactional
     public void logout(String username) {
@@ -118,13 +126,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             String scope = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(" "));
             log.info("Password grant authentication successful for user: {}", subject);
             return buildAuthenticationResponse(request.isWithRefreshToken(), subject, scope);
-        } catch (DisabledException e) {
+        } catch (BadCredentialsException e) {
+            throw new AuthenticationFailedException("Username or password Incorrect");
+        }
+        catch (DisabledException e) {
             User user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
             String message = emailVerificationService.sendVerificationEmail(user, EmailVerificationType.RESEND);
             throw new AccountNotEnabledException(message);
-        } catch (AuthenticationException e) {
-            log.error("Authentication failed for user: {}", request.getUsername(), e);
-            throw e;
         }
     }
 
@@ -144,7 +152,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new InvalidRefreshTokenException(errorMessage);
         }
         String jti = decodeJWT.getClaim("jti");
-        if(!refreshTokenRepository.existsByTokenUuid(jti))
+        if (!refreshTokenRepository.existsByTokenUuid(jti))
             throw new InvalidRefreshTokenException("Error validating refresh token");
         String subject = decodeJWT.getSubject();
         User user = userRepository.findByUsername(subject).orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -199,7 +207,5 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         log.info("Authentication response generated for user: {}", subject);
         return AuthenticationResponse.builder().accessToken(jwtAccessToken).refreshToken(jwtRefreshToken.orElse(null)).build();
     }
-
-
 }
 
