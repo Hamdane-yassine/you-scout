@@ -20,7 +20,7 @@ public class ChatService {
 
     public Chat save(Chat chatMessage) {
         chatMessage.setStatus(MessageStatus.RECEIVED);
-        return repository.save(chatMessage).block(); //block for it to become blocking (like await/async)
+        return repository.save(chatMessage).block(); //block for it to become blocking (like await/async in JS)
     }
 
     public Mono<Long> countNewMessages(String senderId, String recipientId) {
@@ -30,16 +30,10 @@ public class ChatService {
     public Mono<List<Chat>> findChatMessages(String senderId, String recipientId) {
         var chatId = chatRoomService.getChatId(senderId, recipientId, false);
 
-        Mono<List<Chat>> messagesMono = chatId.map(id -> repository.findByChatId(id)
+        return chatId.map(id -> repository.findByChatId(id)
                         .flatMapMany(Flux::fromIterable)
                         .collectList())
                 .orElseGet(() -> Mono.just(Collections.emptyList()));
-
-//        if (messagesMono.size() > 0) {
-//            updateStatuses(senderId, recipientId, MessageStatus.DELIVERED);
-//        }
-
-        return messagesMono;
     }
 
     public Mono<Mono<Chat>> findById(String id) {
@@ -51,9 +45,4 @@ public class ChatService {
         }).switchIfEmpty(Mono.error(new ResourceNotFoundException("can't find message (" + id + ")")));
     }
 
-//    public void updateStatuses(String senderId, String recipientId, MessageStatus status) {
-//        Query query = new Query(Criteria.where("senderId").is(senderId).and("recipientId").is(recipientId));
-//        Update update = Update.update("status", status);
-//        mongoOperations.updateMulti(query, update, ChatMessage.class);
-//    }
 }
