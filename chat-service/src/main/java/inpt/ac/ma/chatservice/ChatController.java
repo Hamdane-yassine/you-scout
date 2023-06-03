@@ -30,11 +30,13 @@ public class ChatController {
     @MessageMapping("/chat")
     public void processMessage(@Payload Chat chatMessage) {
         var chatId = chatRoomService.getChatId(chatMessage.getSenderId(), chatMessage.getRecipientId(), true);
-        chatMessage.setChatId(chatId.get());
+        if(chatId.isPresent()){
+            chatMessage.setChatId(chatId.get());
+            messagingTemplate.convertAndSendToUser(chatMessage.getRecipientId(), "/queue/messages", chatMessage);
+            Chat saved = chatMessageService.save(chatMessage);
+            messagingTemplate.convertAndSendToUser(chatMessage.getRecipientId(), "/queue/messages/notification", new Notification(saved.getId(), saved.getSenderId(), saved.getSenderName()));
 
-        messagingTemplate.convertAndSendToUser(chatMessage.getRecipientId(), "/queue/messages", chatMessage);
-        Chat saved = chatMessageService.save(chatMessage);
-        messagingTemplate.convertAndSendToUser(chatMessage.getRecipientId(), "/queue/messages/notification", new Notification(saved.getId(), saved.getSenderId(), saved.getSenderName()));
+        }
     }
 
     @GetMapping("/messages/{senderId}/{recipientId}/count")

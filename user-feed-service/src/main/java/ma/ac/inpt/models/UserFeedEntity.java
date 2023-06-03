@@ -1,4 +1,4 @@
-package ma.ac.inpt;
+package ma.ac.inpt.models;
 
 
 import lombok.Builder;
@@ -19,16 +19,18 @@ import java.util.UUID;
 @ToString
 public class UserFeedEntity {
 
-    @PrimaryKeyColumn(name = "user_id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
-    private UUID userId;
-
     @Indexed
-    @PrimaryKeyColumn(name = "username", ordinal = 1 )
-    private String username;
+    @PrimaryKeyColumn(name = "username", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
+    private String username; // The username, used as a partition key in the Cassandra table
+
+    @PrimaryKeyColumn(name = "user_id", ordinal = 1)
+    private UUID userId; // The user ID, used as a clustering key in the Cassandra table
+
+
 
     @PrimaryKeyColumn(name = "created_at", ordinal = 2, ordering = Ordering.DESCENDING)
-    private Instant createdAt;
+    private Instant createdAt; // The timestamp of when the user feed entity was created
 
     @PrimaryKeyColumn(name = "post_id", ordinal = 3)
-    private String postId;
+    private String postId; // The ID of the associated post
 }

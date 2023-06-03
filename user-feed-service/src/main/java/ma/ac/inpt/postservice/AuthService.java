@@ -20,7 +20,7 @@ import static java.util.stream.Collectors.toMap;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final AuthClient authClient;
+    private final AuthClient authClient;   // The AuthClient used for authentication
 //    @Autowired private ServiceLoginRequest serviceLoginRequest;
 
 //    public String getAccessToken() {
@@ -39,6 +39,13 @@ public class AuthService {
 //        return response.getBody().getAccessToken();
 //    }
 
+    /**
+     * Fetches the profile pictures of users based on their usernames.
+     *
+     * @param usernames List of usernames for which profile pictures are to be fetched.
+     * @return A map containing username-profile picture pairs.
+     * @throws UnableToGetUsersException If unable to retrieve user summaries.
+     */
     public Map<String, String> usersProfilePic(
                                                List<String> usernames) {
 

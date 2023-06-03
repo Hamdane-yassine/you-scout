@@ -1,7 +1,6 @@
 package ma.ac.inpt.controller;
 
 import ma.ac.inpt.config.SecurityConfig;
-import ma.ac.inpt.FeedController;
 import ma.ac.inpt.models.Post;
 import ma.ac.inpt.payload.SlicedResult;
 import ma.ac.inpt.postservice.FeedService;

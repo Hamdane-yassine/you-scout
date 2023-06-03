@@ -2,7 +2,7 @@ package ma.ac.inpt.postservice;
 
 import lombok.RequiredArgsConstructor;
 import ma.ac.inpt.exceptions.UnableToGetFollowersException;
-import ma.ac.inpt.UserFeedEntity;
+import ma.ac.inpt.models.UserFeedEntity;
 import ma.ac.inpt.models.Post;
 import ma.ac.inpt.models.User;
 import ma.ac.inpt.payload.PagedResult;
@@ -19,9 +19,16 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class FeedGenService {
 
-    private final Graph graphClient;
-    private final Cassandra feedRepository;
+    private final Graph graphClient; // The Graph client used for retrieving followers
+    private final Cassandra feedRepository; // The Cassandra repository used for saving feed items
 
+
+    /**
+     * Adds a post to the feed for the specified user.
+     *
+     * @param post The post to add to the feed.
+     * @throws UnableToGetFollowersException If unable to retrieve followers for the user.
+     */
     public void addToFeed(Post post) {
         log.info("adding post {} to feed for user {}" ,
                 post.getUsername(), post.getId());
@@ -61,6 +68,13 @@ public class FeedGenService {
         }
     }
 
+    /**
+     * Converts a User and a Post object into a UserFeedEntity object.
+     *
+     * @param user The User object.
+     * @param post The Post object.
+     * @return The converted UserFeedEntity object.
+     */
     private UserFeedEntity convertTo(User user, Post post) {
         return UserFeedEntity
                 .builder()

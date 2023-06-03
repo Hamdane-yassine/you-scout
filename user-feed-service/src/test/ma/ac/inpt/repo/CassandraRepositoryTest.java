@@ -1,20 +1,12 @@
 package ma.ac.inpt.repo;
 
-import lombok.RequiredArgsConstructor;
-import ma.ac.inpt.FeedServiceApplication;
-import ma.ac.inpt.UserFeedEntity;
-import ma.ac.inpt.repo.Cassandra;
+import ma.ac.inpt.models.UserFeedEntity;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.cassandra.DataCassandraTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
 import java.util.UUID;

@@ -15,14 +15,4 @@ public class FeedServiceApplication {
         SpringApplication.run(FeedServiceApplication.class, args);
     }
 
-//    @Bean
-//    public RestTemplate restTemplate() {
-//        return new RestTemplate();
-//    }
 }
-//    @Bean
-//    public CqlSessionBuilderCustomizer sessionBuilderCustomizer(datastax_astra_configuration astraProperties) {
-//        Path bundle = astraProperties.getSecureConnectionBundle().toPath();
-//        return builder -> builder.withCloudSecureConnectBundle(bundle);
-//    }
-//}

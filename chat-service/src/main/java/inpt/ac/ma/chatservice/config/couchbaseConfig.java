@@ -21,12 +21,12 @@ public class couchbaseConfig extends AbstractCouchbaseConfiguration {
 
     @Override
     public String getUserName() {
-        return "aseds";
+        return "chat";
     }
 
     @Override
     public String getPassword() {
-        return "asedsaseds";
+        return "chatchat";
     }
 
     @Override
