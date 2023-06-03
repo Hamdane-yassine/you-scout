@@ -19,25 +19,26 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.security.Principal;
 import java.util.List;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class PostController {
 
-
     private final PostService postService;
 
     @PostMapping("/posts")
     public ResponseEntity<?> createPost(@RequestBody PostRequest postRequest){
-        log.info("received a request to create a post for video {}", postRequest.getVideo());
+        log.info("Received a request to create a post for video {}", postRequest.getVideo());
 
+        // Create the post
         Post post = postService.createPost(postRequest);
 
+        // Build the URI for the created post
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/posts/{id}")
                 .buildAndExpand(post.getId()).toUri();
 
+        // Return the response with the created post's location
         return ResponseEntity
                 .created(location)
                 .body(new ApiResponse(true, "Post created successfully"));
@@ -45,58 +46,57 @@ public class PostController {
 
     @DeleteMapping("/posts/{id}")
     public void deletePost(@PathVariable("id") String id, @AuthenticationPrincipal Principal user) {
-        log.info("received a delete request for post id {} from user {}", id, user.getName());
+        log.info("Received a delete request for post id {} from user {}", id, user.getName());
+
+        // Delete the post
         postService.deletePost(id, user.getName());
     }
 
     @DeleteMapping("/posts/{id}/like")
     public void likePost(@PathVariable("id") String id, @AuthenticationPrincipal Principal user) {
-        log.info("received a post liking request for post id {} from user {}", id, user.getName());
+        log.info("Received a post liking request for post id {} from user {}", id, user.getName());
+
+        // Like the post
         postService.likePost(id, user.getName());
     }
 
     @DeleteMapping("/posts/{id}/removelike")
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeLikePost(@PathVariable("id") String id, @AuthenticationPrincipal Principal user) {
-        log.info("received a remove post liking request for post id {} from user {}", id, user.getName());
+        log.info("Received a remove post liking request for post id {} from user {}", id, user.getName());
+
+        // Remove the like from the post
         postService.removeLikePost(id, user.getName());
     }
 
     @PostMapping("/posts/{id}/rate")
     public void ratePost(@PathVariable("id") String id, @RequestBody RatingRequest ratingRequest, @AuthenticationPrincipal Principal user) {
-        log.info("received a rating post request for post id {} from user {}", id, user.getName());
+        log.info("Received a rating post request for post id {} from user {}", id, user.getName());
+
+        // Rate the post
         postService.ratePost(id, ratingRequest, user.getName());
     }
 
-
-//
-//    @GetMapping("/posts/me")
-//    public ResponseEntity<?> findCurrentUserPosts(@AuthenticationPrincipal Principal principal) {
-//        log.info("retrieving posts for user {}", principal.getName());
-//
-//        List<Post> posts = postService.postsByUsername(principal.getName());
-//        log.info("found {} posts for user {}", posts.size(), principal.getName());
-//
-//        return ResponseEntity.ok(posts);
-//    }
-
     @GetMapping("/posts/{username}")
     public ResponseEntity<?> findUserPosts(@PathVariable("username") String username) {
-        log.info("retrieving posts for user {}", username);
+        log.info("Retrieving posts for user {}", username);
 
+        // Get the posts for the specified user
         List<Post> posts = postService.postsByUsername(username);
-        log.info("found {} posts for user {}", posts.size(), username);
+        log.info("Found {} posts for user {}", posts.size(), username);
 
+        // Return the posts as the response
         return ResponseEntity.ok(posts);
     }
 
     @PostMapping("/posts/in")
     public ResponseEntity<?> findPostsByIdIn(@RequestBody List<String> ids) {
-        log.info("retrieving posts for {} ids", ids.size());
+        log.info("Retrieving posts for {} ids", ids.size());
 
+        // Get the posts with the specified ids
         List<Post> posts = postService.postsByIdIn(ids);
-        log.info("found {} posts", posts.size());
+        log.info("Found {} posts", posts.size());
 
+        // Return the posts as the response
         return ResponseEntity.ok(posts);
     }
 }

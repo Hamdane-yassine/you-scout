@@ -17,9 +17,14 @@ import java.util.List;
 @FeignClient(name = "INSTA-POST")
 public interface PostClient {
 
+    /**
+     * Finds posts by IDs.
+     *
+     * @param ids the list of post IDs to search for
+     * @return the ResponseEntity containing the list of posts
+     */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/in")
     ResponseEntity<List<Post>> findPostsByIdIn(
 //            @RequestHeader("Authorization") String token,
             @RequestBody List<String> ids);
-
 }

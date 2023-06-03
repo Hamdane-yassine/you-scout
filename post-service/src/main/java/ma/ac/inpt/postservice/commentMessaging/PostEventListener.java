@@ -15,12 +15,10 @@ public class PostEventListener {
     private final PostService postService;
 
     @KafkaListener(topics = "comments", groupId = "comment", containerFactory = "factory")
-//    public void onMessage(Message<PostEvent> message) {
-        public void consume(CommentNumEvent message) {
+    // The method name can be changed to 'consume' to match the naming convention used in the example
+    public void consume(CommentNumEvent message) {
         log.info("received the updated number of comments for post {}", message.getCommentNum());
-        postService.updateCommentNum(message.getId(),message.getCommentNum());
-        }
-
-
-
+        // Call the 'updateCommentNum' method of the 'PostService' to update the number of comments for the post
+        postService.updateCommentNum(message.getId(), message.getCommentNum());
+    }
 }

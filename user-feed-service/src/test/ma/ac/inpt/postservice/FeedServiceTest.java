@@ -1,6 +1,6 @@
 package ma.ac.inpt.postservice;
 
-import ma.ac.inpt.UserFeedEntity;
+import ma.ac.inpt.models.UserFeedEntity;
 import ma.ac.inpt.exceptions.ResourceNotFoundException;
 import ma.ac.inpt.models.Post;
 import ma.ac.inpt.payload.SlicedResult;

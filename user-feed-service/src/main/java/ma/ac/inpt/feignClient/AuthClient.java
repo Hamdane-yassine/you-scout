@@ -1,8 +1,6 @@
 package ma.ac.inpt.feignClient;
 
-//
-//import com.clone.instagram.instafeedservice.payload.JwtAuthenticationResponse;
-//import com.clone.instagram.instafeedservice.payload.ServiceLoginRequest;
+
 import ma.ac.inpt.payload.UserSummary;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +15,12 @@ import java.util.List;
 @FeignClient(name = "AUTH")
 public interface AuthClient {
 
-//    @RequestMapping(method = RequestMethod.POST, value = "signin")
-//    ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody ServiceLoginRequest request);
-
+    /**
+     * Finds user summaries by usernames.
+     *
+     * @param usernames the list of usernames to search for
+     * @return the ResponseEntity containing the list of user summaries
+     */
     @RequestMapping(method = RequestMethod.POST, value = "/users/summary/in")
     ResponseEntity<List<UserSummary>> findByUsernameIn(
 //            @RequestHeader("Authorization") String token,
