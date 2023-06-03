@@ -30,7 +30,7 @@ public class Post {
     @NonNull
     private String userProfilePic;
 
-    private String video;
+    private String videoUrl;
 
     @NonNull
     private String caption;
@@ -58,7 +58,7 @@ public class Post {
         this.id = id;
         this.username = username;
         this.userProfilePic = profilePic;
-        this.video = video;
+        this.videoUrl = video;
         this.caption = caption;
     }
 }

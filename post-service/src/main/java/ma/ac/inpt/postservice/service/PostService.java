@@ -10,7 +10,9 @@ import ma.ac.inpt.postservice.model.Post;
 import ma.ac.inpt.postservice.payload.PostRequest;
 import ma.ac.inpt.postservice.repository.PostRepo;
 import lombok.extern.slf4j.Slf4j;
+import ma.ac.inpt.postservice.service.media.MediaService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public class PostService {
 
     private final PostRepo postRepository;
     private final PostEventSender postEventSender;
+    private final MediaService mediaService;
 
     /**
      * Creates a new post.
@@ -32,7 +35,7 @@ public class PostService {
      * @param postRequest the post request object
      * @return the created post
      */
-    public Post createPost(PostRequest postRequest) {
+    public Post createPost(PostRequest postRequest, MultipartFile file) {
         log.info("creating post video url {}", postRequest.getVideo());
 
         // Create a new Post object using the data from the post request
@@ -48,7 +51,8 @@ public class PostService {
                 postRequest.getSkills().orElse(new ArrayList<>()),
                 new HashMap<>()
         );
-
+        String fileUrl = mediaService.uploadFile(file);
+        post.setVideoUrl(fileUrl);
         // Save the post to the repository
         post = postRepository.save(post);
 
@@ -76,6 +80,7 @@ public class PostService {
                 throw new NotAllowedException(username, "post id " + postId, "delete");
             }
 
+            mediaService.deleteFile(post.getVideoUrl());
             // Delete the post from the repository
             postRepository.delete(post);
 
