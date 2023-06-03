@@ -22,12 +22,15 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 public class KafkaProducerConfig {
 
     @Bean
-    public NewTopic commentTopic(){
+    public NewTopic commentTopic() {
+        // Create a new Kafka topic named "post"
         return TopicBuilder.name("post")
                 .build();
     }
+
     @Bean
-    public ProducerFactory<String, PostEvent> ProducerFactory() {
+    public ProducerFactory<String, PostEvent> producerFactory() {
+        // Create a factory for producing Kafka messages with String keys and PostEvent values
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -37,10 +40,10 @@ public class KafkaProducerConfig {
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
-    @Bean()
-    public KafkaTemplate<String, PostEvent> KafkaTemplate() {
-        return new KafkaTemplate<>(ProducerFactory());
+    @Bean
+    public KafkaTemplate<String, PostEvent> kafkaTemplate() {
+        // Create a KafkaTemplate for sending messages to the "post" topic
+        return new KafkaTemplate<>(producerFactory());
     }
-
 
 }
