@@ -1,10 +1,12 @@
 package inpt.ac.ma.chatservice.repo;
 
+import org.springframework.data.cassandra.repository.AllowFiltering;
 import org.springframework.data.repository.CrudRepository;
 
-public interface CRoomRepo extends CrudRepository<Room, String> {
+public interface RoomRepo extends CrudRepository<Room, String> {
 
-    Room findBySenderIdAndRecipientId(String senderId, String recipientId);
+    @AllowFiltering
+    Room findBySenderNameAndRecipientName(String senderName, String recipientName);
 
 
 
