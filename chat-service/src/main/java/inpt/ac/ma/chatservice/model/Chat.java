@@ -18,14 +18,17 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CChat {
-    @Indexed
+public class Chat {
+
     @PrimaryKeyColumn(name = "id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
-    private String id; // The username, used as a partition key in the Cassandra table
+    private String chatId; // The username, used as a partition key in the Cassandra table
     @PrimaryKeyColumn(name = "recipient_name", ordinal = 1, ordering = Ordering.DESCENDING)
-    private Instant recipientName; // The timestamp of when the user feed entity was created
+    private String recipientName; // The timestamp of when the user feed entity was created
+
+    @PrimaryKeyColumn(name = "conv_id", ordinal = 1, ordering = Ordering.DESCENDING)
+    private String convId; // The timestamp of when the user feed entity was created
     @PrimaryKeyColumn(name = "sender_name", ordinal = 2, ordering = Ordering.DESCENDING)
-    private Instant senderName; // The timestamp of when the user feed entity was created
+    private String senderName; // The timestamp of when the user feed entity was created
 
     @PrimaryKeyColumn(name = "content", ordinal = 3)
     private String content; // The ID of the associated post

@@ -1,15 +1,14 @@
 package inpt.ac.ma.chatservice.service;
 
-import inpt.ac.ma.chatservice.exception.ResourceNotFoundException;
 import inpt.ac.ma.chatservice.model.Chat;
-import inpt.ac.ma.chatservice.model.MessageStatus;
+import inpt.ac.ma.chatservice.payload.ChatRequest;
+import inpt.ac.ma.chatservice.payload.MessageStatus;
 import inpt.ac.ma.chatservice.repo.ChatRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-import java.util.Collections;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -18,31 +17,44 @@ public class ChatService {
     private final ChatRepo repository;
     private final RoomService chatRoomService;
 
-    public Chat save(Chat chatMessage) {
+    public Chat save(ChatRequest chatMessage) {
         chatMessage.setStatus(MessageStatus.RECEIVED);
-        return repository.save(chatMessage).block(); //block for it to become blocking (like await/async in JS)
+        return repository.save(convertTo(chatMessage));
+
     }
 
-    public Mono<Long> countNewMessages(String senderId, String recipientId) {
-        return repository.countBySenderIdAndRecipientIdAndStatus(senderId, recipientId, MessageStatus.RECEIVED);
+    public Long countNewMessages(String senderName, String recipientName) {
+        return repository.countBySenderNameAndRecipientNameAndStatus(senderName, recipientName, MessageStatus.RECEIVED);
     }
 
-    public Mono<List<Chat>> findChatMessages(String senderId, String recipientId) {
-        var chatId = chatRoomService.getChatId(senderId, recipientId, false);
+    public List<Chat> findChatMessages(String senderName, String recipientName) {
+        System.out.println("ayoub");
+        String chatId = chatRoomService.getChatId(senderName, recipientName, true);
 
-        return chatId.map(id -> repository.findByChatId(id)
-                        .flatMapMany(Flux::fromIterable)
-                        .collectList())
-                .orElseGet(() -> Mono.just(Collections.emptyList()));
+
+        return repository.findByChatId(chatId);
+
     }
 
-    public Mono<Mono<Chat>> findById(String id) {
+    public Chat findById(String id) {
         return repository.findById(id).map(chatMessage -> {
             if(chatMessage.getStatus()!=MessageStatus.DELIVERED){
                 chatMessage.setStatus(MessageStatus.DELIVERED);
             }
             return repository.save(chatMessage);
-        }).switchIfEmpty(Mono.error(new ResourceNotFoundException("can't find message (" + id + ")")));
+        }).orElse(null);
+    }
+
+    private Chat convertTo(ChatRequest chat) {
+        return Chat
+                .builder()
+                .chatId(chat.getId())
+                .recipientName(chat.getRecipientName())
+                .senderName(chat.getSenderName())
+                .content(chat.getContent())
+                .timestamp(Date.from(Instant.now()))
+                .status(chat.getStatus())
+                .build();
     }
 
 }

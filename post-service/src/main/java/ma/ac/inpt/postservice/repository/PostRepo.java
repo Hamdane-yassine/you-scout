@@ -14,7 +14,7 @@ public interface PostRepo extends MongoRepository<Post, String> {
     List<Post> findByUsernameOrderByCreatedAtDesc(String username);
 
     // Retrieve a list of posts for the given list of IDs, ordered by createdAt in descending order
-    List<Post> findByIdInOrderByCreatedAtDesc(List<String> ids);
+    List<Post> findBy_idInOrderByCreatedAtDesc(List<String> ids);
 
 
 

@@ -5,31 +5,29 @@ import inpt.ac.ma.chatservice.repo.RoomRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class RoomService {
 
     private final RoomRepo chatRoomRepository;
 
-    public Optional<String> getChatId(String senderId, String recipientId, boolean createIfNotExist) {
-        String chatId = chatRoomRepository.findBySenderIdAndRecipientId(senderId, recipientId).getChatId();
+    public String getChatId(String senderName, String recipientName, boolean createIfNotExist) {
+        String chatId = chatRoomRepository.findBySenderNameAndRecipientName(senderName, recipientName).getChatId();
 
         if (chatId != null) {
-            return Optional.of(chatId);
+            return chatId;
         }
 
         if (!createIfNotExist) {
-            return Optional.empty();
+            return null;
         }
 
-        chatId = String.format("%s_%s", senderId, recipientId);
-        Room senderRecipient = Room.builder().chatId(chatId).senderId(senderId).recipientId(recipientId).build();
-        Room recipientSender = Room.builder().chatId(chatId).senderId(recipientId).recipientId(senderId).build();
+        chatId = String.format("%s_%s", senderName, recipientName);
+        Room senderRecipient = Room.builder().chatId(chatId).senderName(senderName).recipientName(recipientName).build();
+        Room recipientSender = Room.builder().chatId(chatId).senderName(recipientName).recipientName(senderName).build();
         chatRoomRepository.save(senderRecipient);
         chatRoomRepository.save(recipientSender);
 
-        return Optional.of(chatId);
+        return chatId;
     }
 }

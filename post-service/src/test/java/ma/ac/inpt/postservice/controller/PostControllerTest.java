@@ -44,7 +44,7 @@ public class PostControllerTest {
     @Test
     public void testCreatePost() {
         // Create a test PostRequest
-        PostRequest postRequest = new PostRequest("username","urlImage","video","that's the stuff");
+        PostRequest postRequest = new PostRequest("username","urlImage","video","that's the stuff", new ArrayList<>(), new ArrayList<>());
 
         // Mock the postService.createPost method
         Post post = new Post("username","profilePic","video","that's the stuff");
