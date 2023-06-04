@@ -1,4 +1,4 @@
-package inpt.ac.ma.chatservice.model;
+package inpt.ac.ma.chatservice.payload;
 
 
 public enum MessageStatus {

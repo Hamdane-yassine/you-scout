@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -38,14 +35,20 @@ public class PostService {
     public Post createPost(PostRequest postRequest, MultipartFile file) {
         log.info("creating post video url {}", postRequest.getVideo());
 
+        if(postRequest.getLikes()==null){
+            postRequest.setLikes(new ArrayList<>());
+        }
+        if(postRequest.getSkills()==null){
+            postRequest.setSkills(new ArrayList<>());
+        }
         // Create a new Post object using the data from the post request
         Post post = new Post(
                 Instant.now(),
                 postRequest.getUsername(),
                 postRequest.getUserProfilePic(),
                 postRequest.getCaption(),
-                postRequest.getLikes().orElse(new ArrayList<>()),
-                postRequest.getSkills().orElse(new ArrayList<>()),
+                postRequest.getLikes(),
+                postRequest.getSkills(),
                 new HashMap<>()
         );
         String fileUrl = mediaService.uploadFile(file);
@@ -148,7 +151,7 @@ public class PostService {
      * @return a list of posts
      */
     public List<Post> postsByIdIn(List<String> ids) {
-        return postRepository.findByIdInOrderByCreatedAtDesc(ids);
+        return postRepository.findBy_idInOrderByCreatedAtDesc(ids);
     }
 
     /**

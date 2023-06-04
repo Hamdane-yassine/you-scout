@@ -11,9 +11,11 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Chat {
+public class ChatRequest {
 
     private String id;
+
+    private String convId;
 
     private String recipientName;
 

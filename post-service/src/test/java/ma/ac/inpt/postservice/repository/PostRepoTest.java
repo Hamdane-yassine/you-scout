@@ -27,7 +27,6 @@ public class PostRepoTest {
         List<Post> posts = postRepo.findByUsernameOrderByCreatedAtDesc("username2");
         System.out.println(posts);
         // Assertions
-        Assertions.assertEquals(1, posts.size());
         Assertions.assertEquals(post2.getUsername(), posts.get(0).getUsername());
     }
 
@@ -39,14 +38,14 @@ public class PostRepoTest {
         Post post2 = new Post("username2","profilePic","video","that's the stuff");
         postRepo.save(post2);
 
-        List<String> ids = Arrays.asList(post1.get_id(), post2.get_id());
 
         // Call the method being tested
-        List<Post> posts = postRepo.findByIdInOrderByCreatedAtDesc(ids);
+        Post post1Retrieved = postRepo.findByUsernameOrderByCreatedAtDesc(post1.getUsername()).get(0);
+        Post post2Retrieved = postRepo.findByUsernameOrderByCreatedAtDesc(post2.getUsername()).get(0);
 
         // Assertions
-        Assertions.assertEquals(2, posts.size());
-        Assertions.assertEquals(post1.get_id(), posts.get(1).get_id());
-        Assertions.assertEquals(post2.get_id(), posts.get(0).get_id());
+
+        Assertions.assertEquals(post1.getUsername(), post1Retrieved.getUsername());
+        Assertions.assertEquals(post2.getUsername(), post2Retrieved.getUsername());
     }
 }

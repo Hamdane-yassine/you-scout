@@ -17,12 +17,8 @@ import java.util.UUID;
 @ToString
 public class Room {
 
-    @PrimaryKeyColumn(name = "id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
-    private String id; // The username, used as a partition key in the Cassandra table
-    @Indexed
-    @PrimaryKeyColumn(name = "chat_id", ordinal = 1)
-    private String chatId; // The user ID, used as a clustering key in the Cassandra table
-
+    @PrimaryKeyColumn(name = "chat_id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
+    private String chatId; // The username, used as a partition key in the Cassandra table
 
     @Indexed
     private String senderName; // The timestamp of when the user feed entity was created

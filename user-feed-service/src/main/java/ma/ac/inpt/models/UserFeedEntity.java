@@ -19,10 +19,10 @@ import java.util.UUID;
 @ToString
 public class UserFeedEntity {
 
-    @Indexed
+
     @PrimaryKeyColumn(name = "username", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
     private String username; // The username, used as a partition key in the Cassandra table
-
+    @Indexed
     @PrimaryKeyColumn(name = "user_id", ordinal = 1)
     private UUID userId; // The user ID, used as a clustering key in the Cassandra table
 

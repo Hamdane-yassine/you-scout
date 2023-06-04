@@ -13,7 +13,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,8 +46,8 @@ class PostServiceTest {
     @Test
     void createPost_ValidPostRequest_ReturnsCreatedPost() {
         // Arrange
-        PostRequest postRequest = new PostRequest("username","profilePic","video","that's the stuff");
-        Post savedPost = new Post("username","profilePic","video","that's the stuff");
+        PostRequest postRequest = new PostRequest("username","profilePic","video","that's the stuff",new ArrayList<>(),new ArrayList<>());
+        Post savedPost = new Post(Instant.now(),"username","profilePic","that's the stuff", new ArrayList<>(),new ArrayList<>(),new HashMap<>());
 
         when(postRepository.save(any(Post.class))).thenReturn(savedPost);
 
