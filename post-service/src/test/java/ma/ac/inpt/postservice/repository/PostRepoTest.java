@@ -17,9 +17,9 @@ public class PostRepoTest {
     @Test
     public void testFindByUsernameOrderByCreatedAtDesc() {
         // Create some test posts
-        Post post1 = new Post("id","username","profilePic","video","that's the stuff");
+        Post post1 = new Post("username","profilePic","video","that's the stuff");
         postRepo.save(post1);
-        Post post2 = new Post("id2","username2","profilePic","video","that's the stuff");
+        Post post2 = new Post("username2","profilePic","video","that's the stuff");
         postRepo.save(post2);
 
 
@@ -28,25 +28,25 @@ public class PostRepoTest {
         System.out.println(posts);
         // Assertions
         Assertions.assertEquals(1, posts.size());
-        Assertions.assertEquals(post2.getId(), posts.get(0).getId());
+        Assertions.assertEquals(post2.getUsername(), posts.get(0).getUsername());
     }
 
     @Test
     public void testFindByIdInOrderByCreatedAtDesc() {
         // Create some test posts
-        Post post1 = new Post("id","username","profilePic","video","that's the stuff");
+        Post post1 = new Post("username","profilePic","video","that's the stuff");
         postRepo.save(post1);
-        Post post2 = new Post("id2","username2","profilePic","video","that's the stuff");
+        Post post2 = new Post("username2","profilePic","video","that's the stuff");
         postRepo.save(post2);
 
-        List<String> ids = Arrays.asList(post1.getId(), post2.getId());
+        List<String> ids = Arrays.asList(post1.get_id(), post2.get_id());
 
         // Call the method being tested
         List<Post> posts = postRepo.findByIdInOrderByCreatedAtDesc(ids);
 
         // Assertions
         Assertions.assertEquals(2, posts.size());
-        Assertions.assertEquals(post1.getId(), posts.get(1).getId());
-        Assertions.assertEquals(post2.getId(), posts.get(0).getId());
+        Assertions.assertEquals(post1.get_id(), posts.get(1).get_id());
+        Assertions.assertEquals(post2.get_id(), posts.get(0).get_id());
     }
 }
