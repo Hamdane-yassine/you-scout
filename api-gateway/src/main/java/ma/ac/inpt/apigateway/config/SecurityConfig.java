@@ -33,7 +33,12 @@ public class SecurityConfig {
     @Bean
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         return http.csrf().disable() // Disable CSRF protection
-                .authorizeExchange().pathMatchers("/api/v1/auth/register", "/api/v1/auth/authenticate").permitAll().anyExchange().authenticated().and().oauth2ResourceServer(ServerHttpSecurity.OAuth2ResourceServerSpec::jwt).build();
+                .authorizeExchange()
+                .pathMatchers("/api/v1/auth/logout").authenticated() // Allow access to "/api/v1/auth/logout" only for authenticated users
+                .pathMatchers("/api/v1/auth/**").permitAll() // Allow access to "/api/v1/auth/**" for all users
+                .anyExchange().authenticated() // Require authentication for all other endpoints
+                .and().oauth2ResourceServer(ServerHttpSecurity.OAuth2ResourceServerSpec::jwt) // Configure OAuth2 resource server with JWT
+                .build();
     }
 
     /**
@@ -45,5 +50,4 @@ public class SecurityConfig {
     ReactiveJwtDecoder jwtDecoder() {
         return NimbusReactiveJwtDecoder.withPublicKey(rsakeysConfig.publicKey()).build();
     }
-
 }
