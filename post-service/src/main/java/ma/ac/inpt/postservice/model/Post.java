@@ -16,11 +16,9 @@ import java.util.Map;
 @Document
 public class Post {
 
-    @Id
-    @NonNull
-    private String id;
-
+    private String _id;
     @CreatedDate
+    @NonNull
     private Instant createdAt;
 
     @CreatedBy
@@ -37,25 +35,22 @@ public class Post {
 
     @NonNull
     private ArrayList<String> likes;
-
     private int commentsNum;
 
     @NonNull
     private ArrayList<String> skills;
-
+    @NonNull
     private Map<String, Integer> rates;
 
     /**
      * Constructs a Post object with the specified id, username, profile picture, video, and caption.
      *
-     * @param id           The id of the post
      * @param username     The username of the post creator
      * @param profilePic   The profile picture of the post creator
      * @param video        The video URL of the post
      * @param caption      The caption of the post
      */
-    public Post(@NotNull String id, @NotNull String username, @NotNull String profilePic, String video, @NotNull String caption) {
-        this.id = id;
+    public Post( @NotNull String username, @NotNull String profilePic, String video, @NotNull String caption) {
         this.username = username;
         this.userProfilePic = profilePic;
         this.videoUrl = video;

@@ -1,20 +1,17 @@
 package inpt.ac.ma.chatservice.repo;
 
-
-import inpt.ac.ma.chatservice.model.Chat;
-import inpt.ac.ma.chatservice.model.MessageStatus;
-import org.springframework.data.couchbase.repository.ReactiveCouchbaseRepository;
-import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Mono;
+import inpt.ac.ma.chatservice.payload.MessageStatus;
+import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-@Repository
-public interface ChatRepo extends ReactiveCouchbaseRepository<Chat, String> {
-    Mono<Long> countBySenderIdAndRecipientIdAndStatus(String senderId, String recipientId, MessageStatus status);
+public interface CChatRepo extends CrudRepository<Chat, String> {
 
-    Mono<List<Chat>> findByChatId(String chatId);
+    Long countBySenderIdAndRecipientIdAndStatus(String senderId, String recipientId, MessageStatus status);
+
+    List<Chat> findByChatId(String chatId);
+
+
+
+
 }
-
-
-

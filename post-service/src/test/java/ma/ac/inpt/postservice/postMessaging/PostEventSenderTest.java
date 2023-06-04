@@ -27,12 +27,12 @@ public class PostEventSenderTest {
     public void sendPostCreated_ShouldSendPostEventToKafkaTemplate() {
         // Arrange
         Post post = new Post();
-        post.setId("post-id");
+        post.set_id("post-id");
         post.setUsername("user1");
 
         PostEvent expectedPostEvent = PostEvent.builder()
                 .eventType(PostEventType.CREATED)
-                .id(post.getId())
+                .id(post.get_id())
                 .username(post.getUsername())
                 .build();
 

@@ -40,14 +40,11 @@ public class PostService {
 
         // Create a new Post object using the data from the post request
         Post post = new Post(
-                postRequest.getId(),
                 Instant.now(),
                 postRequest.getUsername(),
                 postRequest.getUserProfilePic(),
-                postRequest.getVideo(),
                 postRequest.getCaption(),
                 postRequest.getLikes().orElse(new ArrayList<>()),
-                0,
                 postRequest.getSkills().orElse(new ArrayList<>()),
                 new HashMap<>()
         );
@@ -59,7 +56,7 @@ public class PostService {
         // Send a post created event
         postEventSender.sendPostCreated(post);
 
-        log.info("post {} is saved successfully for user {}", post.getId(), post.getUsername());
+        log.info("post {} is saved successfully for user {}", post.get_id(), post.getUsername());
 
         return post;
     }
@@ -180,16 +177,20 @@ public class PostService {
     /**
      * Updates the number of comments in a post with the given ID.
      *
-     * @param id  the ID of the post
+     * @param postId  the ID of the post
      * @param num the new number of comments
      */
-    public void updateCommentNum(String id, int num) {
-        log.info("updating number of comments in post {}", id);
+    public void updateCommentNum(String postId, int num) {
+        log.info("updating number of comments in post {}", postId);
 
-        Post postNum = new Post();
-        postNum.setId(id);
-        postNum.setCommentsNum(num);
+        postRepository.findById(postId).map(post -> {
+            post.setCommentsNum(num);
+            postRepository.save(post);
+            return post;
+        }).orElseThrow(() -> {
+            log.warn("Post not found id {}", postId);
+            return new ResourceNotFoundException(postId);
+        });
 
-        postRepository.save(postNum);
     }
 }

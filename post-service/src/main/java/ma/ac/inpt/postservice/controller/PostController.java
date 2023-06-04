@@ -45,7 +45,7 @@ public class PostController {
             // Build the URI for the created post
             URI location = ServletUriComponentsBuilder
                     .fromCurrentContextPath().path("/posts/{id}")
-                    .buildAndExpand(post.getId()).toUri();
+                    .buildAndExpand(post.get_id()).toUri();
 
             // Return the response with the created post's location
             return ResponseEntity

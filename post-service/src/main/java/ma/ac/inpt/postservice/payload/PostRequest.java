@@ -14,7 +14,6 @@ public class PostRequest {
 
 
 
-    private final String id;
 
     private final String username;
 
