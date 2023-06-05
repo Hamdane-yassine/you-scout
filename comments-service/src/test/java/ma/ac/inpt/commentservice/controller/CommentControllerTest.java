@@ -1,6 +1,7 @@
 package ma.ac.inpt.commentservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ma.ac.inpt.commentservice.config.SecurityTestConfig;
 import ma.ac.inpt.commentservice.model.Comment;
 import ma.ac.inpt.commentservice.model.User;
 import ma.ac.inpt.commentservice.service.CommentService;
@@ -11,6 +12,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,6 +25,7 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(CommentController.class)
+@Import(SecurityTestConfig.class)
 public class CommentControllerTest {
 
     @Autowired
@@ -68,7 +71,7 @@ public class CommentControllerTest {
 
         // Perform the POST request
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/comments")
+                        .post("/comments")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(comment)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -116,7 +119,7 @@ public class CommentControllerTest {
 
         // Perform the GET request
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/posts/{postId}/comments", postId)
+                        .get("/posts/{postId}/comments", postId)
                         .param("orderBy", orderBy)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -159,7 +162,7 @@ public class CommentControllerTest {
 
         // Perform the GET request
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/posts/{postId}/lastComment", postId)
+                        .get("/posts/{postId}/lastComment", postId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value("commentId"))
@@ -194,7 +197,7 @@ public class CommentControllerTest {
 
         // Perform the GET request
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/comments/{id}", commentId)
+                        .get("/comments/{id}", commentId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(commentId))
@@ -224,7 +227,7 @@ public class CommentControllerTest {
 
         // Perform the PUT request
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/comments/{id}/unlike", commentId)
+                        .put("/comments/{id}/unlike", commentId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(user)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -248,7 +251,7 @@ public class CommentControllerTest {
 
         // Perform the PUT request
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/comments/{id}/like", commentId)
+                        .put("/comments/{id}/like", commentId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(user)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -281,7 +284,7 @@ public class CommentControllerTest {
 
         // Perform the PUT request
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/comments/{id}", commentId)
+                        .put("/comments/{id}", commentId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(updatedComment)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -300,7 +303,7 @@ public class CommentControllerTest {
 
         // Perform the DELETE request
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/api/comments/{id}", commentId)
+                        .delete("/comments/{id}", commentId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string(message));

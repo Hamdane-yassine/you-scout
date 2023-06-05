@@ -3,11 +3,13 @@ package ma.ac.inpt.skillsservice.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ma.ac.inpt.skillsservice.config.SecurityTestConfig;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -25,6 +27,7 @@ import ma.ac.inpt.skillsservice.service.SkillService;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest(SkillController.class)
+@Import(SecurityTestConfig.class)
 public class SkillControllerTest {
 
     @Autowired
@@ -46,7 +49,7 @@ public class SkillControllerTest {
         when(skillService.getAllSkills(null)).thenReturn(Collections.emptyList());
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/skills"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/skills"))
                 .andExpect(status().isNoContent());
 
         // Verify
@@ -62,7 +65,7 @@ public class SkillControllerTest {
         when(skillService.getAllSkills(null)).thenReturn(skills);
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/skills"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/skills"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].name", is("Skill 1")))
@@ -81,7 +84,7 @@ public class SkillControllerTest {
         when(skillService.getAllSkills(null)).thenThrow(new RuntimeException());
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/skills"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/skills"))
                 .andExpect(status().isInternalServerError());
 
         // Verify
@@ -99,7 +102,7 @@ public class SkillControllerTest {
         when(skillService.getSkillById(skillId)).thenReturn(skillData);
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/skills/{id}", skillId))
+        mockMvc.perform(MockMvcRequestBuilders.get("/skills/{id}", skillId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is("Skill 1")))
                 .andExpect(jsonPath("$.usedCount", is(0)))
@@ -117,7 +120,7 @@ public class SkillControllerTest {
         when(skillService.getSkillById(skillId)).thenReturn(skillData);
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/skills/{id}", skillId))
+        mockMvc.perform(MockMvcRequestBuilders.get("/skills/{id}", skillId))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Skill not found"));
 
@@ -136,7 +139,7 @@ public class SkillControllerTest {
         when(skillService.createSkill(Mockito.any(Skill.class))).thenReturn(createdSkill);
 
         // Act and Assert
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/skills")
+        mockMvc.perform(MockMvcRequestBuilders.post("/skills")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(skill)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -155,7 +158,7 @@ public class SkillControllerTest {
         when(skillService.incrementSkill(skillId)).thenReturn(message);
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/skills/{id}/increment", skillId))
+        mockMvc.perform(MockMvcRequestBuilders.put("/skills/{id}/increment", skillId))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(message));
 
@@ -170,7 +173,7 @@ public class SkillControllerTest {
         when(skillService.incrementSkill(skillId)).thenThrow(new RuntimeException());
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/skills/{id}/increment", skillId))
+        mockMvc.perform(MockMvcRequestBuilders.put("/skills/{id}/increment", skillId))
                 .andExpect(status().isInternalServerError());
 
         // Verify
@@ -187,7 +190,7 @@ public class SkillControllerTest {
         when(skillService.decrementSkill(skillId)).thenReturn(message);
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/skills/{id}/decrement", skillId))
+        mockMvc.perform(MockMvcRequestBuilders.put("/skills/{id}/decrement", skillId))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(message));
 
@@ -203,7 +206,7 @@ public class SkillControllerTest {
         when(skillService.decrementSkill(skillId)).thenThrow(new RuntimeException());
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/skills/{id}/decrement", skillId))
+        mockMvc.perform(MockMvcRequestBuilders.put("/skills/{id}/decrement", skillId))
                 .andExpect(status().isInternalServerError());
 
         // Verify
@@ -220,7 +223,7 @@ public class SkillControllerTest {
         when(skillService.deleteSkill(skillId)).thenReturn(message);
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/skills/{id}", skillId))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/skills/{id}", skillId))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(message));
 
@@ -236,7 +239,7 @@ public class SkillControllerTest {
         when(skillService.deleteSkill(skillId)).thenThrow(new RuntimeException());
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/skills/{id}", skillId))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/skills/{id}", skillId))
                 .andExpect(status().isInternalServerError());
 
         // Verify

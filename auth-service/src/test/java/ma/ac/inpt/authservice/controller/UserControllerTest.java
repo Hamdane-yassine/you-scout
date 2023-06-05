@@ -36,7 +36,7 @@ class UserControllerTest {
         Mockito.when(userServiceImpl.getAllUsers(0, 20)).thenReturn(Page.empty());
 
         // Act & Assert: Execute the request and verify the HTTP status code
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users")
+        mockMvc.perform(MockMvcRequestBuilders.get("/users")
                         .param("page", "0")
                         .param("size", "20"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -51,7 +51,7 @@ class UserControllerTest {
         Mockito.doNothing().when(userServiceImpl).deleteUserByUsername(username);
 
         // Act & Assert: Execute the request and verify the HTTP status code
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/users/" + username))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/users/" + username))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
@@ -68,7 +68,7 @@ class UserControllerTest {
         Mockito.when(userServiceImpl.getUserDetailsByUsername(username)).thenReturn(userDetailsDto);
 
         // Act & Assert: Execute the request and verify the HTTP status code
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/" + username + "/profile"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/" + username + "/profile"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
@@ -81,7 +81,7 @@ class UserControllerTest {
         Mockito.doNothing().when(userServiceImpl).updateUserEnabledStatus(username, false);
 
         // Act & Assert: Execute the request and verify the HTTP status code
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/users/" + username + "/disable"))
+        mockMvc.perform(MockMvcRequestBuilders.put("/users/" + username + "/disable"))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
@@ -94,7 +94,7 @@ class UserControllerTest {
         Mockito.doNothing().when(userServiceImpl).updateUserEnabledStatus(username, true);
 
         // Act & Assert: Execute the request and verify the HTTP status code
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/users/" + username + "/enable"))
+        mockMvc.perform(MockMvcRequestBuilders.put("/users/" + username + "/enable"))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
@@ -112,7 +112,7 @@ class UserControllerTest {
         Mockito.when(userServiceImpl.getUserDetailsByUsername(username)).thenReturn(userDetailsDto);
 
         // Act & Assert: Execute the request and verify the HTTP status code
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/me/profile"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/me/profile"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
@@ -132,7 +132,7 @@ class UserControllerTest {
         Mockito.when(userServiceImpl.updateProfileByUsername(username, request)).thenReturn(response);
 
         // Act & Assert: Execute the request and verify the HTTP status code
-        mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1/users/me/profile")
+        mockMvc.perform(MockMvcRequestBuilders.patch("/users/me/profile")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -155,7 +155,7 @@ class UserControllerTest {
         Mockito.when(userServiceImpl.updateUserByUsername(username, request)).thenReturn(response);
 
         // Act & Assert: Execute the request and verify the HTTP status code
-        mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1/users/me")
+        mockMvc.perform(MockMvcRequestBuilders.patch("/users/me")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -176,7 +176,7 @@ class UserControllerTest {
         Mockito.when(userServiceImpl.updateProfilePicture(username, file)).thenReturn(response);
 
         // Act & Assert: Execute the request and verify the HTTP status code
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/users/me/profile/picture")
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/users/me/profile/picture")
                         .file(file))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }

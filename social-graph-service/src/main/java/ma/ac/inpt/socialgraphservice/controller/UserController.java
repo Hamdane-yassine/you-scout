@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
  * Controller class for managing user interactions.
  */
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 

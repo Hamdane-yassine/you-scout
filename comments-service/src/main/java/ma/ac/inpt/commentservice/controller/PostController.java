@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/api")
+@RequestMapping()
 public class PostController {
     private final PostService postService;
 

@@ -20,7 +20,7 @@ import java.security.Principal;
  * Provides endpoints for getting, updating and deleting user data.
  */
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {

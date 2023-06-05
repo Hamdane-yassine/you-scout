@@ -18,7 +18,7 @@ import java.security.Principal;
  * Provides endpoints for user registration, authentication, account verification, and password reset.
  */
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
