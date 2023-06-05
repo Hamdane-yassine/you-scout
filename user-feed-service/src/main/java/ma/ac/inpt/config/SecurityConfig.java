@@ -1,4 +1,4 @@
-package ma.ac.inpt.postservice.config;
+package ma.ac.inpt.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +10,9 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Configuration class for security.
+ */
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
