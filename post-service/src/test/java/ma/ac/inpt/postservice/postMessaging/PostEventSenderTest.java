@@ -8,6 +8,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.kafka.core.KafkaTemplate;
 
+import java.util.ArrayList;
+
 import static org.mockito.Mockito.*;
 
 public class PostEventSenderTest {
@@ -27,12 +29,13 @@ public class PostEventSenderTest {
     public void sendPostCreated_ShouldSendPostEventToKafkaTemplate() {
         // Arrange
         Post post = new Post();
-        post.setId("post-id");
+        post.set_id("post-id");
         post.setUsername("user1");
+        post.setLikes(new ArrayList<>());
 
         PostEvent expectedPostEvent = PostEvent.builder()
                 .eventType(PostEventType.CREATED)
-                .id(post.getId())
+                .id(post.get_id())
                 .username(post.getUsername())
                 .build();
 
@@ -40,6 +43,6 @@ public class PostEventSenderTest {
         postEventSender.sendPostCreated(post);
 
         // Assert
-        verify(kafkaTemplate, times(1)).send("amigoscode", expectedPostEvent);
+        verify(kafkaTemplate, times(1)).send("post", expectedPostEvent);
     }
 }

@@ -6,12 +6,16 @@ import ma.ac.inpt.postservice.postMessaging.PostEventSender;
 import ma.ac.inpt.postservice.model.Post;
 import ma.ac.inpt.postservice.payload.PostRequest;
 import ma.ac.inpt.postservice.repository.PostRepo;
+import ma.ac.inpt.postservice.service.media.MediaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,24 +29,30 @@ class PostServiceTest {
     @Mock
     private PostEventSender postEventSender;
 
+    @Mock
+    private MediaService mediaService;
+
+    @Mock
+    private MultipartFile multipartFile;
+
     private PostService postService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        postService = new PostService(postRepository, postEventSender);
+        postService = new PostService(postRepository, postEventSender, mediaService);
     }
 
     @Test
     void createPost_ValidPostRequest_ReturnsCreatedPost() {
         // Arrange
-        PostRequest postRequest = new PostRequest("id","username","profilePic","video","that's the stuff");
-        Post savedPost = new Post("id","username","profilePic","video","that's the stuff");
+        PostRequest postRequest = new PostRequest("username","profilePic","video","that's the stuff",new ArrayList<>(),new ArrayList<>());
+        Post savedPost = new Post(Instant.now(),"username","profilePic","that's the stuff", new ArrayList<>(),new ArrayList<>(),new HashMap<>());
 
         when(postRepository.save(any(Post.class))).thenReturn(savedPost);
 
         // Act
-        Post createdPost = postService.createPost(postRequest);
+        Post createdPost = postService.createPost(postRequest, multipartFile);
 
         // Assert
         assertEquals(savedPost, createdPost);
@@ -56,7 +66,7 @@ class PostServiceTest {
         String postId = "post-id";
         String username = "user1";
         Post post = new Post();
-        post.setId(postId);
+        post.set_id(postId);
         post.setUsername(username);
 
         when(postRepository.findById(postId)).thenReturn(Optional.of(post));
@@ -76,7 +86,7 @@ class PostServiceTest {
         String postId = "post-id";
         String username = "user1";
         Post post = new Post();
-        post.setId(postId);
+        post.set_id(postId);
         post.setUsername("user2");
 
         when(postRepository.findById(postId)).thenReturn(Optional.of(post));
@@ -113,7 +123,7 @@ class PostServiceTest {
         String postId = "post-id";
         String username = "user1";
         Post post = new Post();
-        post.setId(postId);
+        post.set_id(postId);
         post.setLikes(new ArrayList<>());
 
         when(postRepository.findById(postId)).thenReturn(Optional.of(post));
@@ -147,7 +157,7 @@ class PostServiceTest {
         String postId = "post-id";
         String username = "user1";
         Post post = new Post();
-        post.setId(postId);
+        post.set_id(postId);
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add(username);
         post.setLikes(arrayList);
@@ -168,7 +178,7 @@ class PostServiceTest {
         String postId = "post-id";
         String username = "user1";
         Post post = new Post();
-        post.setId(postId);
+        post.set_id(postId);
         post.setLikes(new ArrayList<>());
 
         when(postRepository.findById(postId)).thenReturn(Optional.of(post));

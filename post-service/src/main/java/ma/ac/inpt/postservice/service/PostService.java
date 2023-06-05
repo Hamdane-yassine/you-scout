@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -38,17 +35,20 @@ public class PostService {
     public Post createPost(PostRequest postRequest, MultipartFile file) {
         log.info("creating post video url {}", postRequest.getVideo());
 
+        if(postRequest.getLikes()==null){
+            postRequest.setLikes(new ArrayList<>());
+        }
+        if(postRequest.getSkills()==null){
+            postRequest.setSkills(new ArrayList<>());
+        }
         // Create a new Post object using the data from the post request
         Post post = new Post(
-                postRequest.getId(),
                 Instant.now(),
                 postRequest.getUsername(),
                 postRequest.getUserProfilePic(),
-                postRequest.getVideo(),
                 postRequest.getCaption(),
-                postRequest.getLikes().orElse(new ArrayList<>()),
-                0,
-                postRequest.getSkills().orElse(new ArrayList<>()),
+                postRequest.getLikes(),
+                postRequest.getSkills(),
                 new HashMap<>()
         );
         String fileUrl = mediaService.uploadFile(file);
@@ -59,7 +59,7 @@ public class PostService {
         // Send a post created event
         postEventSender.sendPostCreated(post);
 
-        log.info("post {} is saved successfully for user {}", post.getId(), post.getUsername());
+        log.info("post {} is saved successfully for user {}", post.get_id(), post.getUsername());
 
         return post;
     }
@@ -151,7 +151,7 @@ public class PostService {
      * @return a list of posts
      */
     public List<Post> postsByIdIn(List<String> ids) {
-        return postRepository.findByIdInOrderByCreatedAtDesc(ids);
+        return postRepository.findBy_idInOrderByCreatedAtDesc(ids);
     }
 
     /**
@@ -180,16 +180,20 @@ public class PostService {
     /**
      * Updates the number of comments in a post with the given ID.
      *
-     * @param id  the ID of the post
+     * @param postId  the ID of the post
      * @param num the new number of comments
      */
-    public void updateCommentNum(String id, int num) {
-        log.info("updating number of comments in post {}", id);
+    public void updateCommentNum(String postId, int num) {
+        log.info("updating number of comments in post {}", postId);
 
-        Post postNum = new Post();
-        postNum.setId(id);
-        postNum.setCommentsNum(num);
+        postRepository.findById(postId).map(post -> {
+            post.setCommentsNum(num);
+            postRepository.save(post);
+            return post;
+        }).orElseThrow(() -> {
+            log.warn("Post not found id {}", postId);
+            return new ResourceNotFoundException(postId);
+        });
 
-        postRepository.save(postNum);
     }
 }

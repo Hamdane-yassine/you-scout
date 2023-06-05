@@ -9,12 +9,10 @@ import java.util.Optional;
 
 @Data
 @AllArgsConstructor
-@RequiredArgsConstructor
 public class PostRequest {
 
 
 
-    private final String id;
 
     private final String username;
 
@@ -24,8 +22,8 @@ public class PostRequest {
 
     private final String caption;
 
-    private Optional<ArrayList<String>> likes;
+    private ArrayList<String> likes;
 
-    private Optional<ArrayList<String>> skills;
+    private ArrayList<String> skills;
 
 }

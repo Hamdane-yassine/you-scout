@@ -1,4 +1,4 @@
-package inpt.ac.ma.chatservice.model;
+package inpt.ac.ma.chatservice.payload;
 
 
 import lombok.AllArgsConstructor;
@@ -12,6 +12,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Notification {
     private String id;
-    private String senderId;
     private String senderName;
 }

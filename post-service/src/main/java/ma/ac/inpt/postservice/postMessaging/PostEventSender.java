@@ -22,7 +22,7 @@ public class PostEventSender {
      * @param post The created post
      */
     public void sendPostCreated(Post post) {
-        log.info("Sending post created event for post id {}", post.getId());
+        log.info("Sending post created event for post id {}", post.get_id());
         sendPostChangedEvent(convertTo(post, PostEventType.CREATED));
     }
 
@@ -33,7 +33,7 @@ public class PostEventSender {
      * @param post The deleted post
      */
     public void sendPostDeleted(Post post) {
-        log.info("Sending post deleted event for post {}", post.getId());
+        log.info("Sending post deleted event for post {}", post.get_id());
         sendPostChangedEvent(convertTo(post, PostEventType.DELETED));
     }
 
@@ -58,7 +58,7 @@ public class PostEventSender {
         // Convert a Post object to a PostEvent with the specified eventType
         return PostEvent.builder()
                 .eventType(eventType)
-                .id(post.getId())
+                .id(post.get_id())
                 .username(post.getUsername())
                 .createdAt(post.getCreatedAt())
                 .comments(post.getCommentsNum())
