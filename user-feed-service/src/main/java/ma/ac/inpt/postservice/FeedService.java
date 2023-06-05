@@ -29,7 +29,6 @@ public class FeedService {
 
     private final Cassandra feedRepository; // The Cassandra repository used for retrieving feed data
 
-    private final AuthService authService; // The AuthService used for retrieving user profile pictures
     private final PostService postService; // The PostService used for retrieving posts
 
     /**
@@ -63,8 +62,8 @@ public class FeedService {
 
         // Get the paging state for the next page if available
         if (!page.isLast()) {
-            pageState = ((CassandraPageRequest) page.getPageable())
-                    .getPagingState().toString();
+            pageState = Objects.requireNonNull(((CassandraPageRequest) page.getPageable())
+                    .getPagingState()).toString();
         }
 
         // Retrieve the corresponding posts for the UserFeedEntity objects
@@ -93,21 +92,8 @@ public class FeedService {
                 .collect(toList());
 
         // Retrieve the posts for the post IDs
-        List<Post> posts = postService.findPostsIn(postIds);
 
-        // Retrieve the usernames of the posts and get their corresponding profile pictures
-        List<String> usernames = posts.stream()
-                .map(Post::getUsername)
-                .distinct()
-                .toList();
 
-        Map<String, String> usersProfilePics =
-                authService.usersProfilePic(new ArrayList<>(usernames));
-
-        // Set the profile picture for each post
-        posts.forEach(post -> post.setUserProfilePic(
-                usersProfilePics.get(post.getUsername())));
-
-        return posts;
+        return postService.findPostsIn(postIds);
     }
 }

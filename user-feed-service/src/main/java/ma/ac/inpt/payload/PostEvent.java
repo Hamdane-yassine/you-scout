@@ -17,6 +17,8 @@ public class PostEvent {
     private String id;
     private Instant createdAt;
     private String username;
+    private String accessToken;
+    private String userProfilePic;
     private int likes;
     private int comments;
     private PostEventType eventType;

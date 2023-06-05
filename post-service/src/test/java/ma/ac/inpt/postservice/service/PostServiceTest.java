@@ -55,12 +55,12 @@ class PostServiceTest {
         when(postRepository.findById("id")).thenReturn(Optional.of(savedPost));
 
         // Act
-        Post createdPost = postService.completePost(postRequest);
+        Post createdPost = postService.completePost(postRequest, "access");
 
         // Assert
         assertEquals(savedPost, createdPost);
         verify(postRepository).save(any(Post.class));
-        verify(postEventSender).sendPostCreated(savedPost);
+        verify(postEventSender).sendPostCreated(savedPost, "access");
     }
 
     @Test
@@ -75,12 +75,12 @@ class PostServiceTest {
         when(postRepository.findById(postId)).thenReturn(Optional.of(post));
 
         // Act
-        assertDoesNotThrow(() -> postService.deletePost(postId, username));
+        assertDoesNotThrow(() -> postService.deletePost(postId, username, "access"));
 
         // Assert
         verify(postRepository).findById(postId);
         verify(postRepository).delete(post);
-        verify(postEventSender).sendPostDeleted(post);
+        verify(postEventSender).sendPostDeleted(post, "access");
     }
 
     @Test
@@ -96,12 +96,12 @@ class PostServiceTest {
 
         // Act & Assert
        assertThrows(NotAllowedException.class,
-                () -> postService.deletePost(postId, username));
+                () -> postService.deletePost(postId, username, "access"));
 
 
         verify(postRepository).findById(postId);
         verify(postRepository, never()).delete(any(Post.class));
-        verify(postEventSender, never()).sendPostDeleted(any(Post.class));
+        verify(postEventSender, never()).sendPostDeleted(any(Post.class), eq("access"));
     }
 
     @Test
@@ -113,11 +113,11 @@ class PostServiceTest {
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class,
-                () -> postService.deletePost(postId, "user1"));
+                () -> postService.deletePost(postId, "user1", "access"));
 
         verify(postRepository).findById(postId);
         verify(postRepository, never()).delete(any(Post.class));
-        verify(postEventSender, never()).sendPostDeleted(any(Post.class));
+        verify(postEventSender, never()).sendPostDeleted(any(Post.class), eq("access"));
     }
 
     @Test

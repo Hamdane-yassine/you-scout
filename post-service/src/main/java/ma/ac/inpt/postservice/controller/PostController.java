@@ -18,9 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
+
 import java.security.Principal;
 import java.util.List;
 @Slf4j
@@ -32,11 +31,11 @@ public class PostController {
 
 
     @PostMapping("/posts")
-    public ResponseEntity<?> createPost( @RequestBody CompletePostRequest postRequest){
+    public ResponseEntity<?> createPost( @RequestBody CompletePostRequest postRequest, @RequestHeader("Authorization") String authorizationHeader){
 
-
+            String accessToken = authorizationHeader.replace("Bearer ", "");
             // Create the post
-            Post post = postService.completePost(postRequest);
+            Post post = postService.completePost(postRequest, accessToken);
 
 
 
@@ -50,11 +49,11 @@ public class PostController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadVideo( @RequestParam("video") MultipartFile file){
-        String user = "ayoub";
+    public ResponseEntity<?> uploadVideo( @RequestParam("video") MultipartFile file, Principal user){
+
         try{
             // Create the post
-            String postId = postService.uploadVideo(file, user);
+            String postId = postService.uploadVideo(file, user.getName());
 
 
 
@@ -74,42 +73,41 @@ public class PostController {
     }
 
     @DeleteMapping("/posts/{id}")
-    public void deletePost(@PathVariable("id") String id, @AuthenticationPrincipal Principal user) {
+    public void deletePost(@PathVariable("id") String id, @AuthenticationPrincipal Principal user, @RequestHeader("Authorization") String authorizationHeader) {
         log.info("Received a delete request for post id {} from user {}", id, user.getName());
+        String accessToken = authorizationHeader.replace("Bearer ", "");
+
         // Delete the post
-        postService.deletePost(id, user.getName());
+        postService.deletePost(id, user.getName(), accessToken);
     }
 
     @DeleteMapping("/posts/{id}/like")
-    public void likePost(@PathVariable("id") String id) {
-        String user = "ahmed";
-        log.info("Received a post liking request for post id {} from user {}", id, user);
+    public void likePost(@PathVariable("id") String id, Principal user) {
+        log.info("Received a post liking request for post id {} from user {}", id, user.getName());
 
         // Like the post
-        postService.likePost(id, user);
+        postService.likePost(id, user.getName());
     }
 
     @DeleteMapping("/posts/{id}/removelike")
-    public void removeLikePost(@PathVariable("id") String id) {
-        String user = "ahmed";
-        log.info("Received a remove post liking request for post id {} from user {}", id, user);
+    public void removeLikePost(@PathVariable("id") String id, Principal user) {
+        log.info("Received a remove post liking request for post id {} from user {}", id, user.getName());
 
         // Remove the like from the post
-        postService.removeLikePost(id, user);
+        postService.removeLikePost(id, user.getName());
     }
 
     @PostMapping("/posts/{id}/rate")
-    public ResponseEntity<String> ratePost(@PathVariable("id") String id, @RequestBody RatingRequest ratingRequest) {
-        String user = "ahmed";
+    public ResponseEntity<String> ratePost(@PathVariable("id") String id, @RequestBody RatingRequest ratingRequest, Principal user) {
         if(ratingRequest.getRating()>5 || ratingRequest.getRating()<0){
             return  ResponseEntity.ok("Not a valid rating");
         }
-        log.info("Received a rating post request for post id {} from user {}", id, user);
+        log.info("Received a rating post request for post id {} from user {}", id, user.getName());
 
         // Rate the post
         try{
 
-        postService.ratePost(id, ratingRequest, user);
+        postService.ratePost(id, ratingRequest, user.getName());
         return ResponseEntity.ok("Rating registered");
         } catch (UpdatingException e){
             return ResponseEntity.internalServerError().body("Rating failed");

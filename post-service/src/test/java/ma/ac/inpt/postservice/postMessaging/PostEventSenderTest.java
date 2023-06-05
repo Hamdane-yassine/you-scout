@@ -37,10 +37,11 @@ public class PostEventSenderTest {
                 .eventType(PostEventType.CREATED)
                 .id(post.get_id())
                 .username(post.getUsername())
+                .accessToken("access")
                 .build();
 
         // Act
-        postEventSender.sendPostCreated(post);
+        postEventSender.sendPostCreated(post, "access");
 
         // Assert
         verify(kafkaTemplate, times(1)).send("post", expectedPostEvent);

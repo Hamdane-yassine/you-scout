@@ -4,6 +4,8 @@ import ma.ac.inpt.models.UserFeedEntity;
 import ma.ac.inpt.exceptions.ResourceNotFoundException;
 import ma.ac.inpt.models.Post;
 import ma.ac.inpt.payload.SlicedResult;
+import ma.ac.inpt.postservice.FeedService;
+import ma.ac.inpt.postservice.PostService;
 import ma.ac.inpt.repo.Cassandra;
 
 import org.junit.jupiter.api.Assertions;
@@ -26,8 +28,6 @@ public class FeedServiceTest {
     @Mock
     private Cassandra feedRepository;
 
-    @Mock
-    private AuthService authService;
 
     @Mock
     private PostService postService;
@@ -35,9 +35,8 @@ public class FeedServiceTest {
     @BeforeEach
     public void setUp() {
         feedRepository = Mockito.mock(Cassandra.class);
-        authService = Mockito.mock(AuthService.class);
         postService = Mockito.mock(PostService.class);
-        feedService = new FeedService(feedRepository, authService, postService);
+        feedService = new FeedService(feedRepository, postService);
     }
 
     @Test
@@ -56,10 +55,7 @@ public class FeedServiceTest {
         List<Post> mockPosts = List.of(Post.builder().userProfilePic("profile.jpg").build());
         when(postService.findPostsIn(anyList())).thenReturn(mockPosts);
 
-        // Mock the AuthService to return users' profile pictures
-        Map<String, String> mockProfilePics = new HashMap<>();
-        mockProfilePics.put(username, "profile.jpg");
-        when(authService.usersProfilePic(anyList())).thenReturn(mockProfilePics);
+
         // Invoke the getUserFeed method
         SlicedResult<Post> result = feedService.getUserFeed(username, pagingState);
         // Assert the expected behavior and result
@@ -70,7 +66,6 @@ public class FeedServiceTest {
         // Verify the method invocations
         verify(feedRepository, times(1)).findByUsername(eq(username), any(CassandraPageRequest.class));
         verify(postService, times(1)).findPostsIn(anyList());
-        verify(authService, times(1)).usersProfilePic(anyList());
     }
 
 

@@ -35,7 +35,7 @@ public class PostService {
      * @param postRequest the post request object
      * @return the created post
      */
-    public Post completePost(CompletePostRequest postRequest) {
+    public Post completePost(CompletePostRequest postRequest, String accessToken) {
 
         if(postRequest.getLikes()==null){
             postRequest.setLikes(new ArrayList<>());
@@ -52,7 +52,7 @@ public class PostService {
                     post.setSkills(postRequest.getSkills());
                     post.setCommentsNum(0);
                     postRepository.save(post);
-                    postEventSender.sendPostCreated(post);
+                    postEventSender.sendPostCreated(post, accessToken);
                     return post;
                 }
         );
@@ -80,7 +80,7 @@ public class PostService {
      * @param postId   the ID of the post to delete
      * @param username the username of the user deleting the post
      */
-    public void deletePost(String postId, String username) {
+    public void deletePost(String postId, String username, String accessToken) {
         log.info("deleting post {}", postId);
 
         // Find the post by ID
@@ -95,7 +95,7 @@ public class PostService {
             postRepository.delete(post);
 
             // Send a post deleted event
-            postEventSender.sendPostDeleted(post);
+            postEventSender.sendPostDeleted(post, accessToken);
 
             return post;
         }).orElseThrow(() -> {

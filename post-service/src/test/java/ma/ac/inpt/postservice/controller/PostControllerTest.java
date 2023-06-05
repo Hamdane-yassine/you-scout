@@ -43,10 +43,10 @@ class PostControllerTest {
         CompletePostRequest postRequest = new CompletePostRequest("username","urlImage","that's the stuff", new ArrayList<>(), new HashMap<>());
         Post createdPost = new Post("username","profilePic","that's the stuff");
         String expectedPostId = "1";
-        when(postService.completePost(postRequest)).thenReturn(createdPost);
+        when(postService.completePost(postRequest, "access")).thenReturn(createdPost);
 
         // Act
-        ResponseEntity<?> responseEntity = postController.createPost(postRequest);
+        ResponseEntity<?> responseEntity = postController.createPost(postRequest, "access");
 
         // Assert
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -54,7 +54,7 @@ class PostControllerTest {
         // Assert other response properties if applicable
 
         // Verify that the postService method was called
-        verify(postService, times(1)).completePost(postRequest);
+        verify(postService, times(1)).completePost(postRequest, "access");
     }
 
     @Test
@@ -66,7 +66,7 @@ class PostControllerTest {
         when(postService.uploadVideo(file, user)).thenReturn(expectedPostId);
 
         // Act
-        ResponseEntity<?> responseEntity = postController.uploadVideo(file);
+        ResponseEntity<?> responseEntity = postController.uploadVideo(file, () -> "ayoub");
 
         // Assert
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -88,10 +88,10 @@ class PostControllerTest {
         SecurityContextHolder.setContext(securityContext);
 
         // Act
-        postController.deletePost(postId, user);
+        postController.deletePost(postId, user, "access");
 
         // Assert
-        verify(postService, times(1)).deletePost(postId, user.getName());
+        verify(postService, times(1)).deletePost(postId, user.getName(), "access");
     }
 
     @Test
@@ -100,7 +100,7 @@ class PostControllerTest {
         String postId = "1";
 
         // Act
-        postController.likePost(postId);
+        postController.likePost(postId, () -> "ahmed");
 
         // Assert
         verify(postService, times(1)).likePost(postId, "ahmed");
@@ -112,7 +112,7 @@ class PostControllerTest {
         String postId = "1";
 
         // Act
-        postController.removeLikePost(postId);
+        postController.removeLikePost(postId, () -> "ahmed");
 
         // Assert
         verify(postService, times(1)).removeLikePost(postId, "ahmed");
@@ -125,7 +125,7 @@ class PostControllerTest {
         RatingRequest ratingRequest = new RatingRequest("dribbling",4);
 
         // Act
-        ResponseEntity<String> responseEntity = postController.ratePost(postId, ratingRequest);
+        ResponseEntity<String> responseEntity = postController.ratePost(postId, ratingRequest, () -> "ahmed");
 
         // Assert
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -142,7 +142,7 @@ class PostControllerTest {
         RatingRequest ratingRequest = new RatingRequest("dribbling",6);
 
         // Act
-        ResponseEntity<String> responseEntity = postController.ratePost(postId, ratingRequest);
+        ResponseEntity<String> responseEntity = postController.ratePost(postId, ratingRequest, () -> "ahmed");
 
         // Assert
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);

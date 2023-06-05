@@ -20,7 +20,7 @@ public interface PostClient {
      * @param ids the list of post IDs to search for
      * @return the ResponseEntity containing the list of posts
      */
-    @RequestMapping(method = RequestMethod.POST, value = "/posts/in")
+    @RequestMapping(method = RequestMethod.POST, value = "/api/v1/post-handling-service/posts/in")
     ResponseEntity<List<Post>> findPostsByIdIn(
 //            @RequestHeader("Authorization") String token,
             @RequestBody List<String> ids);

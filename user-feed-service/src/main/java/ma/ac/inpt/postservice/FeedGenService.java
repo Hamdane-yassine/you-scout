@@ -32,7 +32,7 @@ public class FeedGenService {
      * @param post The post to add to the feed.
      * @throws UnableToGetFollowersException If unable to retrieve followers for the user.
      */
-    public void addToFeed(Post post) {
+    public void addToFeed(Post post, String accessToken) {
         log.info("adding post {} to feed for user {}" ,
                 post.getUsername(), post.getId());
 
@@ -43,7 +43,7 @@ public class FeedGenService {
 
         while(!isLast) {
 
-            ResponseEntity<PagedResult<String>> response =     graphClient.findFollowers("Bearer adsflkjagk'aj'afg",post.getUsername(), page, size);
+            ResponseEntity<PagedResult<String>> response =     graphClient.findFollowers("Bearer "+accessToken,post.getUsername(), page, size);
 
             if(response.getStatusCode().is2xxSuccessful()) {
 

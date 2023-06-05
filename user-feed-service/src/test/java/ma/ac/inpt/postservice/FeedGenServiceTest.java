@@ -58,7 +58,7 @@ class FeedGenServiceTest {
         when(graphClient.findFollowers("Bearer adsflkjagk'aj'afg",post.getUsername(), 0, 10)).thenReturn(response);
 
         // Act
-        feedGenService.addToFeed(post);
+        feedGenService.addToFeed(post, "access");
 
         // Assert
         verify(graphClient, times(1)).findFollowers("Bearer adsflkjagk'aj'afg",post.getUsername(), 0, 10);
@@ -81,7 +81,7 @@ class FeedGenServiceTest {
         // Act & Assert
         UnableToGetFollowersException exception = assertThrows(
                 UnableToGetFollowersException.class,
-                () -> feedGenService.addToFeed(post)
+                () -> feedGenService.addToFeed(post, "access")
         );
 
         assertEquals("unable to get followers for user user123", exception.getMessage());

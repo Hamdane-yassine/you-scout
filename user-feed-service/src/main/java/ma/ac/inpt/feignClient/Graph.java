@@ -20,7 +20,7 @@ public interface Graph {
      * @param size     the number of followers to retrieve per page
      * @return the ResponseEntity containing the paged result of followers
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/api/v1/users/{username}/followers")
+    @RequestMapping(method = RequestMethod.GET, value = "/api/v1/social-graph-service/users/{username}/followers")
     ResponseEntity<PagedResult<String>> findFollowers(
 //            @RequestHeader("Authorization") String token,
             @RequestHeader("Authorization") String authorizationHeader,

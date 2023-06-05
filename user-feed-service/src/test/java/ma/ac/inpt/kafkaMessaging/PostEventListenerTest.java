@@ -42,7 +42,7 @@ public class PostEventListenerTest {
         postEventListener.consume(postEvent);
 
         // Assert
-        verify(feedGeneratorService).addToFeed(postCaptor.capture());
+        verify(feedGeneratorService).addToFeed(postCaptor.capture(),"access");
         Post capturedPost = postCaptor.getValue();
         assertEquals("lol", capturedPost.getId());
         assertEquals("ayoub", capturedPost.getUsername());
