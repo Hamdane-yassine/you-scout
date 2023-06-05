@@ -77,9 +77,9 @@ public class SecurityConfig {
                 // Disables CSRF protection
                 .csrf(AbstractHttpConfigurer::disable)
                 // Permits access to /api/v1/auth/logout for authenticated users
-                .authorizeRequests(auth -> auth.antMatchers("/api/v1/auth-service/auth/logout").authenticated())
+                .authorizeRequests(auth -> auth.antMatchers("/auth/logout").authenticated())
                 // Permits access to /api/v1/auth/** for all
-                .authorizeRequests(auth -> auth.antMatchers("/api/v1/auth-service/auth/**").permitAll())
+                .authorizeRequests(auth -> auth.antMatchers("/auth/**").permitAll())
                 // Requires authentication for all other requests
                 .authorizeRequests(auth -> auth.anyRequest().authenticated())
                 // Configures session management to be stateless
