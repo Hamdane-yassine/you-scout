@@ -25,7 +25,7 @@ public class KafkaProducerConfig {
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        configProps.put(JsonSerializer.TYPE_MAPPINGS, "CommentNumEvent:ma.ac.inpt.payload.CommentNumEvent");
+        configProps.put(JsonSerializer.TYPE_MAPPINGS, "CommentNumEvent:ma.ac.inpt.commentservice.payload.CommentNumEvent");
 
 
         return new DefaultKafkaProducerFactory<>(configProps);

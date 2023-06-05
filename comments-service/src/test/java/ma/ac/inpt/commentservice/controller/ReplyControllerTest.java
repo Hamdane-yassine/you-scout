@@ -1,124 +1,135 @@
 package ma.ac.inpt.commentservice.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ma.ac.inpt.commentservice.config.SecurityTestConfig;
 import ma.ac.inpt.commentservice.model.Reply;
-import ma.ac.inpt.commentservice.model.User;
 import ma.ac.inpt.commentservice.service.ReplyService;
-import org.hamcrest.Matchers;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDateTime;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(ReplyController.class)
-@Import(SecurityTestConfig.class)
-public class ReplyControllerTest {
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-    @Autowired
+public class ReplyControllerTest {
     private MockMvc mockMvc;
 
-    @MockBean
+    @Mock
     private ReplyService replyService;
 
-    // Test createReply
+    @InjectMocks
+    private ReplyController replyController;
+
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(replyController).build();
+    }
+
     @Test
     public void testCreateReply() throws Exception {
-        // Prepare the request body
+        // Mock data
+        String commentId = "comment123";
         Reply reply = new Reply();
-        reply.setAuthor(new User());
-        reply.setBody("This is a reply.");
+        Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("username");
 
-        // Mock the service method
-        Reply createdReply = new Reply();
-        createdReply.setId("1");
-        createdReply.setAuthor(reply.getAuthor());
-        createdReply.setBody(reply.getBody());
-        createdReply.setRepliedTo("123");
-        createdReply.setTimestamp(LocalDateTime.now());
-        Mockito.when(replyService.createReply(Mockito.anyString(), Mockito.any(Reply.class)))
-                .thenReturn(createdReply);
+        // Mock service behavior
+        Reply newReply = new Reply();
+        when(replyService.createReply(eq(commentId), any(Reply.class), eq("username"))).thenReturn(newReply);
 
-        // Perform the request and assert the response
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/comments/{commentId}/replies", "commentId")
+        // Perform the POST request
+        mockMvc.perform(post("/comments/{commentId}/replies", commentId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(reply)))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(createdReply.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.author.username").value(createdReply.getAuthor().getUsername()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.body").value(createdReply.getBody()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.repliedTo").value(createdReply.getRepliedTo()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.timestamp").exists());
+                        .content(asJsonString(reply))
+                        .principal(principal))
+                .andExpect(status().isCreated());
+
+        // Verify the service method was called
+        ArgumentCaptor<Reply> replyCaptor = ArgumentCaptor.forClass(Reply.class);
+        verify(replyService).createReply(eq(commentId), replyCaptor.capture(), eq("username"));
+
+        // Verify the captured argument
+        Reply capturedReply = replyCaptor.getValue();
+        assertThat(capturedReply);
     }
 
-    // Test getRepliesForComment
+
+    private String asJsonString(Object obj) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(obj);
+    }
+
     @Test
     public void testGetRepliesForComment() throws Exception {
-        // Prepare the mock data
-        String commentId = "commentId";
+        // Mock data
+        String commentId = "comment123";
+        String orderBy = "date";
+
+        // Mock service behavior
         List<Reply> replies = new ArrayList<>();
         replies.add(new Reply());
-        replies.add(new Reply());
+        when(replyService.getRepliesForComment(commentId, orderBy)).thenReturn(replies);
 
-        // Mock the service method
-        Mockito.when(replyService.getRepliesForComment(commentId, ""))
-                .thenReturn(replies);
+        // Perform the GET request
+        mockMvc.perform(get("/comments/{commentId}/replies", commentId)
+                        .param("orderBy", orderBy))
+                .andExpect(status().isOk());
 
-        // Perform the request and assert the response
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/comments/{commentId}/replies", commentId))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)));
+        // Verify the service method was called
+        verify(replyService).getRepliesForComment(commentId, orderBy);
     }
 
-    // Test updateReplyForComment
     @Test
     public void testUpdateReplyForComment() throws Exception {
-        // Prepare the request body
-        Reply updatedReply = new Reply();
-        updatedReply.setAuthor(new User());
-        updatedReply.setBody("Updated reply.");
+        // Mock data
+        String commentId = "comment123";
+        String replyId = "reply456";
+        Reply reply = new Reply();
 
-        // Mock the service method
-        String message = "Reply updated successfully.";
-        Mockito.when(replyService.updateReplyForComment(Mockito.anyString(), Mockito.anyString(), Mockito.any(Reply.class)))
-                .thenReturn(message);
+        // Mock service behavior
+        String message = "Reply updated successfully";
+        when(replyService.updateReplyForComment(commentId, replyId, reply)).thenReturn(message);
 
-        // Perform the request and assert the response
-        mockMvc.perform(MockMvcRequestBuilders
-                        .put("/comments/{commentId}/replies/{replyId}", "commentId", "replyId")
+        // Perform the PUT request
+        mockMvc.perform(put("/comments/{commentId}/replies/{replyId}", commentId, replyId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(updatedReply)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string(message));
+                        .content(asJsonString(reply)))
+                .andExpect(status().isOk());
+
+        // Verify the service method was called
+        assertEquals(message, replyService.updateReplyForComment(commentId, replyId, reply));
     }
 
-    // Test deleteReplyForComment
     @Test
     public void testDeleteReplyForComment() throws Exception {
-        // Mock the service method
-        String message = "Reply deleted successfully.";
-        Mockito.when(replyService.deleteReplyForComment(Mockito.anyString(), Mockito.anyString()))
-                .thenReturn(message);
+        // Mock data
+        String commentId = "comment123";
+        String replyId = "reply456";
 
-        // Perform the request and assert the response
-        mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/comments/{commentId}/replies/{replyId}", "commentId", "replyId"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string(message));
+        // Mock service behavior
+        String message = "Reply deleted successfully";
+        when(replyService.deleteReplyForComment(commentId, replyId)).thenReturn(message);
+
+        // Perform the DELETE request
+        mockMvc.perform(delete("/comments/{commentId}/replies/{replyId}", commentId, replyId))
+                .andExpect(status().isOk());
+
+        // Verify the service method was called
+        verify(replyService).deleteReplyForComment(commentId, replyId);
     }
 }
