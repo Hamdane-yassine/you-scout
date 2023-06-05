@@ -21,7 +21,7 @@ variables:
     -Pbuild-docker-image 
 
 authentication-service-build:
-  image: maven:3.9.1-openjdk-17
+  image: maven:3.9.1
   stage: build
   cache:
     key: "maven-$CI_COMMIT_REF_SLUG"
