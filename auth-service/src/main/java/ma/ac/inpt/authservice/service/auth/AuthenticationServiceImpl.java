@@ -17,7 +17,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.jwt.*;
@@ -130,7 +129,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new AuthenticationFailedException("Username or password Incorrect");
         }
         catch (DisabledException e) {
-            User user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            User user = userRepository.findByUsernameOrEmail(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
             String message = emailVerificationService.sendVerificationEmail(user, EmailVerificationType.RESEND);
             throw new AccountNotEnabledException(message);
         }
