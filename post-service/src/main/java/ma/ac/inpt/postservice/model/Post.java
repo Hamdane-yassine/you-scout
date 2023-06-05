@@ -43,13 +43,11 @@ public class Post {
      *
      * @param username     The username of the post creator
      * @param profilePic   The profile picture of the post creator
-     * @param video        The video URL of the post
      * @param caption      The caption of the post
      */
-    public Post( @NotNull String username, @NotNull String profilePic, String video, @NotNull String caption) {
+    public Post( @NotNull String username, @NotNull String profilePic,  @NotNull String caption) {
         this.username = username;
         this.userProfilePic = profilePic;
-        this.videoUrl = video;
         this.caption = caption;
     }
 

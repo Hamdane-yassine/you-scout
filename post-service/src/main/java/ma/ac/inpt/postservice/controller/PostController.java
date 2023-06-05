@@ -12,7 +12,7 @@ import ma.ac.inpt.postservice.payload.CompletePostRequest;
 import ma.ac.inpt.postservice.payload.RatingRequest;
 import ma.ac.inpt.postservice.service.PostService;
 import lombok.extern.slf4j.Slf4j;
-import ma.ac.inpt.postservice.service.media.MediaService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,7 +30,6 @@ public class PostController {
 
     private final PostService postService;
 
-    private final MediaService mediaService;
 
     @PostMapping("/posts")
     public ResponseEntity<?> createPost( @RequestBody CompletePostRequest postRequest){
@@ -39,14 +38,11 @@ public class PostController {
             // Create the post
             Post post = postService.completePost(postRequest);
 
-            // Build the URI for the created post
-            URI location = ServletUriComponentsBuilder
-                    .fromCurrentContextPath().path("/posts/{id}")
-                    .buildAndExpand(post.get_id()).toUri();
+
 
             // Return the response with the created post's location
             return ResponseEntity
-                    .created(location)
+                    .status(HttpStatus.CREATED)
                     .body(new ApiResponse(true, "Post created successfully", post.get_id()));
 
 
@@ -60,14 +56,11 @@ public class PostController {
             // Create the post
             String postId = postService.uploadVideo(file, user);
 
-            // Build the URI for the created post
-            URI location = ServletUriComponentsBuilder
-                    .fromCurrentContextPath().path("/posts/{id}")
-                    .buildAndExpand(postId).toUri();
+
 
             // Return the response with the created post's location
             return ResponseEntity
-                    .created(location)
+                    .status(HttpStatus.CREATED)
                     .body(new ApiResponse(true, "Video uploaded successfully", postId));
 
 

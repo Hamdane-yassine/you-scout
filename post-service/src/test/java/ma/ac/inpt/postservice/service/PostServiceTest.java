@@ -2,6 +2,8 @@ package ma.ac.inpt.postservice.service;
 
 import ma.ac.inpt.postservice.exception.NotAllowedException;
 import ma.ac.inpt.postservice.exception.ResourceNotFoundException;
+import ma.ac.inpt.postservice.exception.UploadFileException;
+import ma.ac.inpt.postservice.payload.CompletePostRequest;
 import ma.ac.inpt.postservice.postMessaging.PostEventSender;
 import ma.ac.inpt.postservice.model.Post;
 import ma.ac.inpt.postservice.payload.PostRequest;
@@ -46,13 +48,14 @@ class PostServiceTest {
     @Test
     void createPost_ValidPostRequest_ReturnsCreatedPost() {
         // Arrange
-        PostRequest postRequest = new PostRequest("username","profilePic","that's the stuff",new ArrayList<>(),new ArrayList<>());
-        Post savedPost = new Post(Instant.now(),"username","profilePic","that's the stuff", new ArrayList<>(),new ArrayList<>(),new HashMap<>());
-
+        CompletePostRequest postRequest = new CompletePostRequest("username","profilePic","that's the stuff", new ArrayList<>(),new HashMap<>());
+        Post savedPost = new Post("username","profilePic","that's the stuff");
+        savedPost.set_id("id");
         when(postRepository.save(any(Post.class))).thenReturn(savedPost);
+        when(postRepository.findById("id")).thenReturn(Optional.of(savedPost));
 
         // Act
-        Post createdPost = postService.createPost(postRequest, multipartFile);
+        Post createdPost = postService.completePost(postRequest);
 
         // Assert
         assertEquals(savedPost, createdPost);

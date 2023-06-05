@@ -17,9 +17,9 @@ public class PostRepoTest {
     @Test
     public void testFindByUsernameOrderByCreatedAtDesc() {
         // Create some test posts
-        Post post1 = new Post("username", "profilePic", "video", "that's the stuff");
+        Post post1 = new Post("username", "profilePic",  "that's the stuff");
         postRepo.save(post1);
-        Post post2 = new Post("username2", "profilePic", "video", "that's the stuff");
+        Post post2 = new Post("username2", "profilePic",  "that's the stuff");
         postRepo.save(post2);
 
         // Call the method being tested
@@ -32,9 +32,9 @@ public class PostRepoTest {
     @Test
     public void testFindByIdInOrderByCreatedAtDesc() {
         // Create some test posts
-        Post post1 = new Post("username", "profilePic", "video", "that's the stuff");
+        Post post1 = new Post("username", "profilePic",  "that's the stuff");
         postRepo.save(post1);
-        Post post2 = new Post("username2", "profilePic", "video", "that's the stuff");
+        Post post2 = new Post("username2", "profilePic", "that's the stuff");
         postRepo.save(post2);
 
 
