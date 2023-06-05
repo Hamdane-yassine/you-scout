@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @CrossOrigin
@@ -21,8 +22,8 @@ public class ReplyController {
     }
 
     @PostMapping("/comments/{commentId}/replies")
-    public ResponseEntity<Reply> createReply(@PathVariable("commentId") String commentId, @RequestBody Reply reply) {
-        Reply newReply = replyService.createReply(commentId, reply);
+    public ResponseEntity<Reply> createReply(@PathVariable("commentId") String commentId, @RequestBody Reply reply, Principal principal) {
+        Reply newReply = replyService.createReply(commentId, reply, principal.getName());
         return new ResponseEntity<>(newReply, HttpStatus.CREATED);
     }
 

@@ -3,13 +3,10 @@ package ma.ac.inpt.commentservice.service;
 
 import ma.ac.inpt.commentservice.exceptions.CommentException;
 import ma.ac.inpt.commentservice.exceptions.ReplyException;
-import ma.ac.inpt.commentservice.exceptions.UserException;
 import ma.ac.inpt.commentservice.model.Comment;
 import ma.ac.inpt.commentservice.model.Reply;
-import ma.ac.inpt.commentservice.model.User;
 import ma.ac.inpt.commentservice.repository.CommentRepository;
 import ma.ac.inpt.commentservice.repository.ReplyRepository;
-import ma.ac.inpt.commentservice.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
@@ -20,23 +17,17 @@ import java.util.Optional;
 @Service
 public class ReplyService {
     private final ReplyRepository replyRepository;
-    private final UserRepository userRepository;
     private final CommentRepository commentRepository;
 
     public ReplyService(ReplyRepository replyRepository,
-                        UserRepository userRepository,
                         CommentRepository commentRepository) {
         this.replyRepository = replyRepository;
-        this.userRepository = userRepository;
         this.commentRepository = commentRepository;
     }
 
-    public Reply createReply(String commentId, Reply reply) {
+    public Reply createReply(String commentId, Reply reply, String user) {
         ObjectId objectId = new ObjectId();
         String ID = objectId.toHexString();
-
-        Optional<User> providedUser = userRepository.findById(reply.getId());
-        User user = providedUser.orElseThrow(() -> new UserException("User not found"));
 
         Reply newReply = new Reply(ID, user, reply.getBody(), commentId, LocalDateTime.now());
 

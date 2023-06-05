@@ -21,7 +21,7 @@ public class CommentEventSender {
     public void sendCommentNum(Post post) {
         log.info("sending comment number event for post id {}", post.getId());
 
-        kafkaTemplate.send("comment",convertTo(post));
+//        kafkaTemplate.send("comment",convertTo(post));
     }
 
 //    private void sendPostChangedEvent(PostEvent payload) {

@@ -18,11 +18,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(UserException.class)
-    public ResponseEntity<String> handleUserException(UserException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
     @ExceptionHandler(ReplyException.class)
     public ResponseEntity<String> handleReplyException(ReplyException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

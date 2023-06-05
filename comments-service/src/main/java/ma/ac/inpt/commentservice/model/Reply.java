@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class Reply {
     @Id
     private String id;
-    private User author;
+    private String author;
     private String body;
     private String repliedTo;
     private LocalDateTime timestamp;

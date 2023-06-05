@@ -17,7 +17,7 @@ import java.util.List;
 public class Comment {
     @Id
     private String id;
-    private User author;
+    private String author;
     private String body;
     private List<String> replies;
     private String postId;

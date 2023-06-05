@@ -2,13 +2,10 @@ package ma.ac.inpt.commentservice.service;
 
 import ma.ac.inpt.commentservice.exceptions.CommentException;
 import ma.ac.inpt.commentservice.exceptions.ReplyException;
-import ma.ac.inpt.commentservice.exceptions.UserException;
 import ma.ac.inpt.commentservice.model.Comment;
 import ma.ac.inpt.commentservice.model.Reply;
-import ma.ac.inpt.commentservice.model.User;
 import ma.ac.inpt.commentservice.repository.CommentRepository;
 import ma.ac.inpt.commentservice.repository.ReplyRepository;
-import ma.ac.inpt.commentservice.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -28,8 +25,6 @@ public class ReplyServiceTest {
     @Mock
     private ReplyRepository replyRepository;
     @Mock
-    private UserRepository userRepository;
-    @Mock
     private CommentRepository commentRepository;
 
     private ReplyService replyService;
@@ -37,7 +32,7 @@ public class ReplyServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        replyService = new ReplyService(replyRepository, userRepository, commentRepository);
+        replyService = new ReplyService(replyRepository, commentRepository);
     }
 
     // Test createReply
@@ -46,19 +41,15 @@ public class ReplyServiceTest {
         // Arrange
         String commentId = "1";
         String replyId = "3";
-        String userId = "3";
         String replyBody = "This is a reply.";
         LocalDateTime timestamp = LocalDateTime.now();
 
-        User user = new User(userId, "John Doe", "profile.png");
+        String user = "johndoe";
         Reply reply = new Reply(replyId, user, replyBody, commentId, timestamp);
 
         Comment comment = new Comment();
         comment.setId(commentId);
         comment.setReplies(new ArrayList<>());
-
-        // Mock the behavior of userRepository.findById()
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         // Mock the behavior of commentRepository.findById()
         when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
@@ -67,16 +58,13 @@ public class ReplyServiceTest {
         when(replyRepository.save(any(Reply.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        Reply createdReply = replyService.createReply(commentId, reply);
+        Reply createdReply = replyService.createReply(commentId, reply, user);
 
         // Assert
         assertNotNull(createdReply);
         assertEquals(user, createdReply.getAuthor());
         assertEquals(replyBody, createdReply.getBody());
         assertEquals(commentId, createdReply.getRepliedTo());
-
-        // Verify that userRepository.findById() was called
-        verify(userRepository).findById(userId);
 
         // Verify that commentRepository.findById() was called
         verify(commentRepository).findById(commentId);
@@ -97,17 +85,9 @@ public class ReplyServiceTest {
         String replyId = "3";
         String userId = "3";
         String replyBody = "This is a reply.";
+        String user = "johndoe";
 
-        Reply reply = new Reply(replyId, new User(userId, "John Doe", "profile.png"), replyBody, commentId, LocalDateTime.now());
-
-        // Mock the behavior of userRepository.findById()
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-        // Act and Assert
-        assertThrows(UserException.class, () -> replyService.createReply(commentId, reply));
-
-        // Verify that userRepository.findById() was called
-        verify(userRepository).findById(userId);
+        Reply reply = new Reply(replyId, user, replyBody, commentId, LocalDateTime.now());
 
         // Verify that commentRepository.findById() was not called
         verifyNoInteractions(commentRepository);
@@ -122,20 +102,15 @@ public class ReplyServiceTest {
         String replyId = "3";
         String userId = "3";
         String replyBody = "This is a reply.";
+        String user = "johndoe";
 
-        Reply reply = new Reply(replyId, new User(userId, "John Doe", "profile.png"), replyBody, commentId, LocalDateTime.now());
-
-        // Mock the behavior of userRepository.findById()
-        when(userRepository.findById(userId)).thenReturn(Optional.of(new User(userId, "John Doe", "profile.png")));
+        Reply reply = new Reply(replyId, user, replyBody, commentId, LocalDateTime.now());
 
         // Mock the behavior of commentRepository.findById()
         when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
 
         // Act and Assert
-        assertThrows(CommentException.class, () -> replyService.createReply(commentId, reply));
-
-        // Verify that userRepository.findById() was called
-        verify(userRepository).findById(userId);
+        assertThrows(CommentException.class, () -> replyService.createReply(commentId, reply, user));
 
         // Verify that commentRepository.findById() was called
         verify(commentRepository).findById(commentId);
