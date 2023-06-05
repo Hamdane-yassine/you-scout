@@ -40,7 +40,7 @@ class FeedGenServiceTest {
     void addToFeed_SuccessfullyAddsPostToFeed() {
         // Arrange
         Post post = Post.builder().build();
-        post.setId("postId");
+        post.set_id("postId");
         post.setUsername("user123");
         post.setCreatedAt(Instant.now());
 
@@ -55,13 +55,13 @@ class FeedGenServiceTest {
                 .build();
         ResponseEntity<PagedResult<String>> response = new ResponseEntity<>(pagedResult, HttpStatus.OK);
 
-        when(graphClient.findFollowers("Bearer adsflkjagk'aj'afg",post.getUsername(), 0, 10)).thenReturn(response);
+        when(graphClient.findFollowers("Bearer access",post.getUsername(), 0, 10)).thenReturn(response);
 
         // Act
         feedGenService.addToFeed(post, "access");
 
         // Assert
-        verify(graphClient, times(1)).findFollowers("Bearer adsflkjagk'aj'afg",post.getUsername(), 0, 10);
+        verify(graphClient, times(1)).findFollowers("Bearer access",post.getUsername(), 0, 10);
         verify(feedRepository, times(followers.size())).save(any(UserFeedEntity.class));
         verifyNoMoreInteractions(graphClient, feedRepository);
     }
@@ -70,13 +70,13 @@ class FeedGenServiceTest {
     void addToFeed_ThrowsException_WhenUnableToGetFollowers() {
         // Arrange
         Post post = Post.builder().build();
-        post.setId("postId");
+        post.set_id("postId");
         post.setUsername("user123");
         post.setCreatedAt(Instant.now());
 
         ResponseEntity<PagedResult<String>> response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 
-        when(graphClient.findFollowers("Bearer adsflkjagk'aj'afg", post.getUsername(), 0, 10)).thenReturn(response);
+        when(graphClient.findFollowers("Bearer access", post.getUsername(), 0, 10)).thenReturn(response);
 
         // Act & Assert
         UnableToGetFollowersException exception = assertThrows(
@@ -86,7 +86,7 @@ class FeedGenServiceTest {
 
         assertEquals("unable to get followers for user user123", exception.getMessage());
 
-        verify(graphClient, times(1)).findFollowers("Bearer adsflkjagk'aj'afg",post.getUsername(), 0, 10);
+        verify(graphClient, times(1)).findFollowers("Bearer access",post.getUsername(), 0, 10);
         verifyNoMoreInteractions(graphClient, feedRepository);
     }
 }

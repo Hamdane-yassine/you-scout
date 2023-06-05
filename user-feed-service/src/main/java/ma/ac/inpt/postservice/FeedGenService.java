@@ -34,7 +34,7 @@ public class FeedGenService {
      */
     public void addToFeed(Post post, String accessToken) {
         log.info("adding post {} to feed for user {}" ,
-                post.getUsername(), post.getId());
+                post.getUsername(), post.get_id());
 
 
         boolean isLast = false;
@@ -82,7 +82,7 @@ public class FeedGenService {
         return UserFeedEntity
                 .builder()
                 .username(user)
-                .postId(post.getId())
+                .postId(post.get_id())
                 .createdAt(post.getCreatedAt())
                 .build();
     }

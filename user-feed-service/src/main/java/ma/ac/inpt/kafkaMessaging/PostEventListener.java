@@ -37,7 +37,7 @@ public class PostEventListener {
     private Post convertTo(PostEvent payload) {
         // Convert the PostEvent to a Post object
         return Post.builder()
-                .id(payload.getId())
+                ._id(payload.getId())
                 .createdAt(payload.getCreatedAt())
                 .username(payload.getUsername())
                 .build();

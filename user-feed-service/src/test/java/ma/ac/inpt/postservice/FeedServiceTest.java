@@ -53,11 +53,11 @@ public class FeedServiceTest {
 
         // Mock the PostService to return posts
         List<Post> mockPosts = List.of(Post.builder().userProfilePic("profile.jpg").build());
-        when(postService.findPostsIn(anyList())).thenReturn(mockPosts);
+        when(postService.findPostsIn(anyList(),eq("access"))).thenReturn(mockPosts);
 
 
         // Invoke the getUserFeed method
-        SlicedResult<Post> result = feedService.getUserFeed(username, pagingState);
+        SlicedResult<Post> result = feedService.getUserFeed(username, pagingState, "access");
         // Assert the expected behavior and result
         Assertions.assertNotNull(result);
         Assertions.assertEquals(mockPosts, result.getContent());
@@ -65,7 +65,7 @@ public class FeedServiceTest {
 
         // Verify the method invocations
         verify(feedRepository, times(1)).findByUsername(eq(username), any(CassandraPageRequest.class));
-        verify(postService, times(1)).findPostsIn(anyList());
+        verify(postService, times(1)).findPostsIn(anyList(), eq("access"));
     }
 
 
@@ -82,7 +82,7 @@ public class FeedServiceTest {
 
         // Assert that a ResourceNotFoundException is thrown
         Assertions.assertThrows(ResourceNotFoundException.class, () -> {
-            feedService.getUserFeed(username, pagingState);
+            feedService.getUserFeed(username, pagingState, "access");
         });
 
 
