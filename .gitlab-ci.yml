@@ -44,5 +44,22 @@ authentication-service-build:
       junit:
         - "**/target/*-reports/TEST-*.xml"
 
+# post-service-build:
+#   maven-build:
+#   image: maven:3-jdk-8
+#   stage: build
+#   script: "mvn package -B"
+#   artifacts:
+#     paths:
+#       - target/*.jar
+
+# docker-build:
+#   stage: build
+#   before_script:
+#     - docker login -u dall49 -p $DOCKER_HUB_PASSWORD
+#   script:
+#     - docker build -t dall49/product-microservice:$TAG .
+#     - docker push dall49/product-microservice:$TAG
+
 # include:
 #   - template: Security/SAST.gitlab-ci.yml
