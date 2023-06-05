@@ -21,9 +21,9 @@ public class PostEventSender {
      *
      * @param post The created post
      */
-    public void sendPostCreated(Post post) {
+    public void sendPostCreated(Post post, String accessToken) {
         log.info("Sending post created event for post id {}", post.get_id());
-        sendPostChangedEvent(convertTo(post, PostEventType.CREATED));
+        sendPostChangedEvent(convertTo(post, accessToken, PostEventType.CREATED));
     }
 
 
@@ -32,9 +32,9 @@ public class PostEventSender {
      *
      * @param post The deleted post
      */
-    public void sendPostDeleted(Post post) {
+    public void sendPostDeleted(Post post, String accessToken) {
         log.info("Sending post deleted event for post {}", post.get_id());
-        sendPostChangedEvent(convertTo(post, PostEventType.DELETED));
+        sendPostChangedEvent(convertTo(post, accessToken, PostEventType.DELETED));
     }
 
     /**
@@ -54,7 +54,7 @@ public class PostEventSender {
      * @param eventType The event type of the PostEvent
      * @return The converted PostEvent
      */
-    private PostEvent convertTo(Post post, PostEventType eventType) {
+    private PostEvent convertTo(Post post, String accessToken, PostEventType eventType) {
         // Convert a Post object to a PostEvent with the specified eventType
         return PostEvent.builder()
                 .eventType(eventType)
@@ -63,6 +63,7 @@ public class PostEventSender {
                 .createdAt(post.getCreatedAt())
                 .comments(post.getCommentsNum())
                 .likes(post.getLikes().size())
+                .accessToken(accessToken)
                 .build();
     }
 }

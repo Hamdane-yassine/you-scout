@@ -9,4 +9,6 @@ public class ApiResponse {
 
     private Boolean success;
     private String message;
+
+    private String postId;
 }

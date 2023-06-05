@@ -25,35 +25,35 @@ public class Post {
     @NonNull
     private String username;
 
-    @NonNull
     private String userProfilePic;
 
     private String videoUrl;
 
-    @NonNull
     private String caption;
 
-    @NonNull
     private ArrayList<String> likes;
     private int commentsNum;
 
-    @NonNull
-    private ArrayList<String> skills;
-    @NonNull
-    private Map<String, Integer> rates;
+    private Map<String, Map<String, Integer>> skills;
+
+
 
     /**
      * Constructs a Post object with the specified id, username, profile picture, video, and caption.
      *
      * @param username     The username of the post creator
      * @param profilePic   The profile picture of the post creator
-     * @param video        The video URL of the post
      * @param caption      The caption of the post
      */
-    public Post( @NotNull String username, @NotNull String profilePic, String video, @NotNull String caption) {
+    public Post( @NotNull String username, @NotNull String profilePic,  @NotNull String caption) {
         this.username = username;
         this.userProfilePic = profilePic;
-        this.videoUrl = video;
         this.caption = caption;
+    }
+
+    public Post(@NotNull String username, String videoUrl) {
+        this.username = username;
+        this.videoUrl = videoUrl;
+        this.createdAt = Instant.now();
     }
 }

@@ -26,7 +26,7 @@ public class PostEventListener {
         switch (eventType) {
             case CREATED:
                 // Convert the PostEvent to a Post object and add it to the feed
-                feedGeneratorService.addToFeed(convertTo(message));
+                feedGeneratorService.addToFeed(convertTo(message), message.getAccessToken());
                 break;
             case DELETED:
                 // Handle the deletion event
