@@ -87,22 +87,22 @@ class AuthControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
-//    @DisplayName("Test account confirmation")
-//    @Test
-//    void testConfirmRegistration() throws Exception {
-//        // Given
-//        String token = "dummyToken";
-//        String message = "Account verified successfully";
-//
-//        // When
-//        Mockito.when(emailVerificationService.verifyAccount(token)).thenReturn(message);
-//
-//        // Then
-//        mockMvc.perform(MockMvcRequestBuilders.get("/auth/confirm")
-//                        .param("token", token))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(MockMvcResultMatchers.content().string(message));
-//    }
+    @DisplayName("Test account confirmation")
+    @Test
+    void testConfirmRegistration() throws Exception {
+        // Given
+        String token = "dummyToken";
+        String message = "Account verified successfully";
+
+        // When
+        Mockito.when(emailVerificationService.verifyAccount(token)).thenReturn(message);
+
+        // Then
+        mockMvc.perform(MockMvcRequestBuilders.get("/auth/confirm")
+                        .param("token", token))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string(message));
+    }
 
     @DisplayName("Test forgot password request")
     @Test
