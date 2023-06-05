@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  * Provides endpoints for CRUD operations on roles, and assigning/removing roles to/from users.
  */
 @RestController
-@RequestMapping("/api/v1/roles")
+@RequestMapping("/roles")
 @PreAuthorize("hasAuthority('SCOPE_ADMIN')") // Requires the user to have 'SCOPE_ADMIN' authority
 @RequiredArgsConstructor
 @Slf4j

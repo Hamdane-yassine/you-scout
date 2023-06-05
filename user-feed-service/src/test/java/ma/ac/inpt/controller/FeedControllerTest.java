@@ -1,6 +1,6 @@
 package ma.ac.inpt.controller;
 
-import ma.ac.inpt.config.SecurityConfig;
+import ma.ac.inpt.config.SecurityTestConfig;
 import ma.ac.inpt.models.Post;
 import ma.ac.inpt.payload.SlicedResult;
 import ma.ac.inpt.postservice.FeedService;
@@ -20,7 +20,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(FeedController.class)
-@Import(SecurityConfig.class)
+@Import(SecurityTestConfig.class)
 public class FeedControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -44,7 +44,8 @@ public class FeedControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(expectedJson)); // replace with expected JSON response
     }
-@Test
+
+    @Test
     public void testGetFeedWithPagingState() throws Exception {
         String username = "testuser";
         Optional<String> pagingState = Optional.of("W2gsf!");

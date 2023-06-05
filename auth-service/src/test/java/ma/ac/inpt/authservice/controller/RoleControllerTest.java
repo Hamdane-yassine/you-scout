@@ -37,7 +37,7 @@ class RoleControllerTest {
         Mockito.when(roleService.saveRole(role)).thenReturn(role);
 
         // When & Then
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/roles")
+        mockMvc.perform(MockMvcRequestBuilders.post("/roles")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(role)))
                 .andExpect(MockMvcResultMatchers.status().isCreated());
@@ -51,7 +51,7 @@ class RoleControllerTest {
         Mockito.when(roleService.assignRoleToUser(request)).thenReturn("Role assigned successfully");
 
         // When & Then
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/roles/assign")
+        mockMvc.perform(MockMvcRequestBuilders.post("/roles/assign")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -65,7 +65,7 @@ class RoleControllerTest {
         Mockito.doNothing().when(roleService).deleteRoleById(roleId);
 
         // When & Then
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/roles/" + roleId))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/roles/" + roleId))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
@@ -76,7 +76,7 @@ class RoleControllerTest {
         Mockito.when(roleService.getAllRoles(0, 20)).thenReturn(Page.empty());
 
         // When & Then
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/roles")
+        mockMvc.perform(MockMvcRequestBuilders.get("/roles")
                         .param("page", "0")
                         .param("size", "20"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -91,7 +91,7 @@ class RoleControllerTest {
         Mockito.when(roleService.getRoleById(roleId)).thenReturn(role);
 
         // When & Then
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/roles/" + roleId))
+        mockMvc.perform(MockMvcRequestBuilders.get("/roles/" + roleId))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
@@ -104,7 +104,7 @@ class RoleControllerTest {
         Mockito.when(roleService.updateRole(roleId, role)).thenReturn(role);
 
         // When & Then
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/roles/" + roleId)
+        mockMvc.perform(MockMvcRequestBuilders.put("/roles/" + roleId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(role)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -118,7 +118,7 @@ class RoleControllerTest {
         Mockito.when(roleService.removeRoleFromUser(request)).thenReturn("Role removed successfully");
 
         // When & Then
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/roles/remove")
+        mockMvc.perform(MockMvcRequestBuilders.delete("/roles/remove")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(MockMvcResultMatchers.status().isOk());

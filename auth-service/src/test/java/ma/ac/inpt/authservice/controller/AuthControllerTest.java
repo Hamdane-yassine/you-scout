@@ -39,6 +39,7 @@ class AuthControllerTest {
     @MockBean
     private PasswordResetService passwordResetService;
 
+
     @DisplayName("Test user registration")
     @Test
     void testRegister() throws Exception {
@@ -55,7 +56,7 @@ class AuthControllerTest {
         Mockito.when(registrationService.register(request)).thenReturn(message);
 
         // Then
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/auth/register")
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -80,7 +81,7 @@ class AuthControllerTest {
         Mockito.when(authenticationService.authenticate(request)).thenReturn(response);
 
         // Then
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/auth/login")
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -97,7 +98,7 @@ class AuthControllerTest {
         Mockito.when(emailVerificationService.verifyAccount(token)).thenReturn(message);
 
         // Then
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/confirm")
+        mockMvc.perform(MockMvcRequestBuilders.get("/auth/confirm")
                         .param("token", token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string(message));
@@ -116,7 +117,7 @@ class AuthControllerTest {
         Mockito.when(passwordResetService.sendPasswordResetEmail(request)).thenReturn(message);
 
         // Then
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/auth/password/forgot")
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/password/forgot")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -138,7 +139,7 @@ class AuthControllerTest {
         Mockito.when(passwordResetService.resetPassword(request, token)).thenReturn(message);
 
         // Then
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/auth/password/reset")
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/password/reset")
                         .param("token", token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(request)))
@@ -160,7 +161,7 @@ class AuthControllerTest {
         Mockito.when(authenticationService.authenticateOAuth2("google", code)).thenReturn(response);
 
         // Then
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/oauth2/callback")
+        mockMvc.perform(MockMvcRequestBuilders.get("/auth/oauth2/callback")
                         .param("code", code))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
@@ -176,7 +177,7 @@ class AuthControllerTest {
         Mockito.doNothing().when(authenticationService).logout(username);
 
         // Then
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/auth/logout")
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/logout")
                         .param("username", username))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string("User logged out successfully."));
