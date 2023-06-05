@@ -32,7 +32,7 @@ public class PostControllerTest {
 
     @Mock
     private MultipartFile multipartFile;
-    private PostController postController;
+    private final PostController postController;
     public PostControllerTest() {
         MockitoAnnotations.openMocks(this);
         postController = new PostController(postService, mediaService);
@@ -44,7 +44,7 @@ public class PostControllerTest {
     @Test
     public void testCreatePost() {
         // Create a test PostRequest
-        PostRequest postRequest = new PostRequest("username","urlImage","video","that's the stuff", new ArrayList<>(), new ArrayList<>());
+        PostRequest postRequest = new PostRequest("username","urlImage","that's the stuff", new ArrayList<>(), new ArrayList<>());
 
         // Mock the postService.createPost method
         Post post = new Post("username","profilePic","video","that's the stuff");

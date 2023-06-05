@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,11 +29,12 @@ public class ChatController {
     private final RoomService chatRoomService;
 
     @MessageMapping("/chat")
+    @SendTo("/topic/messages")
     public void processMessage(@Payload ChatRequest chatMessage) {
         String convId = chatRoomService.getChatId(chatMessage.getSenderName(), chatMessage.getRecipientName(), true);
         if(convId!=null){
             chatMessage.setConvId(convId);
-            messagingTemplate.convertAndSendToUser(chatMessage.getRecipientName(), "/queue/messages", chatMessage);
+            messagingTemplate.convertAndSendToUser(chatMessage.getRecipientName(), "/topic/messages", chatMessage);
             chatMessageService.save(chatMessage);
 //            messagingTemplate.convertAndSendToUser(chatMessage.getRecipientName(), "/queue/messages/notification", new Notification(saved.getId(), saved.getSenderName()));
 

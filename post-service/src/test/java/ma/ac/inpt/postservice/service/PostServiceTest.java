@@ -46,7 +46,7 @@ class PostServiceTest {
     @Test
     void createPost_ValidPostRequest_ReturnsCreatedPost() {
         // Arrange
-        PostRequest postRequest = new PostRequest("username","profilePic","video","that's the stuff",new ArrayList<>(),new ArrayList<>());
+        PostRequest postRequest = new PostRequest("username","profilePic","that's the stuff",new ArrayList<>(),new ArrayList<>());
         Post savedPost = new Post(Instant.now(),"username","profilePic","that's the stuff", new ArrayList<>(),new ArrayList<>(),new HashMap<>());
 
         when(postRepository.save(any(Post.class))).thenReturn(savedPost);
