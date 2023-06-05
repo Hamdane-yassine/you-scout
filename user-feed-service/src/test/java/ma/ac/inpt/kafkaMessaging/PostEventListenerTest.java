@@ -35,16 +35,16 @@ public class PostEventListenerTest {
     @Test
     public void testConsume_CreatedEvent_AddsToFeed() {
         // Arrange
-        PostEvent postEvent = PostEvent.builder().eventType(ma.ac.inpt.kafkaMessaging.PostEventType.CREATED).id("lol").createdAt(Instant.now()).username("ayoub").build();
+        PostEvent postEvent = PostEvent.builder().eventType(ma.ac.inpt.kafkaMessaging.PostEventType.CREATED).id("lol").createdAt(Instant.now()).username("ayoub").accessToken("access").build();
 
 
         // Act
         postEventListener.consume(postEvent);
 
         // Assert
-        verify(feedGeneratorService).addToFeed(postCaptor.capture(),"access");
+        verify(feedGeneratorService).addToFeed(postCaptor.capture(),eq("access"));
         Post capturedPost = postCaptor.getValue();
-        assertEquals("lol", capturedPost.getId());
+        assertEquals("lol", capturedPost.get_id());
         assertEquals("ayoub", capturedPost.getUsername());
     }
 

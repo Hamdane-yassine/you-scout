@@ -1,19 +1,17 @@
-package ma.ac.inpt.models;
+package ma.ac.inpt.payload;
 
-
-import lombok.*;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Map;
 
-
 @Data
-@Builder
-@ToString
-public class Post {
+@AllArgsConstructor
+@NoArgsConstructor
+public class PostRequest {
 
     private String _id;
     private Instant createdAt;
