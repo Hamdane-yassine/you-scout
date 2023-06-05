@@ -1,14 +1,15 @@
 package ma.ac.inpt.feignClient;
 
 
-import ma.ac.inpt.models.User;
+
 import ma.ac.inpt.payload.PagedResult;
 import org.springframework.cloud.openfeign.FeignClient;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-@FeignClient(name = "GRAPH")
+@FeignClient(name = "SOCIAL-GRAPH-SERVICE")
 public interface Graph {
 
     /**
@@ -19,10 +20,13 @@ public interface Graph {
      * @param size     the number of followers to retrieve per page
      * @return the ResponseEntity containing the paged result of followers
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/users/paginated/{username}/followers")
-    ResponseEntity<PagedResult<User>> findFollowers(
+    @RequestMapping(method = RequestMethod.GET, value = "/api/v1/users/{username}/followers")
+    ResponseEntity<PagedResult<String>> findFollowers(
 //            @RequestHeader("Authorization") String token,
+            @RequestHeader("Authorization") String authorizationHeader,
             @PathVariable("username") String username,
             @RequestParam("page") int page,
             @RequestParam("size") int size);
+
+
 }

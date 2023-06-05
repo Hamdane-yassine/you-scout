@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.ac.inpt.postservice.exception.DeleteFileException;
 import ma.ac.inpt.postservice.exception.UploadFileException;
-import ma.ac.inpt.postservice.exception.VideoProcessingException;
 import ma.ac.inpt.postservice.exception.VideoValidationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,12 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.nio.file.StandardCopyOption;
 
 import static ma.ac.inpt.postservice.config.VideoConfig.MAX_VIDEO_SIZE;
 
@@ -36,7 +32,7 @@ import static ma.ac.inpt.postservice.config.VideoConfig.MAX_VIDEO_SIZE;
 @Slf4j
 public class S3MediaServiceImpl implements MediaService {
 
-    private static final String FOLDER_NAME = "ProfilePictures/";
+    private static final String FOLDER_NAME = "PostVideos/";
     private final AmazonS3 s3Client; // Amazon S3 client for managing storage operations
 
     @Value("${aws.s3.bucket}")

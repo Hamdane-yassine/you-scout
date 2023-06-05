@@ -4,6 +4,8 @@ package ma.ac.inpt.postservice.service;
 import lombok.RequiredArgsConstructor;
 import ma.ac.inpt.postservice.exception.NotAllowedException;
 import ma.ac.inpt.postservice.exception.ResourceNotFoundException;
+import ma.ac.inpt.postservice.exception.UploadFileException;
+import ma.ac.inpt.postservice.payload.CompletePostRequest;
 import ma.ac.inpt.postservice.payload.RatingRequest;
 import ma.ac.inpt.postservice.postMessaging.PostEventSender;
 import ma.ac.inpt.postservice.model.Post;
@@ -14,6 +16,7 @@ import ma.ac.inpt.postservice.service.media.MediaService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.time.Instant;
 import java.util.*;
 
@@ -32,36 +35,43 @@ public class PostService {
      * @param postRequest the post request object
      * @return the created post
      */
-    public Post createPost(PostRequest postRequest, MultipartFile file) {
-        log.info("creating post video url {}", postRequest.getVideo());
+    public Post completePost(CompletePostRequest postRequest) {
 
         if(postRequest.getLikes()==null){
             postRequest.setLikes(new ArrayList<>());
         }
         if(postRequest.getSkills()==null){
-            postRequest.setSkills(new ArrayList<>());
+            postRequest.setSkills(new HashMap<>());
         }
         // Create a new Post object using the data from the post request
-        Post post = new Post(
-                Instant.now(),
-                postRequest.getUsername(),
-                postRequest.getUserProfilePic(),
-                postRequest.getCaption(),
-                postRequest.getLikes(),
-                postRequest.getSkills(),
-                new HashMap<>()
+        postRepository.findById(postRequest.get_id()).map(
+                post -> {
+                    post.setCaption(postRequest.getCaption());
+                    post.setUserProfilePic(postRequest.getUserProfilePic());
+                    post.setLikes(postRequest.getLikes());
+                    post.setSkills(postRequest.getSkills());
+                    post.setCommentsNum(0);
+                    postRepository.save(post);
+                    postEventSender.sendPostCreated(post);
+                    return post;
+                }
         );
+        return postRepository.findById(postRequest.get_id()).orElseThrow(()->{
+            return new UploadFileException("Couldn't create post");
+        });
+    }
+
+    public String uploadVideo(MultipartFile file, String user) {
         String fileUrl = mediaService.uploadFile(file);
-        post.setVideoUrl(fileUrl);
-        // Save the post to the repository
-        post = postRepository.save(post);
+        Post post = new Post(
+                user,
+                fileUrl
+        );
+        Post createdPost = postRepository.save(post);
+
 
         // Send a post created event
-        postEventSender.sendPostCreated(post);
-
-        log.info("post {} is saved successfully for user {}", post.get_id(), post.getUsername());
-
-        return post;
+        return createdPost.get_id();
     }
 
     /**
@@ -164,11 +174,11 @@ public class PostService {
     public void ratePost(String postId, RatingRequest ratingRequest, String username) {
         log.info("rating post {} in service", postId);
 
-        Map<String, Integer> rating = new HashMap<>();
-        rating.put(username, ratingRequest.getRating());
 
         postRepository.findById(postId).map(post -> {
-            post.getRates().put(username, ratingRequest.getRating());
+            Map<String, Integer> ratings = post.getSkills().get(ratingRequest.getSkill());
+            ratings.put(username, ratingRequest.getRating());
+            post.getSkills().put(ratingRequest.getSkill(), ratings);
             postRepository.save(post);
             return post;
         }).orElseThrow(() -> {

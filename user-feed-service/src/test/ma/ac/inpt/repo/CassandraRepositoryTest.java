@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 import java.time.Instant;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,14 +23,12 @@ public class CassandraRepositoryTest {
         // Create some test data
         String username = "testUser";
         UserFeedEntity entity1 = UserFeedEntity.builder()
-                .userId(UUID.randomUUID())
                 .username(username)
                 .postId("postId1")
                 .createdAt(Instant.now())
                 .build();
 
         UserFeedEntity entity2 = UserFeedEntity.builder()
-                .userId(UUID.randomUUID())
                 .username(username)
                 .postId("postId2")
                 .createdAt(Instant.now())
@@ -46,7 +43,7 @@ public class CassandraRepositoryTest {
         // Verify the results
         assertTrue(result.hasContent());
         assertEquals(2, result.getContent().size());
-        assertEquals(entity1.getUsername(), result.getContent().get(1).getUsername());
-        assertEquals(entity2.getPostId(), result.getContent().get(0).getPostId());
+        assertEquals(entity1.getUsername(), result.getContent().get(0).getUsername());
+        assertEquals(entity2.getPostId(), result.getContent().get(1).getPostId());
     }
 }

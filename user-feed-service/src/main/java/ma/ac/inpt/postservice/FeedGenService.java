@@ -4,14 +4,17 @@ import lombok.RequiredArgsConstructor;
 import ma.ac.inpt.exceptions.UnableToGetFollowersException;
 import ma.ac.inpt.models.UserFeedEntity;
 import ma.ac.inpt.models.Post;
-import ma.ac.inpt.models.User;
+
 import ma.ac.inpt.payload.PagedResult;
 import ma.ac.inpt.util.AppConstants;
 import lombok.extern.slf4j.Slf4j;
 import ma.ac.inpt.feignClient.Graph;
 import ma.ac.inpt.repo.Cassandra;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+
 
 
 @Service
@@ -40,13 +43,13 @@ public class FeedGenService {
 
         while(!isLast) {
 
-            ResponseEntity<PagedResult<User>> response =
-                    graphClient.findFollowers(post.getUsername(), page, size);
+            ResponseEntity<PagedResult<String>> response =     graphClient.findFollowers("Bearer adsflkjagk'aj'afg",post.getUsername(), page, size);
 
             if(response.getStatusCode().is2xxSuccessful()) {
 
-                PagedResult<User> result = response.getBody();
+                PagedResult<String> result = response.getBody();
 
+                assert result != null;
                 log.info("found {} followers for user {}, page {}",
                         result.getTotalElements(), post.getUsername(), page);
 
@@ -75,11 +78,10 @@ public class FeedGenService {
      * @param post The Post object.
      * @return The converted UserFeedEntity object.
      */
-    private UserFeedEntity convertTo(User user, Post post) {
+    private UserFeedEntity convertTo(String user, Post post) {
         return UserFeedEntity
                 .builder()
-                .userId(user.getUserId())
-                .username(user.getUsername())
+                .username(user)
                 .postId(post.getId())
                 .createdAt(post.getCreatedAt())
                 .build();
