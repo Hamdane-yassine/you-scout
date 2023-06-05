@@ -53,7 +53,7 @@ class UserControllerTest {
 
         doNothing().when(userService).followUser(follower, followee);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/users/" + follower + "/follow/" + followee))
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/" + follower + "/follow/" + followee))
                 .andExpect(status().isNoContent());
 
         verify(userService, times(1)).followUser(follower, followee);
@@ -67,7 +67,7 @@ class UserControllerTest {
 
         doNothing().when(userService).unfollowUser(follower, followee);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/users/" + follower + "/unfollow/" + followee))
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/" + follower + "/unfollow/" + followee))
                 .andExpect(status().isNoContent());
 
         verify(userService, times(1)).unfollowUser(follower, followee);
@@ -81,7 +81,7 @@ class UserControllerTest {
 
         when(userService.isFollowing(follower, followee)).thenReturn(true);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/" + follower + "/isFollowing/" + followee))
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/" + follower + "/isFollowing/" + followee))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
 
@@ -99,7 +99,7 @@ class UserControllerTest {
 
         when(userService.findFollowers(username, page, size)).thenReturn(pageUsers);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/" + username + "/followers")
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/" + username + "/followers")
                         .param("page", String.valueOf(page))
                         .param("size", String.valueOf(size)))
                 .andExpect(status().isOk())
@@ -119,7 +119,7 @@ class UserControllerTest {
 
         when(userService.findFollowing(username, page, size)).thenReturn(pageUsers);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/" + username + "/following")
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/" + username + "/following")
                         .param("page", String.valueOf(page))
                         .param("size", String.valueOf(size)))
                 .andExpect(status().isOk())
@@ -136,7 +136,7 @@ class UserControllerTest {
 
         doNothing().when(userService).blockUser(blocker, blocked);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/users/" + blocker + "/block/" + blocked))
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/" + blocker + "/block/" + blocked))
                 .andExpect(status().isNoContent());
 
         verify(userService, times(1)).blockUser(blocker, blocked);
@@ -150,7 +150,7 @@ class UserControllerTest {
 
         doNothing().when(userService).unblockUser(blocker, blocked);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/users/" + blocker + "/unblock/" + blocked))
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/" + blocker + "/unblock/" + blocked))
                 .andExpect(status().isNoContent());
 
         verify(userService, times(1)).unblockUser(blocker, blocked);
@@ -164,7 +164,7 @@ class UserControllerTest {
 
         when(userService.isBlocking(blocker, blocked)).thenReturn(true);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/" + blocker + "/isBlocking/" + blocked))
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/" + blocker + "/isBlocking/" + blocked))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
 
@@ -182,7 +182,7 @@ class UserControllerTest {
 
         when(userService.getBlockedUsers(username, page, size)).thenReturn(pageUsers);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/" + username + "/blocked")
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/" + username + "/blocked")
                         .param("page", String.valueOf(page))
                         .param("size", String.valueOf(size)))
                 .andExpect(status().isOk())
@@ -198,7 +198,7 @@ class UserControllerTest {
 
         when(userService.countFollowers(username)).thenReturn(1);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/" + username + "/followers/count"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/" + username + "/followers/count"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("1"));
 
@@ -212,7 +212,7 @@ class UserControllerTest {
 
         when(userService.countFollowing(username)).thenReturn(1);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/" + username + "/following/count"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/" + username + "/following/count"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("1"));
 
@@ -226,7 +226,7 @@ class UserControllerTest {
 
         when(userService.countBlockedUsers(username)).thenReturn(1);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/" + username + "/blocked/count"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/" + username + "/blocked/count"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("1"));
 

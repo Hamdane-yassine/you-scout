@@ -34,8 +34,8 @@ public class SecurityConfig {
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         return http.csrf().disable() // Disable CSRF protection
                 .authorizeExchange()
-                .pathMatchers("/api/v1/auth/logout").authenticated() // Allow access to "/api/v1/auth/logout" only for authenticated users
-                .pathMatchers("/api/v1/auth/**").permitAll() // Allow access to "/api/v1/auth/**" for all users
+                .pathMatchers("/api/v1/auth-service/auth/logout").authenticated() // Allow access to "/api/v1/auth/logout" only for authenticated users
+                .pathMatchers("/api/v1/auth-service/auth/**").permitAll() // Allow access to "/api/v1/auth/**" for all users
                 .anyExchange().authenticated() // Require authentication for all other endpoints
                 .and().oauth2ResourceServer(ServerHttpSecurity.OAuth2ResourceServerSpec::jwt) // Configure OAuth2 resource server with JWT
                 .build();

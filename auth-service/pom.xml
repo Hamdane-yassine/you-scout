@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>auth-service</artifactId>
-    <version>1.0</version>
+    <version>3.9</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -116,7 +116,6 @@
             <version>2.7.1</version>
             <scope>test</scope>
         </dependency>
-
 
         <dependency>
             <groupId>org.hibernate.validator</groupId>
