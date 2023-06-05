@@ -1,5 +1,4 @@
-package ma.ac.inpt.postservice.config;
-
+package ma.ac.inpt.config;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -11,17 +10,33 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Test configuration class for security setup.
+ */
 @TestConfiguration
-public class SecurityConfig {
+public class SecurityTestConfig {
 
+    /**
+     * Configures the security filter chain.
+     *
+     * @param httpSecurity the HttpSecurity object
+     * @return the configured SecurityFilterChain
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 // Disables CSRF protection
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .authorizeRequests(auth -> auth.anyRequest().permitAll())
                 .build();
     }
+
+    /**
+     * Creates the UserDetailsService for testing.
+     *
+     * @return the UserDetailsService
+     */
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails user = User
@@ -32,5 +47,5 @@ public class SecurityConfig {
 
         return new InMemoryUserDetailsManager(user);
     }
-
 }
+

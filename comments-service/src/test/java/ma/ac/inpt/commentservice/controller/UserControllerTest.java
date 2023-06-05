@@ -1,6 +1,7 @@
 package ma.ac.inpt.commentservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ma.ac.inpt.commentservice.config.SecurityTestConfig;
 import ma.ac.inpt.commentservice.model.User;
 import ma.ac.inpt.commentservice.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -18,6 +20,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@Import(SecurityTestConfig.class)
 public class UserControllerTest {
     @Mock
     private UserService userService;
@@ -47,7 +50,7 @@ public class UserControllerTest {
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
 
         // Act and Assert
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
+        mockMvc.perform(MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(user)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())

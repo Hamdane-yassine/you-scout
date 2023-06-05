@@ -1,4 +1,4 @@
-package ma.ac.inpt.skillsservice.config;
+package ma.ac.inpt.commentservice.config;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -11,15 +11,15 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * Test configuration class for security setup.
+ * Test configuration class for security-related tests.
  */
 @TestConfiguration
 public class SecurityTestConfig {
 
     /**
-     * Configures the security filter chain.
+     * Configures the security filter chain for testing purposes.
      *
-     * @param httpSecurity the HttpSecurity object
+     * @param httpSecurity the HttpSecurity object to configure
      * @return the configured SecurityFilterChain
      * @throws Exception if an error occurs during configuration
      */
@@ -33,9 +33,9 @@ public class SecurityTestConfig {
     }
 
     /**
-     * Creates the UserDetailsService for testing.
+     * Provides an in-memory UserDetailsService for testing purposes.
      *
-     * @return the UserDetailsService
+     * @return the UserDetailsService implementation
      */
     @Bean
     public UserDetailsService userDetailsService() {
@@ -48,4 +48,5 @@ public class SecurityTestConfig {
         return new InMemoryUserDetailsManager(user);
     }
 }
+
 

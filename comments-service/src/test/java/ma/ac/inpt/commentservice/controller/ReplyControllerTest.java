@@ -1,6 +1,7 @@
 package ma.ac.inpt.commentservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ma.ac.inpt.commentservice.config.SecurityTestConfig;
 import ma.ac.inpt.commentservice.model.Reply;
 import ma.ac.inpt.commentservice.model.User;
 import ma.ac.inpt.commentservice.service.ReplyService;
@@ -11,6 +12,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,6 +25,7 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ReplyController.class)
+@Import(SecurityTestConfig.class)
 public class ReplyControllerTest {
 
     @Autowired
@@ -51,7 +54,7 @@ public class ReplyControllerTest {
 
         // Perform the request and assert the response
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/comments/{commentId}/replies", "commentId")
+                        .post("/comments/{commentId}/replies", "commentId")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(reply)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -77,7 +80,7 @@ public class ReplyControllerTest {
 
         // Perform the request and assert the response
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/comments/{commentId}/replies", commentId))
+                        .get("/comments/{commentId}/replies", commentId))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)));
     }
@@ -97,7 +100,7 @@ public class ReplyControllerTest {
 
         // Perform the request and assert the response
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/comments/{commentId}/replies/{replyId}", "commentId", "replyId")
+                        .put("/comments/{commentId}/replies/{replyId}", "commentId", "replyId")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(updatedReply)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -114,7 +117,7 @@ public class ReplyControllerTest {
 
         // Perform the request and assert the response
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/api/comments/{commentId}/replies/{replyId}", "commentId", "replyId"))
+                        .delete("/comments/{commentId}/replies/{replyId}", "commentId", "replyId"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string(message));
     }
