@@ -32,6 +32,7 @@
     <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
     <org.projectlombok.version>1.18.26</org.projectlombok.version>
     <version.mapstruct-lombok>0.2.0</version.mapstruct-lombok>
+    <image>registry.gitlab.com/hamdane10/you-scout/${project.artifactId}:${project.version}</image>
   </properties>
 
   <dependencyManagement>
@@ -95,6 +96,29 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>com.google.cloud.tools</groupId>
+          <artifactId>jib-maven-plugin</artifactId>
+          <version>3.3.2</version>
+          <configuration>
+            <from>
+              <image>eclipse-temurin:17@sha256:a01091f8e19eefd2cb1fa0ffc930ce095038b4e15b79b5ec971f0ae668a5ec7c</image>
+              <platforms>
+                <platform>
+                  <architecture>arm64</architecture>
+                  <os>linux</os>
+                </platform>
+                <platform>
+                  <architecture>amd64</architecture>
+                  <os>linux</os>
+                </platform>
+              </platforms>
+            </from>
+            <to>
+              <image>${image}</image>
+            </to>
+          </configuration>
+        </plugin>
         <plugin>
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
