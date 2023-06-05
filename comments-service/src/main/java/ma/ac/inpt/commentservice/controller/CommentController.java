@@ -1,12 +1,13 @@
 package ma.ac.inpt.commentservice.controller;
 
 import ma.ac.inpt.commentservice.model.Comment;
-import ma.ac.inpt.commentservice.model.User;
 import ma.ac.inpt.commentservice.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 import java.util.List;
 
 @CrossOrigin
@@ -21,8 +22,8 @@ public class CommentController {
     }
 
     @PostMapping("/comments")
-    public ResponseEntity<Comment> createComment(@RequestBody Comment comment) {
-        Comment newComment = commentService.createComment(comment);
+    public ResponseEntity<Comment> createComment(Principal principal, @RequestBody Comment comment) {
+        Comment newComment = commentService.createComment(principal.getName(), comment);
         return new ResponseEntity<>(newComment, HttpStatus.CREATED);
     }
 
@@ -45,14 +46,14 @@ public class CommentController {
     }
 
     @PutMapping("/comments/{id}/unlike")
-    public ResponseEntity<String> unlikeComment(@PathVariable("id") String id, @RequestBody User user) {
-        String message = commentService.unlikeComment(id, user);
+    public ResponseEntity<String> unlikeComment(@PathVariable("id") String id, Principal principal) {
+        String message = commentService.unlikeComment(id, principal.getName());
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     @PutMapping("/comments/{id}/like")
-    public ResponseEntity<String> likeComment(@PathVariable("id") String id, @RequestBody User user) {
-        String message = commentService.likeComment(id, user);
+    public ResponseEntity<String> likeComment(@PathVariable("id") String id, Principal principal) {
+        String message = commentService.likeComment(id, principal.getName());
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 

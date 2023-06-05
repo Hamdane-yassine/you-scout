@@ -3,15 +3,12 @@ package ma.ac.inpt.commentservice.service;
 
 import ma.ac.inpt.commentservice.exceptions.CommentException;
 import ma.ac.inpt.commentservice.exceptions.PostException;
-import ma.ac.inpt.commentservice.exceptions.UserException;
 import ma.ac.inpt.commentservice.messaging.CommentEventSender;
 import ma.ac.inpt.commentservice.model.Comment;
 import ma.ac.inpt.commentservice.model.Post;
-import ma.ac.inpt.commentservice.model.User;
 import ma.ac.inpt.commentservice.repository.CommentRepository;
 import ma.ac.inpt.commentservice.repository.PostRepository;
 import ma.ac.inpt.commentservice.repository.ReplyRepository;
-import ma.ac.inpt.commentservice.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
@@ -23,27 +20,22 @@ import java.util.Optional;
 @Service
 public class CommentService {
     private final CommentRepository commentRepository;
-    private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final ReplyRepository replyRepository;
     private final CommentEventSender commentEventSender;
 
-    public CommentService(CommentRepository commentRepository, UserRepository userRepository,
+    public CommentService(CommentRepository commentRepository,
                           PostRepository postRepository,
                           ReplyRepository replyRepository, CommentEventSender commentEventSender) {
         this.commentRepository = commentRepository;
-        this.userRepository = userRepository;
         this.postRepository = postRepository;
         this.replyRepository = replyRepository;
         this.commentEventSender = commentEventSender;
     }
 
-    public Comment createComment(Comment comment){
+    public Comment createComment(String user, Comment comment){
         ObjectId objectId = new ObjectId();
         String ID = objectId.toHexString();
-
-        Optional<User> providedUser = userRepository.findById(comment.getId());
-        User user = providedUser.orElseThrow(() -> new UserException("User not found"));
 
         List<String> replies = new ArrayList<>();
         List<String> likes = new ArrayList<>();
@@ -102,13 +94,13 @@ public class CommentService {
         return providedComment.orElseThrow(() -> new CommentException("Comment not found"));
     }
 
-    public String likeComment(String id, User user) {
+    public String likeComment(String id, String user) {
         Optional<Comment> providedComment = commentRepository.findById(id);
         Comment comment = providedComment.orElseThrow(() -> new CommentException("Comment not found"));
 
         List<String> commentLikes = comment.getLikes();
-        if (!commentLikes.contains(user.getId())) {
-            commentLikes.add(user.getId());
+        if (!commentLikes.contains(user)) {
+            commentLikes.add(user);
             comment.setLikes(commentLikes);
             commentRepository.save(comment);
             return "Comment liked successfully";
@@ -117,13 +109,13 @@ public class CommentService {
         }
     }
 
-    public String unlikeComment(String id, User user) {
+    public String unlikeComment(String id, String user) {
         Optional<Comment> providedComment = commentRepository.findById(id);
         Comment comment = providedComment.orElseThrow(() -> new CommentException("Comment not found"));
 
         List<String> commentLikes = comment.getLikes();
-        if (commentLikes.contains(user.getId())) {
-            commentLikes.remove(user.getId());
+        if (commentLikes.contains(user)) {
+            commentLikes.remove(user);
             comment.setLikes(commentLikes);
             commentRepository.save(comment);
             return "Comment unliked successfully";
