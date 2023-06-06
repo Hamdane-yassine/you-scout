@@ -5,10 +5,10 @@ stages:
 variables:
   # SAST_IMAGE_SUFFIX: '-fips'
   VERSION_TAG: $CI_PIPELINE_IID
-  FF_USE_FASTZIP: "true"
+  # FF_USE_FASTZIP: "true"
   # These can be specified per job or per pipeline
-  ARTIFACT_COMPRESSION_LEVEL: "fast"
-  CACHE_COMPRESSION_LEVEL: "fast"
+  # ARTIFACT_COMPRESSION_LEVEL: "fast"
+  # CACHE_COMPRESSION_LEVEL: "fast"
   # MAVEN_OPTS: >-
   #   -Dhttps.protocols=TLSv1.2
   #   -Dmaven.repo.local=.m2/repository
@@ -19,7 +19,7 @@ variables:
    
     
 
-authentication-service-build:
+# authentication-service-build:
   image: maven:3.9.2-eclipse-temurin-17
   stage: build
   cache:
@@ -39,14 +39,14 @@ authentication-service-build:
   #     junit:
   #       - "**/target/*-reports/TEST-*.xml"
 
-# post-service-build:
-#   maven-build:
-#   image: maven:3-jdk-8
-#   stage: build
-#   script: "mvn package -B"
-#   artifacts:
-#     paths:
-#       - target/*.jar
+post-service-build:
+  maven-build:
+  image: maven:3-jdk-17
+  stage: build
+  script: "mvn package -B"
+  artifacts:
+    paths:
+      - target/*.jar
 
 # docker-build:
 #   stage: build
