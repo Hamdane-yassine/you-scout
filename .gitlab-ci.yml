@@ -31,8 +31,8 @@ variables:
   #   - export PACKAGE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
     # - export IMAGE_NAME=$CI_REGISTRY_IMAGE/microservice/authentication
     # - export IMAGE_TAG=1.3
-  script:
-    - mvn $MAVEN_CLI_OPTS package
+  # script:
+  #   - mvn $MAVEN_CLI_OPTS package
   # artifacts:
   #   name: "Maven artifacts from $CI_PROJECT_NAME on $CI_COMMIT_REF_SLUG"
   #   reports:
@@ -40,7 +40,6 @@ variables:
   #       - "**/target/*-reports/TEST-*.xml"
 
 post-service-build:
-  maven-build:
   image: maven:3-jdk-17
   stage: build
   script: "mvn package -B"
