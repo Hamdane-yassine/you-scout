@@ -2,14 +2,16 @@ package ma.ac.inpt.postservice.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
+import lombok.NoArgsConstructor;
 
 
 import java.util.ArrayList;
+import java.util.Map;
 
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class PostRequest {
 
 
@@ -17,26 +19,14 @@ public class PostRequest {
     private String _id;
     private String username;
 
-    private final String userProfilePic;
+    private String userProfilePic;
 
-    private final String caption;
+    private String caption;
 
     private  ArrayList<String> likes;
 
-    private  ArrayList<String> skills;
+    private  Map<String, Map<String, Integer>> skills;
 
 
-    public PostRequest(String username, String userProfilePic, String caption, ArrayList<String> likes, ArrayList<String> skills) {
-        this.username = username;
-        this.userProfilePic = userProfilePic;
-        this.caption = caption;
-        this.likes = likes;
-        this.skills = skills;
-    }
 
-    public PostRequest(String _id, String userProfilePic, String caption) {
-        this._id = _id;
-        this.userProfilePic = userProfilePic;
-        this.caption = caption;
-    }
 }
