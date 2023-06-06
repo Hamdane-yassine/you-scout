@@ -1,13 +1,17 @@
 package ma.ac.inpt.postservice.controller;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import ma.ac.inpt.postservice.model.Post;
+import ma.ac.inpt.postservice.payload.ApiResponse;
 import ma.ac.inpt.postservice.payload.CompletePostRequest;
+import ma.ac.inpt.postservice.payload.PostRequest;
 import ma.ac.inpt.postservice.payload.RatingRequest;
 import ma.ac.inpt.postservice.service.PostService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -26,22 +31,19 @@ public class PostController {
     private final PostService postService;
 
 
-    @PostMapping("/posts")
-    public ResponseEntity<?> completePost(@RequestBody CompletePostRequest postRequest, @RequestHeader("Authorization") String accessToken) {
+    @PostMapping("/create")
+    public ResponseEntity<?> uploadVideo(@RequestPart("post") String postRequest, @RequestPart("video") MultipartFile file, Principal user, @RequestHeader("Authorization") String accessToken) {
+        // Convert userStr to User object
+        ObjectMapper mapper = new ObjectMapper();
+        PostRequest post = null;
+        try {
+            post = mapper.readValue(postRequest, PostRequest.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Invalid user data", HttpStatus.BAD_REQUEST);
+        }
 
-        // Complete the post
-        String message = postService.completePost(postRequest, accessToken);
-
-        // Return the response with the completed post's id
-        return ResponseEntity.ok(message);
-
-
-    }
-
-    @PostMapping("/upload")
-    public ResponseEntity<?> uploadVideo(@RequestParam("video") MultipartFile file, Principal user) {
-
-        String message = postService.uploadVideo(file, user.getName());
+        ApiResponse message = postService.createPost(post, accessToken, file, user.getName());
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
