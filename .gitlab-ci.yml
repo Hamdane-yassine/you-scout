@@ -42,6 +42,8 @@ variables:
 post-service-build:
   image: maven:3.8.4-openjdk-17
   stage: build
+  before_script:
+    - cd post-service
   script: "mvn package -B"
   artifacts:
     paths:
