@@ -39,7 +39,7 @@ public class FeedService {
      * @return A SlicedResult containing the feed posts and paging information.
      * @throws ResourceNotFoundException If the feed is not found for the user.
      */
-    public SlicedResult<Post> getUserFeed(String username, Optional<String> pagingState) {
+    public SlicedResult<Post> getUserFeed(String username, Optional<String> pagingState, String accessToken) {
 
         log.info("getting feed for user {} isFirstPage {}", username, pagingState.isEmpty());
 
@@ -67,7 +67,7 @@ public class FeedService {
         }
 
         // Retrieve the corresponding posts for the UserFeedEntity objects
-        List<Post> posts = getPosts(page);
+        List<Post> posts = getPosts(page, accessToken);
 
         return SlicedResult.<Post>builder()
                 .content(posts)
@@ -83,7 +83,7 @@ public class FeedService {
      * @param page The UserFeedEntity objects.
      * @return A list of posts.
      */
-    private List<Post> getPosts(Slice<UserFeedEntity> page) {
+    private List<Post> getPosts(Slice<UserFeedEntity> page, String accessToken) {
 //        String token = authService.getAccessToken();
 
         // Extract the post IDs from the UserFeedEntity objects
@@ -93,7 +93,7 @@ public class FeedService {
 
         // Retrieve the posts for the post IDs
 
-
-        return postService.findPostsIn(postIds);
+        System.out.println("accessToken: "+accessToken);
+        return postService.findPostsIn(postIds, accessToken);
     }
 }
