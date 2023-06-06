@@ -28,8 +28,7 @@ public class FeedController {
     public ResponseEntity<SlicedResult<Post>> getFeed(
             @PathVariable String username,
             @RequestParam(value = "ps", required = false) Optional<String> pagingState,
-            @RequestHeader("Authorization") String authorizationHeader) {
-        String accessToken = authorizationHeader.replace("Bearer ", "");
+            @RequestHeader("Authorization") String accessToken) {
 
         log.info("fetching feed for user {} isFirstPage {}", username, pagingState.isEmpty());
         SlicedResult<Post> results = feedService.getUserFeed(username, pagingState, accessToken);
