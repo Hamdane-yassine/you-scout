@@ -51,6 +51,7 @@ class FeedGenServiceTest {
         String accessToken = "access_token";
         String username = post.getUsername();
         int page = 0;
+        int page2 = 1;
         int size = AppConstants.PAGE_SIZE;
 
         ArrayList<String> followers = new ArrayList<>();
@@ -79,14 +80,16 @@ class FeedGenServiceTest {
         ResponseEntity<PagedResult<String>> response2 = new ResponseEntity<>(pagedResult2, HttpStatus.OK);
         // Mock the graphClient's findFollowers method
         when(graphClient.findFollowers(accessToken, username, page, size))
-                .thenReturn(response1)
+                .thenReturn(response1);
+        when(graphClient.findFollowers(accessToken, username, page2, size))
                 .thenReturn(response2);
 
         // Call the addToFeed method in the FeedGenService
         feedGenService.addToFeed(post, accessToken);
 
         // Verify that the graphClient's findFollowers method was called twice with the correct arguments
-        verify(graphClient, times(2)).findFollowers(accessToken, username, page, size);
+        verify(graphClient, times(1)).findFollowers(accessToken, username, page, size);
+        verify(graphClient, times(1)).findFollowers(accessToken, username, page2, size);
 
         // Verify that the feedRepository's save method was called for each follower in both responses
         verify(feedRepository, times(followers.size() + 1)).save(any(UserFeedEntity.class));
