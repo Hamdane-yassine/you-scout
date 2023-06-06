@@ -2,12 +2,7 @@ package ma.ac.inpt.postservice.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import ma.ac.inpt.postservice.exception.UpdatingException;
-import ma.ac.inpt.postservice.exception.UploadFileException;
-import ma.ac.inpt.postservice.exception.VideoProcessingException;
-import ma.ac.inpt.postservice.exception.VideoValidationException;
 import ma.ac.inpt.postservice.model.Post;
-import ma.ac.inpt.postservice.payload.ApiResponse;
 import ma.ac.inpt.postservice.payload.CompletePostRequest;
 import ma.ac.inpt.postservice.payload.RatingRequest;
 import ma.ac.inpt.postservice.service.PostService;
@@ -32,7 +27,7 @@ public class PostController {
 
 
     @PostMapping("/posts")
-    public ResponseEntity<?> createPost(@RequestBody CompletePostRequest postRequest, @RequestHeader("Authorization") String accessToken) {
+    public ResponseEntity<?> completePost(@RequestBody CompletePostRequest postRequest, @RequestHeader("Authorization") String accessToken) {
 
         // Complete the post
         String message = postService.completePost(postRequest, accessToken);

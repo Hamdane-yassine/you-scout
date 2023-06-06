@@ -43,7 +43,7 @@ public class FeedGenService {
 
         while(!isLast) {
 
-            ResponseEntity<PagedResult<String>> response =     graphClient.findFollowers(accessToken,post.getUsername(), page, size);
+            ResponseEntity<PagedResult<String>> response = graphClient.findFollowers(accessToken,post.getUsername(), page, size);
 
             if(response.getStatusCode().is2xxSuccessful()) {
 

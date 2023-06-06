@@ -48,17 +48,17 @@ class PostServiceTest {
     @Test
     void createPost_ValidPostRequest_ReturnsCreatedPost() {
         // Arrange
-        CompletePostRequest postRequest = new CompletePostRequest("username","profilePic","that's the stuff", new ArrayList<>(),new HashMap<>());
+        CompletePostRequest postRequest = new CompletePostRequest("id","profilePic","that's the stuff", new ArrayList<>(),new HashMap<>());
         Post savedPost = new Post("username","profilePic","that's the stuff");
         savedPost.set_id("id");
         when(postRepository.save(any(Post.class))).thenReturn(savedPost);
         when(postRepository.findById("id")).thenReturn(Optional.of(savedPost));
 
         // Act
-        Post createdPost = postService.completePost(postRequest, "access");
+        String createdPost = postService.completePost(postRequest, "access");
 
         // Assert
-        assertEquals(savedPost, createdPost);
+        assertEquals("Post id is completed!", createdPost);
         verify(postRepository).save(any(Post.class));
         verify(postEventSender).sendPostCreated(savedPost, "access");
     }

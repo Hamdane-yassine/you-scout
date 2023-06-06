@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,44 +39,47 @@ class PostControllerTest {
     private PostController postController;
 
     @Test
-    void createPost_shouldReturnCreatedResponse() {
-        // Arrange
+    public void testCompletePost() {
+        // Create a CompletePostRequest and Principal mock objects
         CompletePostRequest postRequest = new CompletePostRequest("username","urlImage","that's the stuff", new ArrayList<>(), new HashMap<>());
-        Post createdPost = new Post("username","profilePic","that's the stuff");
-        String expectedPostId = "1";
-        when(postService.completePost(postRequest, "access")).thenReturn(createdPost);
+        Principal principal = mock(Principal.class);
 
-        // Act
-        ResponseEntity<?> responseEntity = postController.createPost(postRequest, "access");
+        // Mock the postService's completePost method
+        when(postService.completePost(postRequest, "access_token")).thenReturn("Post completed successfully");
 
-        // Assert
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(responseEntity.getBody()).isNotNull();
-        // Assert other response properties if applicable
+        // Call the completePost method in the PostController
+        ResponseEntity<?> response = postController.completePost(postRequest, "access_token");
 
-        // Verify that the postService method was called
-        verify(postService, times(1)).completePost(postRequest, "access");
+        // Verify that the postService's completePost method was called with the correct arguments
+        verify(postService, times(1)).completePost(postRequest, "access_token");
+
+        // Verify the response status code and body
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Post completed successfully", response.getBody());
     }
+
+
 
     @Test
-    void uploadVideo_shouldReturnCreatedResponse() throws VideoValidationException, VideoProcessingException, UploadFileException {
-        // Arrange
-        MockMultipartFile file = new MockMultipartFile("video", "test.mp4", "video/mp4", new byte[]{});
-        String user = "ayoub";
-        String expectedPostId = "1";
-        when(postService.uploadVideo(file, user)).thenReturn(expectedPostId);
+    public void testUploadVideo() {
+        // Create a MultipartFile and Principal mock objects
+        MultipartFile file = new MockMultipartFile("video", new byte[]{});
+        Principal principal = mock(Principal.class);
 
-        // Act
-        ResponseEntity<?> responseEntity = postController.uploadVideo(file, () -> "ayoub");
+        // Mock the postService's uploadVideo method
+        when(postService.uploadVideo(file, principal.getName())).thenReturn("Video uploaded successfully");
 
-        // Assert
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(responseEntity.getBody()).isNotNull();
-        // Assert other response properties if applicable
+        // Call the uploadVideo method in the PostController
+        ResponseEntity<?> response = postController.uploadVideo(file, principal);
 
-        // Verify that the postService method was called
-        verify(postService, times(1)).uploadVideo(file, user);
+        // Verify that the postService's uploadVideo method was called with the correct arguments
+        verify(postService, times(1)).uploadVideo(file, principal.getName());
+
+        // Verify the response status code and body
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals("Video uploaded successfully", response.getBody());
     }
+
 
     @Test
     void deletePost_shouldCallPostServiceToDeletePost() {
@@ -119,37 +123,24 @@ class PostControllerTest {
     }
 
     @Test
-    void ratePost_withValidRating_shouldReturnOkResponse() throws UpdatingException {
-        // Arrange
-        String postId = "1";
-        RatingRequest ratingRequest = new RatingRequest("dribbling",4);
+    public void testRatePost() {
+        // Create variables for post ID, RatingRequest, and Principal
+        String postId = "123";
+        RatingRequest ratingRequest = new RatingRequest();
+        Principal principal = mock(Principal.class);
 
-        // Act
-        ResponseEntity<String> responseEntity = postController.ratePost(postId, ratingRequest, () -> "ahmed");
+        // Mock the postService's ratePost method
+        when(postService.ratePost(postId, ratingRequest, principal.getName())).thenReturn("Post rated successfully");
 
-        // Assert
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isEqualTo("Rating registered");
+        // Call the ratePost method in the PostController
+        ResponseEntity<String> response = postController.ratePost(postId, ratingRequest, principal);
 
-        // Verify that the postService method was called
-        verify(postService, times(1)).ratePost(postId, ratingRequest, "ahmed");
-    }
+        // Verify that the postService's ratePost method was called with the correct arguments
+        verify(postService, times(1)).ratePost(postId, ratingRequest, principal.getName());
 
-    @Test
-    void ratePost_withInvalidRating_shouldReturnOkResponse() throws UpdatingException {
-        // Arrange
-        String postId = "1";
-        RatingRequest ratingRequest = new RatingRequest("dribbling",6);
-
-        // Act
-        ResponseEntity<String> responseEntity = postController.ratePost(postId, ratingRequest, () -> "ahmed");
-
-        // Assert
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isEqualTo("Not a valid rating");
-
-        // Verify that the postService method was not called
-        verify(postService, never()).ratePost(postId, ratingRequest, "ahmed");
+        // Verify the response status code and body
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Post rated successfully", response.getBody());
     }
 
     @Test

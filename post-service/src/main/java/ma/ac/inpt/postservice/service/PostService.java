@@ -40,7 +40,7 @@ public class PostService {
             postRequest.setSkills(new HashMap<>());
         }
 
-        Post post = postRepository.findById(postRequest.get_id()).orElseThrow(() -> new ResourceNotFoundException("Can't find the post/video"));
+        Post post = postRepository.findById(postRequest.get_id()).orElseThrow(() -> new ResourceNotFoundException("Post/video"));
         post.setCaption(postRequest.getCaption());
         post.setUserProfilePic(postRequest.getUserProfilePic());
         post.setLikes(postRequest.getLikes());

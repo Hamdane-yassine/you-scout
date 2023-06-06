@@ -32,7 +32,7 @@ public class FeedController {
         String accessToken = authorizationHeader.replace("Bearer ", "");
 
         log.info("fetching feed for user {} isFirstPage {}", username, pagingState.isEmpty());
-
-        return ResponseEntity.ok(feedService.getUserFeed(username, pagingState, accessToken));
+        SlicedResult<Post> results = feedService.getUserFeed(username, pagingState, accessToken);
+        return ResponseEntity.ok(results);
     }
 }
