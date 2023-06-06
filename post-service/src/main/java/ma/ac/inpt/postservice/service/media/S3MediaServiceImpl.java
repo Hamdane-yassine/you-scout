@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.ac.inpt.postservice.exception.DeleteFileException;
 import ma.ac.inpt.postservice.exception.UploadFileException;
+import ma.ac.inpt.postservice.exception.VideoProcessingException;
 import ma.ac.inpt.postservice.exception.VideoValidationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,11 @@ public class S3MediaServiceImpl implements MediaService {
      */
     @Override
     public String uploadFile(MultipartFile file) {
-        validateVideoFile(file);
+        try{
+            validateVideoFile(file);
+        } catch (VideoValidationException e) {
+            throw new VideoValidationException("Can't validate video");
+        }
         String keyName = FOLDER_NAME + UUID.randomUUID() + "_" + file.getOriginalFilename();
         try {
             ObjectMetadata metadata = new ObjectMetadata();
@@ -61,7 +66,8 @@ public class S3MediaServiceImpl implements MediaService {
         } catch (IOException e) {
             log.error("Error uploading file to S3: {}", e.getMessage(), e);
             throw new UploadFileException("Error uploading file to S3: " + e.getMessage());
-        }
+        } catch (VideoProcessingException e) {
+            throw new VideoProcessingException("Can't process video");}
     }
 
     /**

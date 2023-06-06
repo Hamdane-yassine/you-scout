@@ -31,7 +31,7 @@ public class PostService {
         log.info("finding posts for ids {}", ids);
 
         ResponseEntity<List<PostRequest>> response =
-                postServiceClient.findPostsByIdIn("Bearer "+accessToken, ids );
+                postServiceClient.findPostsByIdIn(accessToken, ids );
 
         if (response.getStatusCode().is2xxSuccessful()) {
 
