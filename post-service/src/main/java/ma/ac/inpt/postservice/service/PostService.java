@@ -3,7 +3,8 @@ package ma.ac.inpt.postservice.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.ac.inpt.postservice.exception.*;
-import ma.ac.inpt.postservice.payload.CompletePostRequest;
+import ma.ac.inpt.postservice.payload.ApiResponse;
+import ma.ac.inpt.postservice.payload.PostRequest;
 import ma.ac.inpt.postservice.payload.RatingRequest;
 import ma.ac.inpt.postservice.postMessaging.PostEventSender;
 import ma.ac.inpt.postservice.model.Post;
@@ -31,7 +32,16 @@ public class PostService {
      * @param postRequest the post request object
      * @return the created post
      */
-    public String completePost(CompletePostRequest postRequest, String accessToken) {
+    public ApiResponse createPost(PostRequest postRequest, String accessToken, MultipartFile file, String username) {
+        String fileUrl;
+        try {
+
+            fileUrl = mediaService.uploadFile(file);
+
+        } catch (UploadFileException e) {
+
+            throw new UploadFileException("Can't upload video");
+        }
 
         if (postRequest.getLikes() == null) {
             postRequest.setLikes(new ArrayList<>());
@@ -39,36 +49,23 @@ public class PostService {
         if (postRequest.getSkills() == null) {
             postRequest.setSkills(new HashMap<>());
         }
-
-        Post post = postRepository.findById(postRequest.get_id()).orElseThrow(() -> new ResourceNotFoundException("Post/video"));
+        Post post = new Post();
+        post.setUsername(username);
+        post.setVideoUrl(fileUrl);
         post.setCaption(postRequest.getCaption());
         post.setUserProfilePic(postRequest.getUserProfilePic());
         post.setLikes(postRequest.getLikes());
         post.setSkills(postRequest.getSkills());
         post.setCommentsNum(0);
-        postRepository.save(post);
-        postEventSender.sendPostCreated(post, accessToken);
 
-        return String.format("Post %s is completed!", post.get_id());
+        Post createdPost = postRepository.save(post);
+
+        postEventSender.sendPostCreated(createdPost, accessToken);
+
+        return new ApiResponse("Video uploaded and post created", createdPost.get_id(), createdPost.getVideoUrl());
     }
 
-    public String uploadVideo(MultipartFile file, String user) {
-        try {
 
-            String fileUrl = mediaService.uploadFile(file);
-            Post post = new Post(
-                    user,
-                    fileUrl
-            );
-            Post createdPost = postRepository.save(post);
-
-            return String.format("Video %s is uploaded and Post %s is created", createdPost.getVideoUrl(), createdPost.get_id());
-
-
-        } catch (UploadFileException e) {
-            throw new UploadFileException("Can't upload video");
-        }
-    }
 
     /**
      * Deletes a post with the given ID and username.

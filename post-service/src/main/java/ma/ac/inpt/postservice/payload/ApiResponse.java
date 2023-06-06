@@ -7,8 +7,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class ApiResponse {
 
-    private Boolean success;
     private String message;
 
     private String postId;
+
+    private String videoUrl;
 }
