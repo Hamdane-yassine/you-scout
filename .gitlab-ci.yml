@@ -47,7 +47,7 @@ post-service-build:
   script: "mvn package -B"
   artifacts:
     paths:
-      - target/*.jar
+      - post-service/target/*.jar
 
 # docker-build:
 #   stage: build
