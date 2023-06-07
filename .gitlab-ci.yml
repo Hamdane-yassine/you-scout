@@ -27,8 +27,8 @@ authentication-service-build:
     - VERSION=$(cat $VERSION_FILE)
     - echo "Building version: $VERSION"
     mvn compile jib:build \
-    -Djib.to.auth.username=${CI_REGISTRY_USER} \
-    -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
+      -Djib.to.auth.username=${CI_REGISTRY_USER} \
+      -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
   artifacts:
     name: "Maven artifacts from $CI_PROJECT_NAME on $CI_COMMIT_REF_SLUG"
     reports:
@@ -49,14 +49,14 @@ social-graph-build:
     - cd social-graph-service
   script: |
     mvn compile jib:build \
-      -Djib.to.auth.username=${CI_REGISTRY_USER} \
-      -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
+    -Djib.to.auth.username=${CI_REGISTRY_USER} \
+    -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
   artifacts:
     paths:
       - social-graph-service/target/*.jar
-  # only:
-  #   changes:
-  #     - social-graph-service/**/*
+  only:
+    changes:
+      - social-graph-service/**/*
 
 
 post-service-build:
