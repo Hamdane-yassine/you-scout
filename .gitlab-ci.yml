@@ -8,8 +8,6 @@ stages:
   
 
 variables:
-  REGISTRY_USER: $CI_REGISTRY_USER
-  RIGISTRY_PASSWORD: $CI_REGISTRY_PASSWORD
   # SAST_IMAGE_SUFFIX: '-fips'
   VERSION_TAG: $CI_PIPELINE_IID
    
@@ -24,7 +22,9 @@ authentication-service-build:
     - export PACKAGE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
     - export IMAGE_NAME=$CI_REGISTRY_IMAGE/microservice/authentication
     - export IMAGE_TAG=1.3
-  script: mvn -Pbuild-docker-image package
+  script: mvn compile jib:build \
+    -Djib.to.auth.username=${CI_REGISTRY_USER} \
+    -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
   artifacts:
     name: "Maven artifacts from $CI_PROJECT_NAME on $CI_COMMIT_REF_SLUG"
     reports:
@@ -43,7 +43,9 @@ social-graph-build:
   stage: build
   before_script:
     - cd social-graph-service
-  script: "mvn package -B"
+  script: "mvn compile jib:build \
+    -Djib.to.auth.username=${CI_REGISTRY_USER} \
+    -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \"
   artifacts:
     paths:
       - social-graph-service/target/*.jar
