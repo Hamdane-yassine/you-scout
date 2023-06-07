@@ -32,7 +32,7 @@
     <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
     <org.projectlombok.version>1.18.26</org.projectlombok.version>
     <version.mapstruct-lombok>0.2.0</version.mapstruct-lombok>
-    <image>registry.gitlab.com/hamdane10/you-scout/${project.artifactId}:${project.version}</image>
+    <image>registry.gitlab.com/hamdane10/you-scout/${project.artifactId}:${env.VERSION}</image>
   </properties>
 
   <dependencyManagement>
