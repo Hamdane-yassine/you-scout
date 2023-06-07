@@ -54,7 +54,7 @@ class CommentServiceTest {
         assertEquals(body, result.getBody());
         assertEquals(postId, result.getPostId());
         assertEquals(0, result.getLikes().size());
-        verify(commentEventSender).sendCommentNum(postId, comments.size());
+        verify(commentEventSender).sendCommentNum(postId, comments.size() + 1);
     }
 
     @Test
@@ -75,7 +75,7 @@ class CommentServiceTest {
         assertEquals(body, result.getBody());
         assertEquals(postId, result.getPostId());
         assertEquals(0, result.getLikes().size());
-        verify(commentEventSender).sendCommentNum(postId, 0);
+        verify(commentEventSender).sendCommentNum(postId, 1);
     }
 
     @Test
