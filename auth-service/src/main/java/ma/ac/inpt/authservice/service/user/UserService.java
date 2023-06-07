@@ -9,6 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface UserService {
 
+
+    Page<UserDetailsDto> getUsersByUsername(String username, Integer page, Integer size);
     /**
      * Retrieves all users from the database.
      *

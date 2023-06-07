@@ -1,6 +1,8 @@
 package ma.ac.inpt.authservice.repository;
 
 import ma.ac.inpt.authservice.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,6 +14,16 @@ import java.util.Optional;
  * Repository interface for managing User entities.
  */
 public interface UserRepository extends JpaRepository<User, Long> {
+
+    /**
+     * Retrieves a list of users whose usernames contain the specified string.
+     * This method supports case-sensitive searches.
+     *
+     * @param username The string to search for within the usernames. This value must not be null.
+     * @return A list of User entities with usernames containing the specified string.
+     *         If no users have usernames that contain the string, an empty list is returned.
+     */
+    Page<User> findByUsernameContaining(String username, Pageable pageable);
 
     /**
      * Returns an optional User object with the specified username or email.

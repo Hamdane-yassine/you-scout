@@ -40,6 +40,20 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationService authenticationService;
     private final UserMapper userMapper;
 
+
+    /**
+     * Get users by username.
+     *
+     * @param username the username pattern
+     * @return a list of UserDetailsDto
+     */
+    @Override
+    public Page<UserDetailsDto> getUsersByUsername(String username, Integer page, Integer size) {
+        log.info("Fetching users with username containing: {}", username);
+        Page<User> users = userRepository.findByUsernameContaining(username, PageRequest.of(page, size));
+        return users.map(userMapper::userToUserDetailsDto);    }
+
+
     /**
      * Get all users with pagination.
      *
