@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -168,7 +169,7 @@ class PostServiceTest {
         String username = "user1";
         Post post = new Post();
         post.set_id(postId);
-        post.setLikes(new ArrayList<>());
+        post.setLikes(new HashSet<>());
 
         when(postRepository.findById(postId)).thenReturn(Optional.of(post));
 
@@ -202,9 +203,9 @@ class PostServiceTest {
         String username = "user1";
         Post post = new Post();
         post.set_id(postId);
-        ArrayList<String> arrayList = new ArrayList<>();
-        arrayList.add(username);
-        post.setLikes(arrayList);
+        HashSet<String> hashSet = new HashSet<>();
+        hashSet.add(username);
+        post.setLikes(hashSet);
 
         when(postRepository.findById(postId)).thenReturn(Optional.of(post));
 
@@ -223,7 +224,7 @@ class PostServiceTest {
         String username = "user1";
         Post post = new Post();
         post.set_id(postId);
-        post.setLikes(new ArrayList<>());
+        post.setLikes(new HashSet<>());
 
         when(postRepository.findById(postId)).thenReturn(Optional.of(post));
 

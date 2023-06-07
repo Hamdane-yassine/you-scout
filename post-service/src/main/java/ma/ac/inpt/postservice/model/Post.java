@@ -1,13 +1,14 @@
 package ma.ac.inpt.postservice.model;
 
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
 @Data
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class Post {
 
     private String caption;
 
-    private ArrayList<String> likes;
+    private HashSet<String> likes;
     private int commentsNum;
 
     private Map<String, Map<String, Integer>> skills;
@@ -45,7 +46,7 @@ public class Post {
      * @param profilePic   The profile picture of the post creator
      * @param caption      The caption of the post
      */
-    public Post( @NotNull String username, @NotNull String profilePic,  @NotNull String caption) {
+    public Post(@NotNull String username, @NotNull String profilePic, @NotNull String caption) {
         this.username = username;
         this.userProfilePic = profilePic;
         this.caption = caption;

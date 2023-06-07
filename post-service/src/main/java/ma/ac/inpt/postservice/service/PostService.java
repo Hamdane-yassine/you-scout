@@ -54,7 +54,7 @@ public class PostService {
         post.setVideoUrl(fileUrl);
         post.setCaption(postRequest.getCaption());
         post.setUserProfilePic(postRequest.getUserProfilePic());
-        post.setLikes(postRequest.getLikes());
+        post.setLikes(new HashSet<>(postRequest.getLikes()));
         post.setSkills(postRequest.getSkills());
         post.setCommentsNum(0);
 
@@ -200,14 +200,13 @@ public class PostService {
     public void updateCommentNum(String postId, int num) {
         log.info("updating number of comments in post {}", postId);
 
-        postRepository.findById(postId).map(post -> {
-            post.setCommentsNum(num);
-            postRepository.save(post);
-            return post;
-        }).orElseThrow(() -> {
+        Post post = postRepository.findById(postId).orElseThrow(() -> {
             log.warn("Post not found id {}", postId);
             return new ResourceNotFoundException(postId);
         });
-
+        ;
+        post.setCommentsNum(num);
+        Post updatedPost = postRepository.save(post);
+        System.out.println(updatedPost);
     }
 }

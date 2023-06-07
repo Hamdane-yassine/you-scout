@@ -23,8 +23,9 @@ public class CommentEventListenerTest {
     @Test
     public void testConsume() {
         // Create a test CommentNumEvent
-        CommentNumEvent commentNumEvent = CommentNumEvent.builder().id("postId").commentNum(10).build();
-
+        CommentNumEvent commentNumEvent = new CommentNumEvent();
+        commentNumEvent.setCommentNum(10);
+        commentNumEvent.setId("postId");
 
         // Call the method being tested
         postEventListener.consume(commentNumEvent);
