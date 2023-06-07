@@ -128,9 +128,9 @@ authentication-service-build:
   cache:
     paths:
       - .m2/repository/
-  # only:
-  #   changes:
-  #     - auth-service/**/*
+  only:
+    changes:
+      - auth-service/**/*
 
 
 social-graph-build:
