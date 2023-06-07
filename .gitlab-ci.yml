@@ -12,10 +12,7 @@ variables:
   VERSION_TAG: $CI_PIPELINE_IID
    
     
-cache:
-  paths:
-    - .m2/repository/
-    - user-feed-service/target
+
 
 authentication-service-build:
   image: adoptopenjdk/openjdk17
@@ -73,6 +70,10 @@ user-feed-build:
   artifacts:
     paths:
       - user-feed-service/target/*.jar
+  cache:
+    paths:
+      - .m2/repository/
+      - user-feed-service/target
   # only:
   #   changes:
   #     - user-feed-service/**/*
