@@ -39,7 +39,7 @@ auth_major:
 
 
 
-      
+
 graph_major:
   stage: version
   script:
@@ -134,7 +134,7 @@ authentication-service-build:
 
 
 social-graph-build:
-  image:  maven:3.8.4-openjdk-17
+  image: maven:3.8.4-openjdk-17
   stage: build
   before_script:
     - cd social-graph-service
@@ -190,7 +190,7 @@ comments-service-build:
     - cd comments-service
     - export VERSION=$(cat $VERSION_FILE)
   script:
-    - mvn compile jib:build -Djib.to.auth.username=${CI_REGISTRY_USER} -Djib.to.auth.password=${CI_REGISTRY_PASSWORD}
+    - mvn compile jib:build -Djib.to.auth.username=${CI_REGISTRY_USER} -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} -Djib.to.image=${CI_REGISTRY_IMAGE}
   cache:
     key: $CI_COMMIT_REF_SLUG
     paths:
