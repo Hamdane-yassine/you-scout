@@ -49,14 +49,14 @@ social-graph-build:
     - cd social-graph-service
   script: |
     mvn compile jib:build \
-    -Djib.to.auth.username=${CI_REGISTRY_USER} \
-    -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
+      -Djib.to.auth.username=${CI_REGISTRY_USER} \
+      -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
   artifacts:
     paths:
       - social-graph-service/target/*.jar
-  only:
-    changes:
-      - social-graph-service/**/*
+  # only:
+  #   changes:
+  #     - social-graph-service/**/*
 
 
 post-service-build:
