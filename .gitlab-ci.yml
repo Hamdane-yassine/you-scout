@@ -35,7 +35,7 @@ variables:
 #         - "auth-service/target/*-reports/TEST-*.xml"
 
 social-graph-build:
-  image: adoptopenjdk/openjdk17
+  image:  maven:3.8.4-openjdk-17
   stage: build
   before_script:
     - cd social-graph-service
