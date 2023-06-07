@@ -9,16 +9,13 @@ stages:
 
 
 
+variables:
+  # SAST_IMAGE_SUFFIX: '-fips'
+  VERSION_TAG: $CI_PIPELINE_IID
+  VERSION_FILE: version.txt
+  SERVICES: value
 
 
-scan_code:
-  image: registry.gitlab.com/gitlab-org/security-products/analyzers/brakeman:latest
-  stage: scan
-  script:
-    - brakeman -f json > brakeman-report.json
-  artifacts:
-    paths:
-      - brakeman-report.json
 
 auth_major:
   stage: build
@@ -33,13 +30,17 @@ auth_major:
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-major-auth-service"'
 
 
-variables:
-  # SAST_IMAGE_SUFFIX: '-fips'
-  VERSION_TAG: $CI_PIPELINE_IID
-  VERSION_FILE: version.txt
-  SERVICES: value
 
   
+scan_code:
+  image: registry.gitlab.com/gitlab-org/security-products/analyzers/brakeman:latest
+  stage: scan
+  script:
+    - brakeman -f json > brakeman-report.json
+  artifacts:
+    paths:
+      - brakeman-report.json
+      
 graph_major:
   stage: build
   script:
