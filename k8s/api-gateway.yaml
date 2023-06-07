@@ -18,6 +18,8 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: docker
+      imagePullSecrets:
+        - name: gitlab-registry-secret
 ---
 apiVersion: v1
 kind: Service
