@@ -29,11 +29,6 @@
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacv-platform</artifactId>
-            <version>1.5.8</version>
-        </dependency>
 
         <dependency>
             <groupId>com.amazonaws</groupId>
@@ -41,8 +36,11 @@
             <version>1.12.470</version>
         </dependency>
 
-
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -79,7 +77,6 @@
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-streams</artifactId>
         </dependency>
-
 
         <dependency>
             <groupId>org.springframework.kafka</groupId>
