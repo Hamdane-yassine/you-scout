@@ -73,16 +73,16 @@ public class PostController {
         return ResponseEntity.ok(message);
     }
 
-    @DeleteMapping("/posts/{id}/removelike")
-    public ResponseEntity<?> removeLikePost(@PathVariable("id") String id, Principal user) {
-
-        log.info("Received a remove post liking request for post id {} from user {}", id, user.getName());
-
-        // Remove the like from the post
-        String message = postService.removeLikePost(id, user.getName());
-
-        return ResponseEntity.ok(message);
-    }
+//    @DeleteMapping("/posts/{id}/removelike")
+//    public ResponseEntity<?> removeLikePost(@PathVariable("id") String id, Principal user) {
+//
+//        log.info("Received a remove post liking request for post id {} from user {}", id, user.getName());
+//
+//        // Remove the like from the post
+//        String message = postService.removeLikePost(id, user.getName());
+//
+//        return ResponseEntity.ok(message);
+//    }
 
     @PostMapping("/posts/{id}/rate")
     public ResponseEntity<String> ratePost(@PathVariable("id") String id, @RequestBody RatingRequest ratingRequest, Principal user) {

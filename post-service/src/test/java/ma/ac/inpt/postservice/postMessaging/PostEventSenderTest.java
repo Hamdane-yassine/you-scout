@@ -9,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static org.mockito.Mockito.*;
 
@@ -31,7 +32,7 @@ public class PostEventSenderTest {
         Post post = new Post();
         post.set_id("post-id");
         post.setUsername("user1");
-        post.setLikes(new ArrayList<>());
+        post.setLikes(new HashSet<>());
 
         PostEvent expectedPostEvent = PostEvent.builder()
                 .eventType(PostEventType.CREATED)
