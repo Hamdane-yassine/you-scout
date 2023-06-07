@@ -5,7 +5,6 @@ default:
 stages:
   - build
 
-
 variables:
   # SAST_IMAGE_SUFFIX: '-fips'
   VERSION_TAG: $CI_PIPELINE_IID
