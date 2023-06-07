@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.kafka.core.KafkaTemplate;
 
-import java.util.ArrayList;
+
 import java.util.HashSet;
 
 import static org.mockito.Mockito.*;
