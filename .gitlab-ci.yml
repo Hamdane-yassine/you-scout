@@ -1,6 +1,6 @@
 default:
   tags:
-    - docker-runner-youscout
+    - docker-youscout
 
 stages:
   - build
