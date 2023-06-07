@@ -4,7 +4,7 @@ data:
 kind: Secret
 metadata:
   creationTimestamp: "2023-06-07T19:52:54Z"
-  name: gitlab-registry-secret
+  name: registry-crds
   namespace: you-scout
   resourceVersion: "57493"
   uid: d0ff7c1c-5b4c-498f-809e-1f76c5a3d6e0
