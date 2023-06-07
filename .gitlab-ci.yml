@@ -83,6 +83,7 @@ skills-service-build:
     paths:
       - skills-service/target/*.jar
 
+
 # docker-build:
 #   stage: build
 #   before_script:
