@@ -39,7 +39,6 @@ auth_major:
 
 
 
-  
       
 graph_major:
   stage: version
