@@ -55,7 +55,7 @@ post-service-build:
   script: "mvn package -B"
   artifacts:
     paths:
-      - post-service/target/*.jar
+      - post-service/target/*.jar.original
   # only:
   #   changes:
   #     - post-service/**/*
