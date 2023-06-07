@@ -15,7 +15,7 @@ variables:
 
 
 authentication-service-build:
-  image: adoptopenjdk/openjdk17
+  image: maven:3.8.4-openjdk-17
   stage: build
   before_script:
     - cd auth-service
