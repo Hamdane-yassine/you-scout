@@ -174,13 +174,15 @@ comments-service-build:
   stage: build
   before_script:
     - cd comments-service
+    - export VERSION=$(cat $VERSION_FILE)
   script:
-    - echo "Running build job"
-    - mvn package -B
+    mvn compile jib:build \
+    -Djib.to.auth.username=${CI_REGISTRY_USER} \
+    -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
   cache:
     key: $CI_COMMIT_REF_SLUG
     paths:
-      - comments-service/.m2/repository/
+      - .m2/repository/
   artifacts:
     paths:
       - comments-service/target/*.jar
@@ -194,12 +196,15 @@ skills-service-build:
   stage: build
   before_script:
     - cd skills-service
+    - export VERSION=$(cat $VERSION_FILE)
   script:
-    - mvn package -B
+    mvn compile jib:build \
+    -Djib.to.auth.username=${CI_REGISTRY_USER} \
+    -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
   cache:
     key: $CI_COMMIT_REF_SLUG
     paths:
-      - skills-service/.m2/repository/
+      - .m2/repository/
   artifacts:
     paths:
       - skills-service/target/*.jar
