@@ -166,7 +166,29 @@ increment_patch:
   rules:
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-patch"'
 
-major_author:
+major_auth:
   extends: .increment_major
   variables:
-    SERVICE: auth-service
+    SERVICE: "auth-service"
+major_graph:
+  extends: .increment_major
+  variables:
+    SERVICE: "social-graph-service"
+major_post:
+  extends: .increment_major
+  variables:
+    SERVICE: "post-handling-service"
+major_feed:
+  extends: .increment_major
+  variables:
+    SERVICE: "feed-service"
+major_comment:
+  extends: .increment_major
+  variables:
+    SERVICE: "comment-service"
+major_skill:
+  extends: .increment_major
+  variables:
+    SERVICE: "skills-service"
+
+
