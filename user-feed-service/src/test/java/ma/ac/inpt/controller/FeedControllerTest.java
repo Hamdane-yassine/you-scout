@@ -2,35 +2,26 @@ package ma.ac.inpt.controller;
 
 import ma.ac.inpt.config.SecurityTestConfig;
 import ma.ac.inpt.models.Post;
-import ma.ac.inpt.payload.PostEvent;
 import ma.ac.inpt.payload.SlicedResult;
 import ma.ac.inpt.postservice.FeedService;
-import org.aspectj.lang.annotation.Before;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.http.HttpStatus;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import java.util.List;
+
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
