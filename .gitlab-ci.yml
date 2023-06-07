@@ -5,6 +5,7 @@ default:
 
 stages:
   - build
+  - scan
 
 
 variables:
@@ -15,6 +16,14 @@ variables:
 
 
 
+scan_code:
+  image: registry.gitlab.com/gitlab-org/security-products/analyzers/brakeman:latest
+  stage: scan
+  script:
+    - brakeman -f json > brakeman-report.json
+  artifacts:
+    paths:
+      - brakeman-report.json
 
 auth_major:
   stage: build
