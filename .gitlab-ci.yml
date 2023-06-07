@@ -89,7 +89,7 @@ auth_version:
   image: curlimages/curl
   script:
     - >
-      curl --request PUT --header "PRIVATE-TOKEN: glpat-1xXn98s_LphPR_-xpEvB" --form "value=$CI_PIPELINE_ID" "https://gitlab.com/api/v4/projects/44998572/variables/AUTH_VERSION"
+      curl --request PUT --header "PRIVATE-TOKEN: glpat-1xXn98s_LphPR_-xpEvB" --form "value=$(cat $VERSION_FILE)" "https://gitlab.com/api/v4/projects/44998572/variables/AUTH_VERSION"
   needs:
     - auth_major
 
