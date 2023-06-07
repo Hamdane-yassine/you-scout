@@ -52,9 +52,8 @@ public class PostController {
     }
 
     @DeleteMapping("/posts/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable("id") String id, @AuthenticationPrincipal Principal user, @RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<Void> deletePost(@PathVariable("id") String id, Principal user, @RequestHeader("Authorization") String accessToken) {
         log.info("Received a delete request for post id {} from user {}", id, user.getName());
-        String accessToken = authorizationHeader.replace("Bearer ", "");
 
         // Delete the post
         postService.deletePost(id, user.getName(), accessToken);
