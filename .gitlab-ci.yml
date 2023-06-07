@@ -16,7 +16,14 @@ variables:
   VERSION_FILE: version.txt
   SERVICES: value
 
-
+scan_code:
+  image: registry.gitlab.com/gitlab-org/security-products/analyzers/semgrep:latest
+  stage: scan
+  script:
+    - semgrep -o gl-sast-report.json .
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
 
 auth_major:
   stage: version
@@ -33,14 +40,6 @@ auth_major:
 
 
   
-scan_code:
-  image: registry.gitlab.com/gitlab-org/security-products/analyzers/brakeman:latest
-  stage: scan
-  script:
-    - brakeman -f json > brakeman-report.json
-  artifacts:
-    paths:
-      - brakeman-report.json
       
 graph_major:
   stage: version
