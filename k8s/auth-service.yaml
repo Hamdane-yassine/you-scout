@@ -64,6 +64,8 @@ spec:
               value: eu-west-3
             - name: AWS_S3_BUCKET
               value: you-scout-media
+      imagePullSecrets:
+        - name: gitlab-registry-secret
 ---
 apiVersion: v1
 kind: Service

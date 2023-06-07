@@ -22,11 +22,11 @@
         <module name="comments-service" />
         <module name="auth-service" />
         <module name="skills-service" />
-        <module name="api-gateway" />
         <module name="social-graph-service" />
+        <module name="api-gateway" />
         <module name="chat-service" />
-        <module name="service-discovery" />
         <module name="user-feed-service" />
+        <module name="service-discovery" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
