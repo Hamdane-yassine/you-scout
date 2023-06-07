@@ -19,7 +19,7 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: docker
       imagePullSecrets:
-        - name: gitlab-registry-secret
+        - name: registry-crds
 ---
 apiVersion: v1
 kind: Service
@@ -39,9 +39,10 @@ kind: Ingress
 metadata:
   name: api-gateway
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    konghq.com/strip-path: 'true'
 
 spec:
+  ingressClassName: kong
   rules:
     - http:
         paths:
