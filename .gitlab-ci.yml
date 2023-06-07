@@ -48,7 +48,8 @@ social-graph-build:
   stage: build
   before_script:
     - cd social-graph-service
-  script: mvn compile jib:build \
+  script: |
+    mvn compile jib:build \
     -Djib.to.auth.username=${CI_REGISTRY_USER} \
     -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
   artifacts:
