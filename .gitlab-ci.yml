@@ -53,7 +53,7 @@ comments-service-build:
   stage: build
   before_script:
     - cd comments-service
-  script: "mvn package -B -Dmaven.test.skip=true"
+  script: "mvn package -B"
   artifacts:
     paths:
       - comments-service/target/*.jar
