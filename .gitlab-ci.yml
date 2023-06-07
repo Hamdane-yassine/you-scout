@@ -6,10 +6,10 @@ default:
 stages:
   - build
   
-cache:
-  paths:
-    - social-graph-service/.m2/repository/
-    - post-handling-service/.m2/repository/    
+# cache:
+#   paths:
+#     - social-graph-service/.m2/repository/
+#     - post-handling-service/.m2/repository/    
 
 
 variables:
