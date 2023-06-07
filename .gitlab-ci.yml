@@ -1,7 +1,3 @@
-default:
-  tags:
-    - docker-youscout
-
 stages:
   - build
 
