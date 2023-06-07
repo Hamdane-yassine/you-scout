@@ -8,7 +8,7 @@ stages:
   
 
 variables:
-  MAVEN_OPTS: "-Dmaven.repo.local=user-feed-service/.m2/repository"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
   VERSION_TAG: $CI_PIPELINE_IID
    
     
@@ -28,9 +28,9 @@ authentication-service-build:
     reports:
       junit:
         - "auth-service/target/*-reports/TEST-*.xml"
-  only:
-    changes:
-      - auth-service/**/*
+  # only:
+  #   changes:
+  #     - auth-service/**/*
 
 
 social-graph-build:
@@ -56,9 +56,12 @@ post-service-build:
   artifacts:
     paths:
       - post-service/target/*.jar.original
-  # only:
-  #   changes:
-  #     - post-service/**/*
+  only:
+    changes:
+      - post-service/**/*
+  cache:
+    paths:
+      - .m2/repository/
 
 
 user-feed-build:
