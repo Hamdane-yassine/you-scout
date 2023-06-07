@@ -33,8 +33,6 @@
     <org.projectlombok.version>1.18.26</org.projectlombok.version>
     <version.mapstruct-lombok>0.2.0</version.mapstruct-lombok>
     <image>registry.gitlab.com/hamdane10/you-scout/${project.artifactId}:${project.version}</image>
-    <registry-user>${env.REGISTRY_USER}</registry-user>
-    <registry-password>${env.REGISTRY_PASSWORD}</registry-password>
   </properties>
 
   <dependencyManagement>
@@ -118,10 +116,6 @@
             </from>
             <to>
               <image>${image}</image>
-              <auth>
-                <username>${registry-user}</username>
-                <password>${registry-password}</password>
-              </auth>
             </to>
           </configuration>
         </plugin>
