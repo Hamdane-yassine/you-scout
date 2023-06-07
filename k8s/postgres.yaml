@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:14.8
+          image: postgres
           env:
             - name: POSTGRES_USER
               valueFrom:
