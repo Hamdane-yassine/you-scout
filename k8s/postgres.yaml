@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:14.8
+          image: postgres
           env:
             - name: POSTGRES_USER
               valueFrom:
@@ -27,7 +27,7 @@ spec:
                   name: you-scout-secret
                   key: postgres-password
             - name: PGDATA
-              value: "/data/postgres"
+              value: "/data/postgres/pgdata"
           volumeMounts:
             - name: postgres-data
               mountPath: /data/postgres

@@ -5,15 +5,17 @@ default:
 
 stages:
   - build
-  
+
 
 variables:
   # SAST_IMAGE_SUFFIX: '-fips'
   VERSION_TAG: $CI_PIPELINE_IID
   VERSION_FILE: version.txt
+  SERVICES: value
 
-   
-    
+
+
+
 
 
 authentication-service-build:
@@ -71,7 +73,7 @@ post-service-build:
   only:
     changes:
       - post-service/**/*
- 
+
 
 
 user-feed-build:
@@ -130,17 +132,17 @@ skills-service-build:
     changes:
       - skills-service/**/*
 
-increment_major:
+.increment_major:
   stage: build
   script:
-    - cd auth-service
+    - cd $SERVICE
     - echo "Incrementing Major version"
     - VERSION=$(cat $VERSION_FILE)
     - IFS='.' read -ra VERSION_PARTS <<< "$VERSION"
     - VERSION_MAJOR=$((VERSION_PARTS[0] + 1))
     - echo "$VERSION_MAJOR.0.0" > $VERSION_FILE
   rules:
-    - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-major"'
+    - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-major-$SERVICE"'
 
 increment_minor:
   stage: build
@@ -163,5 +165,30 @@ increment_patch:
     - echo "${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$VERSION_PATCH" > $VERSION_FILE
   rules:
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-patch"'
+
+major_auth:
+  extends: .increment_major
+  variables:
+    SERVICE: "auth-service"
+major_graph:
+  extends: .increment_major
+  variables:
+    SERVICE: "social-graph-service"
+major_post:
+  extends: .increment_major
+  variables:
+    SERVICE: "post-handling-service"
+major_feed:
+  extends: .increment_major
+  variables:
+    SERVICE: "feed-service"
+major_comment:
+  extends: .increment_major
+  variables:
+    SERVICE: "comment-service"
+major_skill:
+  extends: .increment_major
+  variables:
+    SERVICE: "skills-service"
 
 
