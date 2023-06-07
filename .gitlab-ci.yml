@@ -28,6 +28,7 @@ variables:
 cache:
   paths:
     - .m2/repository/
+    - user-feed-service/target
 
 # authentication-service-build:
 #   image: adoptopenjdk/openjdk17
