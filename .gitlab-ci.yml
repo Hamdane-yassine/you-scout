@@ -19,7 +19,7 @@ variables:
 
 
 auth_major:
-  stage: build
+  stage: version
   script:
     - cd auth-service
     - echo "Incrementing Major version"
