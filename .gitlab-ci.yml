@@ -107,7 +107,7 @@ auth_version:
     - >
       curl --request PUT --header "PRIVATE-TOKEN: glpat-1xXn98s_LphPR_-xpEvB" --form "value=$(cat $VERSION_FILE)" "https://gitlab.com/api/v4/projects/44998572/variables/AUTH_VERSION"
   needs:
-    - job: auth_service
+    - job: auth_major
 
 
 authentication-service-build:
