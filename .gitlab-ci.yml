@@ -1,7 +1,3 @@
-default:
-  tags:
-    - docker
-
 stages:
   - build
 
@@ -53,7 +49,7 @@ post-service-build:
       - post-service/target/*.jar
 
 comments-service-build:
-  image: maven:3.8.4-openjdk-17
+  image: maven:3.8.6-openjdk-17
   stage: build
   before_script:
     - cd comments-service
