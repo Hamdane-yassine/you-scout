@@ -102,8 +102,9 @@ auth_version:
   image: curlimages/curl
   script:
     - cd auth-service
+    - echo "I want this versio $(cat $VERSION_FILE)"
     - >
-      curl --request PUT --header "PRIVATE-TOKEN: glpat-1xXn98s_LphPR_-xpEvB" --form "value=$(cat $VERSION_FILE)" "https://gitlab.com/api/v4/projects/44998572/variables/AUTH_VERSION"
+      curl --request PUT --header "PRIVATE-TOKEN: glpat-1xXn98s_LphPR_-xpEvB" "https://gitlab.com/api/v4/projects/44998572/variables/AUTH_VERSION" --form "value=$(cat $VERSION_FILE)"
 
 
 
@@ -190,7 +191,7 @@ comments-service-build:
     - cd comments-service
     - export VERSION=$(cat $VERSION_FILE)
   script:
-    - mvn compile jib:build -Djib.to.auth.username="$CI_REGISTRY_USER" -Djib.to.auth.password="$CI_REGISTRY_PASSWORD" -Djib.to.image=registry.gitlab.com/hamdane10/you-scout/comments-service:latest
+    - mvn compile jib:build -Djib.to.auth.username="$CI_REGISTRY_USER" -Djib.to.auth.password="$CI_REGISTRY_PASSWORD" -Djib.to.image="$CI_REGISTRY_IMAGE:latest"
   cache:
     key: "$CI_COMMIT_REF_SLUG"
     paths:
