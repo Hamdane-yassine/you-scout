@@ -23,9 +23,8 @@ authentication-service-build:
     - cd auth-service
     - export PACKAGE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
     - export IMAGE_NAME=$CI_REGISTRY_IMAGE/microservice/authentication
-  script: |
     - VERSION=$(cat $VERSION_FILE)
-    - echo "Building version: $VERSION"
+  script: |
     mvn compile jib:build \
       -Djib.to.auth.username=${CI_REGISTRY_USER} \
       -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
