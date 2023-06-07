@@ -39,7 +39,7 @@ public class CommentService {
         Optional<List<Comment>> providedComments = commentRepository.findCommentsByPostId(comment.getPostId());
         int commentNum = providedComments.map(List::size).orElse(0);
 
-        commentEventSender.sendCommentNum(comment.getPostId(), commentNum);
+        commentEventSender.sendCommentNum(comment.getPostId(), commentNum + 1);
         commentRepository.save(newComment);
         return newComment;
     }
@@ -118,10 +118,16 @@ public class CommentService {
 
     public String deleteComment(String id) {
         Optional<Comment> providedComment = commentRepository.findById(id);
-        providedComment.orElseThrow(() -> new CommentException("Comment not found"));
+        Comment comment = providedComment.orElseThrow(() -> new CommentException("Comment not found"));
 
         // Delete all the replies inside the replies list of the comment
         replyRepository.deleteRepliesByRepliedTo(id);
+
+        // Get the comments number inside a post
+        Optional<List<Comment>> providedComments = commentRepository.findCommentsByPostId(comment.getPostId());
+        int commentNum = providedComments.map(List::size).orElse(0);
+
+        commentEventSender.sendCommentNum(comment.getPostId(), commentNum - 1);
         commentRepository.deleteById(id);
         return "Comment deleted!";
     }

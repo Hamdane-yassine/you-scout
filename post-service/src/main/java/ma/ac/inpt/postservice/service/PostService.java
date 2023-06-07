@@ -11,7 +11,6 @@ import ma.ac.inpt.postservice.model.Post;
 import ma.ac.inpt.postservice.repository.PostRepo;
 import lombok.extern.slf4j.Slf4j;
 import ma.ac.inpt.postservice.service.media.MediaService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -215,7 +214,7 @@ public class PostService {
             log.warn("Post not found id {}", postId);
             return new ResourceNotFoundException(postId);
         });
-        ;
+
         post.setCommentsNum(num);
         Post updatedPost = postRepository.save(post);
         System.out.println(updatedPost);

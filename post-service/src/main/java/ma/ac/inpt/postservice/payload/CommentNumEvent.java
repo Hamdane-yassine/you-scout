@@ -1,7 +1,6 @@
 package ma.ac.inpt.postservice.payload;
 
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: auth-service
-          image: registry.gitlab.com/hamdane10/you-scout/auth-service:4.0
+          image: registry.gitlab.com/hamdane10/you-scout/auth-service:1.0
           ports:
             - containerPort: 8082
           env:
@@ -64,6 +64,8 @@ spec:
               value: eu-west-3
             - name: AWS_S3_BUCKET
               value: you-scout-media
+      imagePullSecrets:
+        - name: gitlab-registry-secret
 ---
 apiVersion: v1
 kind: Service
