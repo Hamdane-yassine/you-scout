@@ -8,7 +8,9 @@ stages:
   
 
 variables:
-  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  REGISTRY_USER: $CI_REGISTRY_USER
+  RIGISTRY_PASSWORD: $CI_REGISTRY_PASSWORD
+  # SAST_IMAGE_SUFFIX: '-fips'
   VERSION_TAG: $CI_PIPELINE_IID
    
     

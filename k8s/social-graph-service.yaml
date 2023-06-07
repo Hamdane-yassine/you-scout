@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: social-graph-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: social-graph-service
+  template:
+    metadata:
+      labels:
+        app: social-graph-service
+    spec:
+      containers:
+        - name: social-graph-service
+          image: registry.gitlab.com/hamdane10/you-scout/social-graph-service:4.0
+          ports:
+            - containerPort: 8083
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+            - name: SPRING_NEO4J_USERNAME
+              value: neo4j
+            - name: SPRING_NEO4J_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: you-scout-secret
+                  key: neo4j-password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: social-graph-service
+spec:
+  selector:
+    app: social-graph-service
+  ports:
+    - protocol: TCP
+      port: 8083
+      targetPort: 8083
