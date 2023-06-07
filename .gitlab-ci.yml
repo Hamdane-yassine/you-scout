@@ -6,13 +6,10 @@ default:
 stages:
   - build
   
-cache:
-  paths:
-    - social-graph-service/.m2/repository/
-    - post-handling-service/.m2/repository/    
 
 
 variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
   # SAST_IMAGE_SUFFIX: '-fips'
   VERSION_TAG: $CI_PIPELINE_IID
   # FF_USE_FASTZIP: "true"
@@ -28,6 +25,9 @@ variables:
   # MAVEN_CLI_OPTS: "-Pbuild-docker-image"
    
     
+cache:
+  paths:
+    - .m2/repository/
 
 # authentication-service-build:
 #   image: adoptopenjdk/openjdk17
