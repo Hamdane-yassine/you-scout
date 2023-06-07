@@ -8,7 +8,7 @@ stages:
   
 
 variables:
-  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  MAVEN_OPTS: "-Dmaven.repo.local=user-feed-service/.m2/repository"
   VERSION_TAG: $CI_PIPELINE_IID
    
     
@@ -73,9 +73,9 @@ user-feed-build:
   artifacts:
     paths:
       - user-feed-service/target/*.jar
-  only:
-    changes:
-      - user-feed-service/**/*
+  # only:
+  #   changes:
+  #     - user-feed-service/**/*
 
 
 comments-service-build:
