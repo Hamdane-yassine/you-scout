@@ -91,7 +91,7 @@ auth_version:
     - >
       curl --request PUT --header "PRIVATE-TOKEN: glpat-1xXn98s_LphPR_-xpEvB" --form "value=$CI_PIPELINE_ID" "https://gitlab.com/api/v4/projects/44998572/variables/AUTH_VERSION"
   needs:
-    - auth-major
+    - auth_major
 
 authentication-service-build:
   image: maven:3.8.4-openjdk-17
