@@ -51,21 +51,37 @@ variables:
 #    paths:
 #      - post-service/target/*.jar
 
-comments-service-build:
+#comments-service-build:
+#  image: maven:3.8.4-openjdk-17
+#  stage: build
+#  before_script:
+#    - cd comments-service
+#  script:
+#    - echo "Running build job"
+#    - mvn package -B
+#  cache:
+#    key: $CI_COMMIT_REF_SLUG
+#    paths:
+#      - comments-service/.m2/repository/
+#  artifacts:
+#    paths:
+#      - comments-service/target/*.jar
+
+
+skills-service-build:
   image: maven:3.8.4-openjdk-17
   stage: build
   before_script:
-    - cd comments-service
+    - cd skills-service
   script:
-    - echo "Running build job"
     - mvn package -B
   cache:
     key: $CI_COMMIT_REF_SLUG
     paths:
-      - comments-service/.m2/repository/
+      - skills-service/.m2/repository/
   artifacts:
     paths:
-      - comments-service/target/*.jar
+      - skills-service/target/*.jar
 
 # docker-build:
 #   stage: build
