@@ -27,6 +27,8 @@ spec:
                 secretKeyRef:
                   name: you-scout-secret
                   key: neo4j-password
+      imagePullSecrets:
+        - name: gitlab-registry-secret
 ---
 apiVersion: v1
 kind: Service
