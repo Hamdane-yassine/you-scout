@@ -190,9 +190,7 @@ comments-service-build:
     - cd comments-service
     - export VERSION=$(cat $VERSION_FILE)
   script:
-    - mvn compile jib:build \
-      -Djib.to.auth.username=${CI_REGISTRY_USER} \
-      -Djib.to.auth.password=${CI_REGISTRY_PASSWORD}
+    - mvn compile jib:build -Djib.to.auth.username=${CI_REGISTRY_USER} -Djib.to.auth.password=${CI_REGISTRY_PASSWORD}
   cache:
     key: $CI_COMMIT_REF_SLUG
     paths:
