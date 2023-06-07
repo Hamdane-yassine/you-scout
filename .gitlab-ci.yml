@@ -44,25 +44,35 @@ variables:
 #       junit:
 #         - "auth-service/target/*-reports/TEST-*.xml"
 
-social-graph-build:
-  image:  maven:3.8.4-openjdk-17
-  stage: build
-  before_script:
-    - cd social-graph-service
-  script: "mvn package -B"
-  artifacts:
-    paths:
-      - social-graph-service/target/*.jar
+# social-graph-build:
+#   image:  maven:3.8.4-openjdk-17
+#   stage: build
+#   before_script:
+#     - cd social-graph-service
+#   script: "mvn package -B"
+#   artifacts:
+#     paths:
+#       - social-graph-service/target/*.jar
 
-post-service-build:
+# post-service-build:
+#   image: maven:3.8.4-openjdk-17
+#   stage: build
+#   before_script:
+#     - cd post-service
+#   script: "mvn package -B"
+#   artifacts:
+#     paths:
+      # - post-service/target/*.jar
+
+user-feed-build:
   image: maven:3.8.4-openjdk-17
   stage: build
   before_script:
-    - cd post-service
+    - cd user-feed-service
   script: "mvn package -B"
   artifacts:
     paths:
-      - post-service/target/*.jar
+      - user-feed-service/target/*.jar
 
 # docker-build:
 #   stage: build
