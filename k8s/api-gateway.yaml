@@ -14,12 +14,12 @@ spec:
     spec:
       containers:
         - name: api-gateway
-          image: registry.gitlab.com/hamdane10/you-scout/api-gateway:5.0
+          image: registry.gitlab.com/hamdane10/you-scout/api-gateway:1.0
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: docker
       imagePullSecrets:
-        - name: registry-key
+        - name: gitlab-registry-secret
 ---
 apiVersion: v1
 kind: Service
