@@ -27,6 +27,21 @@ public class UserController {
     private final UserServiceImpl userServiceImpl;
 
     /**
+     * Endpoint for finding users by a string contained in their usernames.
+     * Returns HTTP 200 OK status with a list of User entities on successful retrieval.
+     *
+     * @param username A string to search for within the usernames.
+     * @return A response entity with a list of User entities.
+     *         If no users have usernames that contain the string, an empty list is returned.
+     */
+    @GetMapping("/search")
+    public ResponseEntity<Page<UserDetailsDto>> findUsersByUsernameContaining(@RequestParam String username, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "20") Integer size) {
+        log.info("Received request to find users with username containing {}", username);
+        Page<UserDetailsDto> users = userServiceImpl.getUsersByUsername(username,page,size);
+        return ResponseEntity.ok(users);
+    }
+
+    /**
      * Endpoint for getting all users.
      * Returns HTTP 200 OK status with a list of UserDetailsDto on successful retrieval.
      *
