@@ -2,12 +2,14 @@ package ma.ac.inpt.commentservice.service;
 
 import ma.ac.inpt.commentservice.exceptions.CommentException;
 import ma.ac.inpt.commentservice.exceptions.ReplyException;
+import ma.ac.inpt.commentservice.messaging.CommentEventSender;
 import ma.ac.inpt.commentservice.model.Comment;
 import ma.ac.inpt.commentservice.model.Reply;
 import ma.ac.inpt.commentservice.repository.CommentRepository;
 import ma.ac.inpt.commentservice.repository.ReplyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -17,117 +19,88 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class ReplyServiceTest {
-
+class ReplyServiceTest {
     @Mock
     private ReplyRepository replyRepository;
     @Mock
     private CommentRepository commentRepository;
+    @Mock
+    private CommentEventSender commentEventSender;
 
+    @InjectMocks
     private ReplyService replyService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
-        replyService = new ReplyService(replyRepository, commentRepository);
     }
 
-    // Test createReply
+
+    // Test create Reply
     @Test
-    public void testCreateReply_Success() {
+    void createReply_ValidCommentId_ReturnsNewReply() {
         // Arrange
-        String commentId = "1";
-        String replyId = "3";
-        String replyBody = "This is a reply.";
-        LocalDateTime timestamp = LocalDateTime.now();
+        String commentId = "commentId";
+        String user = "user";
+        Reply reply = new Reply("1", user, "Reply body", commentId, LocalDateTime.now());
 
-        String user = "johndoe";
-        Reply reply = new Reply(replyId, user, replyBody, commentId, timestamp);
+        List<String> replies = new ArrayList<>();
+        List<String> likes = new ArrayList<>();
 
-        Comment comment = new Comment();
-        comment.setId(commentId);
-        comment.setReplies(new ArrayList<>());
+        Comment comment = new Comment("commentId", "User", "Comment body", replies, "postId", null, likes);
 
-        // Mock the behavior of commentRepository.findById()
         when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
-
-        // Mock the behavior of replyRepository.save()
-        when(replyRepository.save(any(Reply.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(commentRepository.findCommentsByPostId(comment.getPostId())).thenReturn(Optional.of(new ArrayList<>()));
 
         // Act
         Reply createdReply = replyService.createReply(commentId, reply, user);
 
         // Assert
         assertNotNull(createdReply);
-        assertEquals(user, createdReply.getAuthor());
-        assertEquals(replyBody, createdReply.getBody());
+        assertEquals(reply.getAuthor(), createdReply.getAuthor());
+        assertEquals(reply.getBody(), createdReply.getBody());
         assertEquals(commentId, createdReply.getRepliedTo());
+        assertNotNull(createdReply.getId());
+        assertNotNull(createdReply.getRepliedTo());
 
-        // Verify that commentRepository.findById() was called
-        verify(commentRepository).findById(commentId);
-
-        // Verify that replyRepository.save() was called
-        verify(replyRepository).save(any(Reply.class));
-
-        // Verify that the reply ID was appended to the comment's replies' List
-        assertEquals(1, comment.getReplies().size());
-
-        // Verify that commentRepository.save() was called
-        verify(commentRepository).save(comment);
+        verify(commentRepository, times(1)).findById(commentId);
+        verify(commentRepository, times(1)).findCommentsByPostId(comment.getPostId());
+        verify(commentEventSender, times(1)).sendCommentNum(comment.getPostId(), 1);
+        verify(replyRepository, times(1)).save(any(Reply.class));
+        verify(commentRepository, times(1)).save(any(Comment.class));
     }
     @Test
-    public void testCreateReply_UserNotFound() {
+    void createReply_InvalidCommentId_ThrowsCommentException() {
         // Arrange
-        String commentId = "1";
-        String replyId = "3";
-        String userId = "3";
-        String replyBody = "This is a reply.";
-        String user = "johndoe";
+        String commentId = "invalidCommentId";
+        Reply reply = new Reply("1", "user", "Reply body", commentId, LocalDateTime.now());
 
-        Reply reply = new Reply(replyId, user, replyBody, commentId, LocalDateTime.now());
-
-        // Verify that commentRepository.findById() was not called
-        verifyNoInteractions(commentRepository);
-
-        // Verify that replyRepository.save() was not called
-        verifyNoInteractions(replyRepository);
-    }
-    @Test
-    public void testCreateReply_CommentNotFound() {
-        // Arrange
-        String commentId = "1";
-        String replyId = "3";
-        String userId = "3";
-        String replyBody = "This is a reply.";
-        String user = "johndoe";
-
-        Reply reply = new Reply(replyId, user, replyBody, commentId, LocalDateTime.now());
-
-        // Mock the behavior of commentRepository.findById()
         when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
 
-        // Act and Assert
-        assertThrows(CommentException.class, () -> replyService.createReply(commentId, reply, user));
+        // Act & Assert
+        assertThrows(CommentException.class, () -> replyService.createReply(commentId, reply, "user"));
 
-        // Verify that commentRepository.findById() was called
-        verify(commentRepository).findById(commentId);
-
-        // Verify that replyRepository.save() was not called
-        verifyNoInteractions(replyRepository);
+        verify(commentRepository, times(1)).findById(commentId);
+        verify(commentRepository, never()).findCommentsByPostId(anyString());
+        verify(commentEventSender, never()).sendCommentNum(anyString(), anyInt());
+        verify(replyRepository, never()).save(any(Reply.class));
+        verify(commentRepository, never()).save(any(Comment.class));
     }
 
-    // Test getRepliesForComment
+
+    // Test Get Replies for comment
     @Test
-    public void testGetRepliesForComment_TimestampAsc_Success() {
+    void getRepliesForComment_QueryTimestampAsc_ReturnsRepliesSortedByTimestampAsc() {
         // Arrange
-        String commentId = "1";
+        String commentId = "commentId";
         String query = "timestampAsc";
         List<Reply> expectedReplies = new ArrayList<>();
+        expectedReplies.add(new Reply("1", "user1", "Reply 1", commentId, LocalDateTime.now()));
+        expectedReplies.add(new Reply("2", "user2", "Reply 2", commentId, LocalDateTime.now().plusMinutes(1)));
+        expectedReplies.add(new Reply("3", "user3", "Reply 3", commentId, LocalDateTime.now().plusMinutes(2)));
 
-        // Mock the behavior of replyRepository.findByRepliedToOrderByTimestampAsc()
         when(replyRepository.findByRepliedToOrderByTimestampAsc(commentId)).thenReturn(Optional.of(expectedReplies));
 
         // Act
@@ -136,32 +109,20 @@ public class ReplyServiceTest {
         // Assert
         assertEquals(expectedReplies, actualReplies);
 
-        // Verify that replyRepository.findByRepliedToOrderByTimestampAsc() was called
-        verify(replyRepository).findByRepliedToOrderByTimestampAsc(commentId);
+        verify(replyRepository, times(1)).findByRepliedToOrderByTimestampAsc(commentId);
+        verify(replyRepository, never()).findByRepliedToOrderByTimestampDesc(commentId);
+        verify(replyRepository, never()).findByRepliedTo(commentId);
     }
     @Test
-    public void testGetRepliesForComment_TimestampAsc_RepliesNotFound() {
+    void getRepliesForComment_QueryTimestampDesc_ReturnsRepliesSortedByTimestampDesc() {
         // Arrange
-        String commentId = "1";
-        String query = "timestampAsc";
-
-        // Mock the behavior of replyRepository.findByRepliedToOrderByTimestampAsc()
-        when(replyRepository.findByRepliedToOrderByTimestampAsc(commentId)).thenReturn(Optional.empty());
-
-        // Act and Assert
-        assertThrows(ReplyException.class, () -> replyService.getRepliesForComment(commentId, query));
-
-        // Verify that replyRepository.findByRepliedToOrderByTimestampAsc() was called
-        verify(replyRepository).findByRepliedToOrderByTimestampAsc(commentId);
-    }
-    @Test
-    public void testGetRepliesForComment_TimestampDesc_Success() {
-        // Arrange
-        String commentId = "1";
+        String commentId = "commentId";
         String query = "timestampDesc";
         List<Reply> expectedReplies = new ArrayList<>();
+        expectedReplies.add(new Reply("3", "user3", "Reply 3", commentId, LocalDateTime.now().plusMinutes(2)));
+        expectedReplies.add(new Reply("2", "user2", "Reply 2", commentId, LocalDateTime.now().plusMinutes(1)));
+        expectedReplies.add(new Reply("1", "user1", "Reply 1", commentId, LocalDateTime.now()));
 
-        // Mock the behavior of replyRepository.findByRepliedToOrderByTimestampDesc()
         when(replyRepository.findByRepliedToOrderByTimestampDesc(commentId)).thenReturn(Optional.of(expectedReplies));
 
         // Act
@@ -170,144 +131,151 @@ public class ReplyServiceTest {
         // Assert
         assertEquals(expectedReplies, actualReplies);
 
-        // Verify that replyRepository.findByRepliedToOrderByTimestampDesc() was called
-        verify(replyRepository).findByRepliedToOrderByTimestampDesc(commentId);
+        verify(replyRepository, never()).findByRepliedToOrderByTimestampAsc(commentId);
+        verify(replyRepository, times(1)).findByRepliedToOrderByTimestampDesc(commentId);
+        verify(replyRepository, never()).findByRepliedTo(commentId);
+    }
+    @Test
+    void getRepliesForComment_QueryOther_ReturnsRepliesWithoutSorting() {
+        // Arrange
+        String commentId = "commentId";
+        String query = "other";
+        List<Reply> expectedReplies = new ArrayList<>();
+        expectedReplies.add(new Reply("1", "user1", "Reply 1", commentId, LocalDateTime.now()));
+        expectedReplies.add(new Reply("2", "user2", "Reply 2", commentId, LocalDateTime.now().plusMinutes(1)));
+        expectedReplies.add(new Reply("3", "user3", "Reply 3", commentId, LocalDateTime.now().plusMinutes(2)));
+
+        when(replyRepository.findByRepliedTo(commentId)).thenReturn(Optional.of(expectedReplies));
+
+        // Act
+        List<Reply> actualReplies = replyService.getRepliesForComment(commentId, query);
+
+        // Assert
+        assertEquals(expectedReplies, actualReplies);
+
+        verify(replyRepository, never()).findByRepliedToOrderByTimestampAsc(commentId);
+        verify(replyRepository, never()).findByRepliedToOrderByTimestampDesc(commentId);
+        verify(replyRepository, times(1)).findByRepliedTo(commentId);
+    }
+    @Test
+    void getRepliesForComment_NoReplies_ThrowsReplyException() {
+        // Arrange
+        String commentId = "commentId";
+        String query = "other";
+
+        when(replyRepository.findByRepliedTo(commentId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(ReplyException.class, () -> replyService.getRepliesForComment(commentId, query));
+
+        verify(replyRepository, never()).findByRepliedToOrderByTimestampAsc(commentId);
+        verify(replyRepository, never()).findByRepliedToOrderByTimestampDesc(commentId);
+        verify(replyRepository, times(1)).findByRepliedTo(commentId);
     }
 
-    // Test updateReplyForComment
+
+    // Test Update Reply
     @Test
-    public void testUpdateReplyForComment_ReplyExists_Success() {
+    void updateReplyForComment_ExistingCommentAndReply_ReturnsSuccessMessage() {
         // Arrange
-        String commentId = "1";
-        String replyId = "2";
-        String updatedBody = "Updated reply body";
-        Reply newReply = new Reply(replyId, null, updatedBody, commentId, null);
+        String commentId = "commentId";
+        String replyId = "replyId";
+        Reply newReply = new Reply(replyId, "user", "Updated reply body", commentId, LocalDateTime.now());
+        Comment comment = new Comment(commentId, "User", "Comment body", new ArrayList<>(), "postId", null, new ArrayList<>());
+        Reply reply = new Reply(replyId, "user", "Original reply body", commentId, LocalDateTime.now());
 
-        Comment comment = new Comment();
-        comment.setId(commentId);
-
-        Reply existingReply = new Reply(replyId, null, "Original reply body", commentId, null);
-
-        // Mock the behavior of commentRepository.findById()
         when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
-
-        // Mock the behavior of replyRepository.findById()
-        when(replyRepository.findById(replyId)).thenReturn(Optional.of(existingReply));
+        when(replyRepository.findById(replyId)).thenReturn(Optional.of(reply));
+        when(replyRepository.save(reply)).thenReturn(reply);
 
         // Act
         String result = replyService.updateReplyForComment(commentId, replyId, newReply);
 
         // Assert
         assertEquals("Reply updated successfully!", result);
-        assertEquals(updatedBody, existingReply.getBody());
+        assertEquals(newReply.getBody(), reply.getBody());
 
-        // Verify that commentRepository.findById() was called
-        verify(commentRepository).findById(commentId);
-
-        // Verify that replyRepository.findById() was called
-        verify(replyRepository).findById(replyId);
-
-        // Verify that replyRepository.save() was called
-        verify(replyRepository).save(existingReply);
+        verify(commentRepository, times(1)).findById(commentId);
+        verify(replyRepository, times(1)).findById(replyId);
+        verify(replyRepository, times(1)).save(reply);
     }
-
     @Test
-    public void testUpdateReplyForComment_CommentNotFound() {
+    void updateReplyForComment_NonexistentComment_ThrowsCommentException() {
         // Arrange
-        String commentId = "1";
-        String replyId = "2";
-        Reply newReply = new Reply(replyId, null, "Updated reply body", commentId, null);
+        String commentId = "commentId";
+        String replyId = "replyId";
+        Reply newReply = new Reply(replyId, "user", "Updated reply body", commentId, LocalDateTime.now());
 
-        // Mock the behavior of commentRepository.findById()
         when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
 
-        // Act and Assert
+        // Act & Assert
         assertThrows(CommentException.class, () -> replyService.updateReplyForComment(commentId, replyId, newReply));
 
-        // Verify that commentRepository.findById() was called
-        verify(commentRepository).findById(commentId);
-
-        // Verify that replyRepository.findById() was not called
-        verifyNoInteractions(replyRepository);
+        verify(commentRepository, times(1)).findById(commentId);
+        verify(replyRepository, never()).findById(replyId);
+        verify(replyRepository, never()).save(any(Reply.class));
     }
-
     @Test
-    public void testUpdateReplyForComment_ReplyNotFound() {
+    void updateReplyForComment_NonexistentReply_ThrowsReplyException() {
         // Arrange
-        String commentId = "1";
-        String replyId = "2";
-        Reply newReply = new Reply(replyId, null, "Updated reply body", commentId, null);
+        String commentId = "commentId";
+        String replyId = "replyId";
+        Reply newReply = new Reply(replyId, "user", "Updated reply body", commentId, LocalDateTime.now());
+        Comment comment = new Comment(commentId, "User", "Comment body", new ArrayList<>(), "postId", null, new ArrayList<>());
 
-        Comment comment = new Comment();
-        comment.setId(commentId);
-
-        // Mock the behavior of commentRepository.findById()
         when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
-
-        // Mock the behavior of replyRepository.findById()
         when(replyRepository.findById(replyId)).thenReturn(Optional.empty());
 
-        // Act and Assert
+        // Act & Assert
         assertThrows(ReplyException.class, () -> replyService.updateReplyForComment(commentId, replyId, newReply));
 
-        // Verify that commentRepository.findById() was called
-        verify(commentRepository).findById(commentId);
-
-        // Verify that replyRepository.findById() was called
-        verify(replyRepository).findById(replyId);
-
-        // Verify that replyRepository.save() was not called
-        verifyNoMoreInteractions(replyRepository);
+        verify(commentRepository, times(1)).findById(commentId);
+        verify(replyRepository, times(1)).findById(replyId);
+        verify(replyRepository, never()).save(any(Reply.class));
     }
 
-    // Test deleteReplyForComment
+
+    // Test delete Reply
     @Test
-    public void testDeleteReplyForComment_ReplyExists_Success() {
+    void deleteReplyForComment_ExistingCommentAndReply_ReturnsSuccessMessage() {
         // Arrange
-        String commentId = "1";
-        String replyId = "2";
+        String commentId = "commentId";
+        String replyId = "replyId";
+        Comment comment = new Comment(commentId, "User", "Comment body", new ArrayList<>(), "postId", null, new ArrayList<>());
+        List<Comment> comments = new ArrayList<>();
+        comments.add(comment);
 
-        Comment comment = new Comment();
-        comment.setId(commentId);
-        List<String> replies = new ArrayList<>();
-        replies.add(replyId);
-        comment.setReplies(replies);
-
-        // Mock the behavior of commentRepository.findById()
         when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
+        when(commentRepository.findCommentsByPostId(comment.getPostId())).thenReturn(Optional.of(comments));
+        doNothing().when(commentEventSender).sendCommentNum(comment.getPostId(), 0);
+        doNothing().when(replyRepository).deleteById(replyId);
 
         // Act
         String result = replyService.deleteReplyForComment(commentId, replyId);
 
         // Assert
         assertEquals("Reply deleted!", result);
-        assertFalse(comment.getReplies().contains(replyId));
 
-        // Verify that commentRepository.findById() was called
-        verify(commentRepository).findById(commentId);
-
-        // Verify that commentRepository.save() was called
-        verify(commentRepository).save(comment);
-
-        // Verify that replyRepository.deleteById() was called
-        verify(replyRepository).deleteById(replyId);
+        verify(commentRepository, times(1)).findById(commentId);
+        verify(commentRepository, times(1)).findCommentsByPostId(comment.getPostId());
+        verify(commentEventSender, times(1)).sendCommentNum(comment.getPostId(), 0);
+        verify(replyRepository, times(1)).deleteById(replyId);
     }
-    @Test
-    public void testDeleteReplyForComment_CommentNotFound() {
-        // Arrange
-        String commentId = "1";
-        String replyId = "2";
 
-        // Mock the behavior of commentRepository.findById()
+    @Test
+    void deleteReplyForComment_NonexistentComment_ThrowsCommentException() {
+        // Arrange
+        String commentId = "commentId";
+        String replyId = "replyId";
+
         when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
 
-        // Act and Assert
+        // Act & Assert
         assertThrows(CommentException.class, () -> replyService.deleteReplyForComment(commentId, replyId));
 
-        // Verify that commentRepository.findById() was called
-        verify(commentRepository).findById(commentId);
-
-        // Verify that replyRepository.deleteById() was not called
-        verifyNoInteractions(replyRepository);
+        verify(commentRepository, times(1)).findById(commentId);
+        verify(commentRepository, never()).findCommentsByPostId(anyString());
+        verify(commentEventSender, never()).sendCommentNum(anyString(), anyInt());
+        verify(replyRepository, never()).deleteById(anyString());
     }
 }
