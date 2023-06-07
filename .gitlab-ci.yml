@@ -4,8 +4,9 @@ default:
 
 
 stages:
-  - build
   - scan
+  - version
+  - build
 
 
 
@@ -42,7 +43,7 @@ scan_code:
       - brakeman-report.json
       
 graph_major:
-  stage: build
+  stage: version
   script:
     - cd social-graph-service
     - echo "Incrementing Major version"
@@ -53,7 +54,7 @@ graph_major:
   rules:
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-major-social-graph-service"'
 post_major:
-  stage: build
+  stage: version
   script:
     - cd post-handling-service
     - echo "Incrementing Major version"
@@ -64,7 +65,7 @@ post_major:
   rules:
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-major-post-handling-service"'
 feed_major:
-  stage: build
+  stage: version
   script:
     - cd user-feed-service
     - echo "Incrementing Major version"
@@ -75,7 +76,7 @@ feed_major:
   rules:
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-major-user-feed-service"'
 comment_major:
-  stage: build
+  stage: version
   script:
     - cd comments-service
     - echo "Incrementing Major version"
@@ -86,7 +87,7 @@ comment_major:
   rules:
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-major-comments-service"'
 skill_major:
-  stage: build
+  stage: version
   script:
     - cd skills-service
     - echo "Incrementing Major version"
@@ -105,6 +106,8 @@ auth_version:
     - cd auth-service
     - >
       curl --request PUT --header "PRIVATE-TOKEN: glpat-1xXn98s_LphPR_-xpEvB" --form "value=$(cat $VERSION_FILE)" "https://gitlab.com/api/v4/projects/44998572/variables/AUTH_VERSION"
+  needs:
+    - job: auth_service
 
 
 authentication-service-build:
