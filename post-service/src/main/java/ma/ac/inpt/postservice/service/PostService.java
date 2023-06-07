@@ -2,22 +2,19 @@ package ma.ac.inpt.postservice.service;
 
 
 import lombok.RequiredArgsConstructor;
-import ma.ac.inpt.postservice.exception.NotAllowedException;
-import ma.ac.inpt.postservice.exception.ResourceNotFoundException;
-import ma.ac.inpt.postservice.exception.UploadFileException;
-import ma.ac.inpt.postservice.payload.CompletePostRequest;
+import ma.ac.inpt.postservice.exception.*;
+import ma.ac.inpt.postservice.payload.ApiResponse;
+import ma.ac.inpt.postservice.payload.PostRequest;
 import ma.ac.inpt.postservice.payload.RatingRequest;
 import ma.ac.inpt.postservice.postMessaging.PostEventSender;
 import ma.ac.inpt.postservice.model.Post;
-import ma.ac.inpt.postservice.payload.PostRequest;
 import ma.ac.inpt.postservice.repository.PostRepo;
 import lombok.extern.slf4j.Slf4j;
 import ma.ac.inpt.postservice.service.media.MediaService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.Principal;
-import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -35,44 +32,40 @@ public class PostService {
      * @param postRequest the post request object
      * @return the created post
      */
-    public Post completePost(CompletePostRequest postRequest, String accessToken) {
+    public ApiResponse createPost(PostRequest postRequest, String accessToken, MultipartFile file, String username) {
+        String fileUrl;
+        try {
 
-        if(postRequest.getLikes()==null){
+            fileUrl = mediaService.uploadFile(file);
+
+        } catch (UploadFileException e) {
+
+            throw new UploadFileException("Can't upload video");
+        }
+
+        if (postRequest.getLikes() == null) {
             postRequest.setLikes(new ArrayList<>());
         }
-        if(postRequest.getSkills()==null){
+        if (postRequest.getSkills() == null) {
             postRequest.setSkills(new HashMap<>());
         }
-        // Create a new Post object using the data from the post request
-        postRepository.findById(postRequest.get_id()).map(
-                post -> {
-                    post.setCaption(postRequest.getCaption());
-                    post.setUserProfilePic(postRequest.getUserProfilePic());
-                    post.setLikes(postRequest.getLikes());
-                    post.setSkills(postRequest.getSkills());
-                    post.setCommentsNum(0);
-                    postRepository.save(post);
-                    postEventSender.sendPostCreated(post, accessToken);
-                    return post;
-                }
-        );
-        return postRepository.findById(postRequest.get_id()).orElseThrow(()->{
-            return new UploadFileException("Couldn't create post");
-        });
-    }
+        Post post = new Post();
+        post.setUsername(username);
+        post.setVideoUrl(fileUrl);
+        post.setCaption(postRequest.getCaption());
+        post.setUserProfilePic(postRequest.getUserProfilePic());
+        post.setLikes(new HashSet<>(postRequest.getLikes()));
+        post.setSkills(postRequest.getSkills());
+        post.setCommentsNum(0);
 
-    public String uploadVideo(MultipartFile file, String user) {
-        String fileUrl = mediaService.uploadFile(file);
-        Post post = new Post(
-                user,
-                fileUrl
-        );
         Post createdPost = postRepository.save(post);
 
+        postEventSender.sendPostCreated(createdPost, accessToken);
 
-        // Send a post created event
-        return createdPost.get_id();
+        return new ApiResponse("Video uploaded and post created", createdPost.get_id(), createdPost.getVideoUrl());
     }
+
+
 
     /**
      * Deletes a post with the given ID and username.
@@ -110,16 +103,21 @@ public class PostService {
      * @param postId   the ID of the post to like
      * @param username the username of the user liking the post
      */
-    public void likePost(String postId, String username) {
-        log.info("liking post {} by {}", postId, username);
-        postRepository.findById(postId).map(post -> {
-            post.getLikes().add(username);
-            postRepository.save(post);
-            return post;
-        }).orElseThrow(() -> {
+    public String likePost(String postId, String username) {
+
+        log.info("(dis)liking post {} by {}", postId, username);
+        Post post = postRepository.findById(postId).orElseThrow(() -> {
             log.warn("post not found id {}", postId);
             return new ResourceNotFoundException(postId);
         });
+        if(post.getLikes().contains(username)){
+            post.getLikes().remove(username);
+        } else {
+            post.getLikes().add(username);
+        }
+        postRepository.save(post);
+        return String.format("User %s (dis)liked the post %s", username, post.get_id());
+
     }
 
     /**
@@ -128,21 +126,26 @@ public class PostService {
      * @param postId   the ID of the post to remove the like from
      * @param username the username of the user removing the like
      */
-    public void removeLikePost(String postId, String username) {
+    public String removeLikePost(String postId, String username) {
+
         log.info("removing like from post {} by {}", postId, username);
-        postRepository.findById(postId).map(post -> {
-            if (!post.getLikes().contains(username)) {
-                log.warn("user {} has not liked post {} to begin with", username, postId);
-                throw new NotAllowedException(username, "post id " + postId, "remove like");
-            }
-            post.getLikes().remove(username);
-            postRepository.save(post);
-            return post;
-        }).orElseThrow(() -> {
+
+        Post post = postRepository.findById(postId).orElseThrow(() -> {
             log.warn("post not found id {}", postId);
             return new ResourceNotFoundException(postId);
         });
+
+        if (!post.getLikes().contains(username)) {
+            log.warn("user {} has not liked post {} to begin with", username, postId);
+            throw new NotAllowedException(username, "post id " + postId, "remove like");
+        }
+        post.getLikes().remove(username);
+
+        postRepository.save(post);
+
+        return String.format("User %s removed like the post %s", username, post.get_id());
     }
+
 
     /**
      * Retrieves a list of posts by the given username, ordered by created date descending.
@@ -171,39 +174,43 @@ public class PostService {
      * @param ratingRequest the rating request object
      * @param username      the username of the user rating the post
      */
-    public void ratePost(String postId, RatingRequest ratingRequest, String username) {
+    public String ratePost(String postId, RatingRequest ratingRequest, String username) {
         log.info("rating post {} in service", postId);
-
-
-        postRepository.findById(postId).map(post -> {
-            Map<String, Integer> ratings = post.getSkills().get(ratingRequest.getSkill());
-            ratings.put(username, ratingRequest.getRating());
-            post.getSkills().put(ratingRequest.getSkill(), ratings);
-            postRepository.save(post);
-            return post;
-        }).orElseThrow(() -> {
-            log.warn("Post not found id {}", postId);
-            return new ResourceNotFoundException(postId);
-        });
+        if (ratingRequest.getRating() > 5 || ratingRequest.getRating() < 0) {
+            throw new InvalidRequestException("Not a valid rating");
+        }
+       try {
+           Post post = postRepository.findById(postId).orElseThrow(() -> {
+               log.warn("Post not found id {}", postId);
+               return new ResourceNotFoundException(postId);
+           });
+           Map<String, Integer> ratings = post.getSkills().get(ratingRequest.getSkill());
+           ratings.put(username, ratingRequest.getRating());
+           post.getSkills().put(ratingRequest.getSkill(), ratings);
+           postRepository.save(post);
+           return String.format("User %s rated post %s with %d/5", username, post.get_id(), ratingRequest.getRating());
+       } catch (UpdatingException e) {
+            throw new UpdatingException("Rating wasn't registered");
+        }
     }
+
 
     /**
      * Updates the number of comments in a post with the given ID.
      *
-     * @param postId  the ID of the post
-     * @param num the new number of comments
+     * @param postId the ID of the post
+     * @param num    the new number of comments
      */
     public void updateCommentNum(String postId, int num) {
         log.info("updating number of comments in post {}", postId);
 
-        postRepository.findById(postId).map(post -> {
-            post.setCommentsNum(num);
-            postRepository.save(post);
-            return post;
-        }).orElseThrow(() -> {
+        Post post = postRepository.findById(postId).orElseThrow(() -> {
             log.warn("Post not found id {}", postId);
             return new ResourceNotFoundException(postId);
         });
-
+        ;
+        post.setCommentsNum(num);
+        Post updatedPost = postRepository.save(post);
+        System.out.println(updatedPost);
     }
 }

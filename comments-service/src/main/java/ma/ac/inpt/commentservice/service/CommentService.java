@@ -2,12 +2,9 @@
 package ma.ac.inpt.commentservice.service;
 
 import ma.ac.inpt.commentservice.exceptions.CommentException;
-import ma.ac.inpt.commentservice.exceptions.PostException;
 import ma.ac.inpt.commentservice.messaging.CommentEventSender;
 import ma.ac.inpt.commentservice.model.Comment;
-import ma.ac.inpt.commentservice.model.Post;
 import ma.ac.inpt.commentservice.repository.CommentRepository;
-import ma.ac.inpt.commentservice.repository.PostRepository;
 import ma.ac.inpt.commentservice.repository.ReplyRepository;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -20,15 +17,12 @@ import java.util.Optional;
 @Service
 public class CommentService {
     private final CommentRepository commentRepository;
-    private final PostRepository postRepository;
     private final ReplyRepository replyRepository;
     private final CommentEventSender commentEventSender;
 
     public CommentService(CommentRepository commentRepository,
-                          PostRepository postRepository,
                           ReplyRepository replyRepository, CommentEventSender commentEventSender) {
         this.commentRepository = commentRepository;
-        this.postRepository = postRepository;
         this.replyRepository = replyRepository;
         this.commentEventSender = commentEventSender;
     }
@@ -40,26 +34,18 @@ public class CommentService {
         List<String> replies = new ArrayList<>();
         List<String> likes = new ArrayList<>();
 
-        Optional<Post> providedPost = postRepository.findById(comment.getPostId());
-        Post post = providedPost.orElseThrow(() -> new PostException("Post not found"));
-
-        List<String> postComments = post.getComments();
-        postComments.add(ID);
-        post.setComments(postComments);
-
         Comment newComment = new Comment(ID, user, comment.getBody(), replies, comment.getPostId(), LocalDateTime.now(), likes);
-        commentEventSender.sendCommentNum(post);
+
+        Optional<List<Comment>> providedComments = commentRepository.findCommentsByPostId(comment.getPostId());
+        int commentNum = providedComments.map(List::size).orElse(0);
+
+        commentEventSender.sendCommentNum(comment.getPostId(), commentNum);
         commentRepository.save(newComment);
-        postRepository.save(post);
         return newComment;
     }
 
 
     public List<Comment> getAllCommentsForPost(String postId, String query) {
-        Optional<Post> providedPost = postRepository.findById(postId);
-        if (providedPost.isEmpty()){
-            throw new PostException("Post not found");
-        }
         if (query.equals("oldest")) {
             Optional<List<Comment>> providedComments = commentRepository.findCommentsByPostIdOrderByTimestampAsc(postId);
             return providedComments.orElseThrow(() -> new CommentException("Comments not found"));
@@ -76,10 +62,6 @@ public class CommentService {
     }
 
     public Comment getLastCommentForPost(String postId) {
-        Optional<Post> providedPost = postRepository.findById(postId);
-        if (providedPost.isEmpty()){
-            throw new PostException("Post not found");
-        }
         List<Comment> comments = checkPost(postId);
         return comments.get(comments.size() - 1);
     }
@@ -130,25 +112,16 @@ public class CommentService {
 
         comment.setBody(newComment.getBody());
         commentRepository.save(comment);
+
         return "Comment updated successfully";
     }
 
     public String deleteComment(String id) {
         Optional<Comment> providedComment = commentRepository.findById(id);
-        Comment comment = providedComment.orElseThrow(() -> new CommentException("Comment not found"));
-
-        Optional<Post> providedPost = postRepository.findById(comment.getPostId());
-        Post post = providedPost.orElseThrow(() -> new PostException("Post not found"));
-
-        // Delete the deleted comment's id from the post's comments List
-        List<String> newComments = post.getComments();
-        newComments.remove(id);
-        post.setComments(newComments);
-        postRepository.save(post);
+        providedComment.orElseThrow(() -> new CommentException("Comment not found"));
 
         // Delete all the replies inside the replies list of the comment
         replyRepository.deleteRepliesByRepliedTo(id);
-
         commentRepository.deleteById(id);
         return "Comment deleted!";
     }

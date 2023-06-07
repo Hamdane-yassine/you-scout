@@ -1,6 +1,5 @@
 package ma.ac.inpt;
 
-//import ma.ac.inpt.connection.datastax_astra_configuration;
 import ma.ac.inpt.config.RsaKeysConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -13,11 +13,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(PostException.class)
-    public ResponseEntity<String> handlePostException(PostException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
     @ExceptionHandler(ReplyException.class)
     public ResponseEntity<String> handleReplyException(ReplyException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

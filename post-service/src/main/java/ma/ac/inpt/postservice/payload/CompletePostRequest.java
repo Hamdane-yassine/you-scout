@@ -8,6 +8,7 @@ import java.util.Map;
 
 @Data
 @AllArgsConstructor
+
 public class CompletePostRequest {
 
 

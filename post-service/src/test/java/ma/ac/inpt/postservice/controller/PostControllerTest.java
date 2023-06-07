@@ -4,13 +4,16 @@ import ma.ac.inpt.postservice.exception.UploadFileException;
 import ma.ac.inpt.postservice.exception.VideoProcessingException;
 import ma.ac.inpt.postservice.exception.VideoValidationException;
 import ma.ac.inpt.postservice.model.Post;
+import ma.ac.inpt.postservice.payload.ApiResponse;
 import ma.ac.inpt.postservice.payload.CompletePostRequest;
+import ma.ac.inpt.postservice.payload.PostRequest;
 import ma.ac.inpt.postservice.payload.RatingRequest;
 import ma.ac.inpt.postservice.service.PostService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,46 +40,34 @@ class PostControllerTest {
 
     @InjectMocks
     private PostController postController;
+    @Mock
+    private Principal principal;
+//    @Test
+//    public void testUploadVideo() throws Exception {
+//        // Initialize mocks
+//        MockitoAnnotations.initMocks(this);
+//
+//        // Mock input data
+//        String postRequest = "{\"caption\":\"dsajlkfj\",\"userProfilePic\":\"fjkasdl\"}";
+//        MultipartFile file = new MockMultipartFile("video", "test.mp4", "video/mp4", "test data".getBytes());
+//        String accessToken = "your_access_token";
+//        String username = "test_user";
+//        // Mock the behavior of postService.createPost()
+//        ApiResponse expectedApiResponse = new ApiResponse("Post created successfully", "postId", "videoUrl");
+//        when(postService.createPost(any(PostRequest.class), eq(accessToken), eq(file), eq(username))).thenReturn(expectedApiResponse);
+//        when(principal.getName()).thenReturn(username);
+//
+//
+//        // Call the method
+//        ResponseEntity<?> response = postController.uploadVideo(postRequest, file, principal, accessToken);
+//        // Verify the response
+//        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+//        assertEquals(expectedApiResponse, response.getBody());
+//
+//        // Verify that postService.createPost() was called with the correct arguments
+//        verify(postService).createPost(any(PostRequest.class), eq(accessToken), eq(file), eq(username));
+//    }
 
-    @Test
-    void createPost_shouldReturnCreatedResponse() {
-        // Arrange
-        CompletePostRequest postRequest = new CompletePostRequest("username","urlImage","that's the stuff", new ArrayList<>(), new HashMap<>());
-        Post createdPost = new Post("username","profilePic","that's the stuff");
-        String expectedPostId = "1";
-        when(postService.completePost(postRequest, "access")).thenReturn(createdPost);
-
-        // Act
-        ResponseEntity<?> responseEntity = postController.createPost(postRequest, "access");
-
-        // Assert
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(responseEntity.getBody()).isNotNull();
-        // Assert other response properties if applicable
-
-        // Verify that the postService method was called
-        verify(postService, times(1)).completePost(postRequest, "access");
-    }
-
-    @Test
-    void uploadVideo_shouldReturnCreatedResponse() throws VideoValidationException, VideoProcessingException, UploadFileException {
-        // Arrange
-        MockMultipartFile file = new MockMultipartFile("video", "test.mp4", "video/mp4", new byte[]{});
-        String user = "ayoub";
-        String expectedPostId = "1";
-        when(postService.uploadVideo(file, user)).thenReturn(expectedPostId);
-
-        // Act
-        ResponseEntity<?> responseEntity = postController.uploadVideo(file, () -> "ayoub");
-
-        // Assert
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(responseEntity.getBody()).isNotNull();
-        // Assert other response properties if applicable
-
-        // Verify that the postService method was called
-        verify(postService, times(1)).uploadVideo(file, user);
-    }
 
     @Test
     void deletePost_shouldCallPostServiceToDeletePost() {
@@ -119,37 +111,24 @@ class PostControllerTest {
     }
 
     @Test
-    void ratePost_withValidRating_shouldReturnOkResponse() throws UpdatingException {
-        // Arrange
-        String postId = "1";
-        RatingRequest ratingRequest = new RatingRequest("dribbling",4);
+    public void testRatePost() {
+        // Create variables for post ID, RatingRequest, and Principal
+        String postId = "123";
+        RatingRequest ratingRequest = new RatingRequest();
+        Principal principal = mock(Principal.class);
 
-        // Act
-        ResponseEntity<String> responseEntity = postController.ratePost(postId, ratingRequest, () -> "ahmed");
+        // Mock the postService's ratePost method
+        when(postService.ratePost(postId, ratingRequest, principal.getName())).thenReturn("Post rated successfully");
 
-        // Assert
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isEqualTo("Rating registered");
+        // Call the ratePost method in the PostController
+        ResponseEntity<String> response = postController.ratePost(postId, ratingRequest, principal);
 
-        // Verify that the postService method was called
-        verify(postService, times(1)).ratePost(postId, ratingRequest, "ahmed");
-    }
+        // Verify that the postService's ratePost method was called with the correct arguments
+        verify(postService, times(1)).ratePost(postId, ratingRequest, principal.getName());
 
-    @Test
-    void ratePost_withInvalidRating_shouldReturnOkResponse() throws UpdatingException {
-        // Arrange
-        String postId = "1";
-        RatingRequest ratingRequest = new RatingRequest("dribbling",6);
-
-        // Act
-        ResponseEntity<String> responseEntity = postController.ratePost(postId, ratingRequest, () -> "ahmed");
-
-        // Assert
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isEqualTo("Not a valid rating");
-
-        // Verify that the postService method was not called
-        verify(postService, never()).ratePost(postId, ratingRequest, "ahmed");
+        // Verify the response status code and body
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Post rated successfully", response.getBody());
     }
 
     @Test

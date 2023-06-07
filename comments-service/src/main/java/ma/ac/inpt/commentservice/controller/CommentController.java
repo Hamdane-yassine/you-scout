@@ -1,5 +1,6 @@
 package ma.ac.inpt.commentservice.controller;
 
+import ma.ac.inpt.commentservice.exceptions.CommentException;
 import ma.ac.inpt.commentservice.model.Comment;
 import ma.ac.inpt.commentservice.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,14 +48,22 @@ public class CommentController {
 
     @PutMapping("/comments/{id}/unlike")
     public ResponseEntity<String> unlikeComment(@PathVariable("id") String id, Principal principal) {
-        String message = commentService.unlikeComment(id, principal.getName());
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        try {
+            String message = commentService.unlikeComment(id, principal.getName());
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } catch (CommentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping("/comments/{id}/like")
     public ResponseEntity<String> likeComment(@PathVariable("id") String id, Principal principal) {
-        String message = commentService.likeComment(id, principal.getName());
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        try {
+            String message = commentService.likeComment(id, principal.getName());
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } catch (CommentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping("/comments/{id}")
