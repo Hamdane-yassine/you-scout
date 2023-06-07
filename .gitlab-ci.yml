@@ -56,9 +56,9 @@ post-service-build:
   artifacts:
     paths:
       - post-service/target/*.jar
-  only:
-    changes:
-      - post-service/**/*
+  # only:
+  #   changes:
+  #     - post-service/**/*
 
 
 user-feed-build:
@@ -74,9 +74,9 @@ user-feed-build:
     paths:
       - .m2/repository/
       - user-feed-service/target
-  # only:
-  #   changes:
-  #     - user-feed-service/**/*
+  only:
+    changes:
+      - user-feed-service/**/*
 
 
 comments-service-build:
