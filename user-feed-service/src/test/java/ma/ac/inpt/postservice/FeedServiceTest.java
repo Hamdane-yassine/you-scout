@@ -4,8 +4,6 @@ import ma.ac.inpt.models.UserFeedEntity;
 import ma.ac.inpt.exceptions.ResourceNotFoundException;
 import ma.ac.inpt.models.Post;
 import ma.ac.inpt.payload.SlicedResult;
-import ma.ac.inpt.postservice.FeedService;
-import ma.ac.inpt.postservice.PostService;
 import ma.ac.inpt.repo.Cassandra;
 
 import org.junit.jupiter.api.Assertions;

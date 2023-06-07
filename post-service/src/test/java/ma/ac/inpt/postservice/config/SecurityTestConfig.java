@@ -28,7 +28,7 @@ public class SecurityTestConfig {
         return httpSecurity
                 // Disables CSRF protection
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeRequests(auth -> auth.anyRequest().permitAll())
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .build();
     }
 
