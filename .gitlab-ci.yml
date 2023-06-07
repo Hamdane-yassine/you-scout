@@ -59,6 +59,10 @@ comments-service-build:
   script:
     - echo "Running build job"
     - mvn package -B
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - comments-service/.m2/repository/
   artifacts:
     paths:
       - comments-service/target/*.jar
