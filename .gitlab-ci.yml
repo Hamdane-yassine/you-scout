@@ -1,31 +1,22 @@
+default:
+  tags:
+    - Windows
+
+
 stages:
   - build
-
+  
 
 variables:
-  # SAST_IMAGE_SUFFIX: '-fips'
+  MAVEN_OPTS: "-Dmaven.repo.local=user-feed-service/.m2/repository"
   VERSION_TAG: $CI_PIPELINE_IID
-  # FF_USE_FASTZIP: "true"
-  # These can be specified per job or per pipeline
-  # ARTIFACT_COMPRESSION_LEVEL: "fast"
-  # CACHE_COMPRESSION_LEVEL: "fast"
-  # MAVEN_OPTS: >-
-  #   -Dhttps.protocols=TLSv1.2
-  #   -Dmaven.repo.local=.m2/repository
-  #   -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN
-  #   -Dorg.slf4j.simpleLogger.showDateTime=true
-  #   -Djava.awt.headless=true
-  MAVEN_CLI_OPTS: "-Pbuild-docker-image"
    
     
 
+
 authentication-service-build:
-  image: maven:3.8.4-openjdk-17
+  image: adoptopenjdk/openjdk17
   stage: build
-  # cache:
-  #   key: "maven-$CI_COMMIT_REF_SLUG"
-  #   paths:
-  #     - .m2/repository
   before_script:
     - cd auth-service
     - export PACKAGE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
@@ -37,6 +28,24 @@ authentication-service-build:
     reports:
       junit:
         - "auth-service/target/*-reports/TEST-*.xml"
+  only:
+    changes:
+      - auth-service/**/*
+
+
+social-graph-build:
+  image:  maven:3.8.4-openjdk-17
+  stage: build
+  before_script:
+    - cd social-graph-service
+  script: "mvn package -B"
+  artifacts:
+    paths:
+      - social-graph-service/target/*.jar
+  only:
+    changes:
+      - social-graph-service/**/*
+
 
 post-service-build:
   image: maven:3.8.4-openjdk-17
@@ -47,6 +56,68 @@ post-service-build:
   artifacts:
     paths:
       - post-service/target/*.jar
+  # only:
+  #   changes:
+  #     - post-service/**/*
+
+
+user-feed-build:
+  image: maven:3.8.4-openjdk-17
+  stage: build
+  before_script:
+    - cd user-feed-service
+  script: "mvn package -B"
+  artifacts:
+    paths:
+      - user-feed-service/target/*.jar
+  cache:
+    paths:
+      - .m2/repository/
+      - user-feed-service/target
+  only:
+    changes:
+      - user-feed-service/**/*
+
+
+comments-service-build:
+  image: maven:3.8.4-openjdk-17
+  stage: build
+  before_script:
+    - cd comments-service
+  script:
+    - echo "Running build job"
+    - mvn package -B
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - comments-service/.m2/repository/
+  artifacts:
+    paths:
+      - comments-service/target/*.jar
+  only:
+    changes:
+      - comments-service/**/*
+
+
+skills-service-build:
+  image: maven:3.8.4-openjdk-17
+  stage: build
+  before_script:
+    - cd skills-service
+  script:
+    - mvn package -B
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - skills-service/.m2/repository/
+  artifacts:
+    paths:
+      - skills-service/target/*.jar
+  only:
+    changes:
+      - skills-service/**/*
+
+
 
 # docker-build:
 #   stage: build
