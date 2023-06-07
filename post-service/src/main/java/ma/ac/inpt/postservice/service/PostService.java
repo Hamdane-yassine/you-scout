@@ -53,7 +53,7 @@ public class PostService {
         post.setVideoUrl(fileUrl);
         post.setCaption(postRequest.getCaption());
         post.setUserProfilePic(postRequest.getUserProfilePic());
-        post.setLikes(postRequest.getLikes());
+        post.setLikes(new HashSet<>(postRequest.getLikes()));
         post.setSkills(postRequest.getSkills());
         post.setCommentsNum(0);
 
@@ -104,14 +104,18 @@ public class PostService {
      */
     public String likePost(String postId, String username) {
 
-        log.info("liking post {} by {}", postId, username);
+        log.info("(dis)liking post {} by {}", postId, username);
         Post post = postRepository.findById(postId).orElseThrow(() -> {
             log.warn("post not found id {}", postId);
             return new ResourceNotFoundException(postId);
         });
-        post.getLikes().add(username);
+        if(post.getLikes().contains(username)){
+            post.getLikes().remove(username);
+        } else {
+            post.getLikes().add(username);
+        }
         postRepository.save(post);
-        return String.format("User %s liked the post %s", username, post.get_id());
+        return String.format("User %s (dis)liked the post %s", username, post.get_id());
 
     }
 

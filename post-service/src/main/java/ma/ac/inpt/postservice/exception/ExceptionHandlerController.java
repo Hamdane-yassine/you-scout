@@ -32,8 +32,8 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
      * Handles exceptions when a user or role already exists in the system, such as when attempting to register a user with an existing username.
      * Returns an HTTP 409 CONFLICT response with a custom error message.
      */
-    @ExceptionHandler({PostAlreadyCompletedException.class})
-    public ResponseEntity<Object> handleConflictException(PostAlreadyCompletedException ex, WebRequest request) {
+    @ExceptionHandler({VideoValidationException.class,})
+    public ResponseEntity<Object> handleConflictException(VideoValidationException ex, WebRequest request) {
         return buildResponseEntity(HttpStatus.CONFLICT, ex.getMessage(), request);
     }
 
@@ -50,7 +50,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
      * Handles exceptions when an internal server error occurs, such as when an email fails to send or an error occurs during file upload.
      * Returns an HTTP 500 INTERNAL SERVER ERROR response with a custom error message.
      */
-    @ExceptionHandler({VideoValidationException.class, UploadFileException.class, DeleteFileException.class, VideoProcessingException.class, UpdatingException.class})
+    @ExceptionHandler({UploadFileException.class, DeleteFileException.class, VideoProcessingException.class, UpdatingException.class})
     public ResponseEntity<Object> handleInternalServerErrorException(RuntimeException ex, WebRequest request) {
         return buildResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
     }
