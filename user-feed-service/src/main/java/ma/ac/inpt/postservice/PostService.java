@@ -52,6 +52,7 @@ public class PostService {
                     .username(payload.getUsername())
                     .userProfilePic(payload.getUserProfilePic())
                     .likes(payload.getLikes())
+                    .caption(payload.getCaption())
                     .commentsNum(payload.getCommentsNum())
                     .skills(payload.getSkills())
                     .videoUrl(payload.getVideoUrl())

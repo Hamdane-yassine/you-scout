@@ -57,7 +57,7 @@ public class FeedControllerTest {
         // Create variables for username, pagingState, and authorization header
         String username = "john";
         Optional<String> pagingState = Optional.of("abc123");
-        String authorizationHeader = "Bearer access_token";
+        String authorizationHeader = "access_token";
 
         // Create a SlicedResult<Post> object for the mock response
         SlicedResult<Post> slicedResult = SlicedResult.<Post>builder()
