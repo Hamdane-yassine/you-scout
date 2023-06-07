@@ -52,7 +52,7 @@ public class PostController {
     }
 
     @DeleteMapping("/posts/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable("id") String id,  Principal user, @RequestHeader("Authorization") String accessToken) {
+    public ResponseEntity<Void> deletePost(@PathVariable("id") String id, Principal user, @RequestHeader("Authorization") String accessToken) {
         log.info("Received a delete request for post id {} from user {}", id, user.getName());
 
         // Delete the post

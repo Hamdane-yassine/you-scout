@@ -183,7 +183,14 @@ public class PostService {
                log.warn("Post not found id {}", postId);
                return new ResourceNotFoundException(postId);
            });
-           Map<String, Integer> ratings = post.getSkills().get(ratingRequest.getSkill());
+           Map<String, Integer> ratings;
+           if(post.getSkills().get(ratingRequest.getSkill())==null){
+               ratings =new HashMap<>();
+               post.getSkills().put(ratingRequest.getSkill(),ratings);
+           } else{
+               ratings = post.getSkills().get(ratingRequest.getSkill());
+           }
+
            ratings.put(username, ratingRequest.getRating());
            post.getSkills().put(ratingRequest.getSkill(), ratings);
            postRepository.save(post);
