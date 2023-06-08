@@ -75,7 +75,7 @@ public class PasswordResetServiceImpl extends AbstractTokenService<PasswordReset
      */
     @Override
     protected String getTokenContent(PasswordResetToken token) {
-        return applicationBaseUrlRetriever.getBaseUrl() + "/api/v1/auth/password/reset?token=" + token.getToken();
+        return applicationBaseUrlRetriever.getBaseUrl() + "/auth/password/reset?token=" + token.getToken();
     }
 
     /**

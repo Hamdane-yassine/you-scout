@@ -20,8 +20,8 @@ public class ApplicationBaseUrlRetriever {
     /**
      * The server port number.
      */
-    @Value("${server.port}")
-    private String serverPort;
+    @Value("${server.servlet.context-path}")
+    private String applicationContextPath;
 
     /**
      * Retrieves the base URL of the application by concatenating the application base URL and server port number.
@@ -29,7 +29,7 @@ public class ApplicationBaseUrlRetriever {
      * @return the base URL of the application
      */
     public String getBaseUrl() {
-        return baseUrl + ":" + serverPort;
+        return baseUrl + "/" + applicationContextPath;
     }
 }
 
