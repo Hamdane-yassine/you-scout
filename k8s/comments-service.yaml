@@ -27,6 +27,7 @@ spec:
                   key: mongodb-database
 
       imagePullSecrets:
+
         - name: registry-crds
 ---
 apiVersion: v1
