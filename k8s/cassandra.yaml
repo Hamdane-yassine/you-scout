@@ -33,7 +33,7 @@ metadata:
   name: cassandra
 spec:
   serviceName: "cassandra"
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: cassandra
@@ -51,8 +51,8 @@ spec:
             - name: cassandra-data
               mountPath: /cassandra_data
             - name: init-script
-              mountPath: /init.sh
-          command: [ "/bin/bash", "-c", "/init.sh && cassandra -f" ]
+              mountPath: /init-scripts
+          command: ["/bin/bash", "-c", "/init-scripts/init.sh && cassandra -f"]
       volumes:
         - name: init-script
           configMap:
