@@ -54,39 +54,35 @@ versioning:
     - |
       case "$word2" in
         "auth-service")
-          - IFS='.' read -ra VERSION_ARRAY <<< "$AUTH_VERSION"
-          - MAJOR=${VERSION_ARRAY[0]}
-          - MINOR=${VERSION_ARRAY[1]}
-          - PATCH=${VERSION_ARRAY[2]}
+          IFS='.' read -ra VERSION_ARRAY <<< "$AUTH_VERSION"
+          MAJOR=${VERSION_ARRAY[0]}
+          MINOR=${VERSION_ARRAY[1]}
+          PATCH=${VERSION_ARRAY[2]}
           
           if [[ $word1 == "major" ]]; then
-            - MAJOR=$((MAJOR + 1))
-            - MINOR=0
-            - PATCH=0
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
           elif [[ $word1 == "minor" ]]; then
-            - MAJOR=0
-            - MINOR=$((MINOR + 1))
-            - PATCH=0
-          elif [[ $word1 == "patch"]]; then
-            - MAJOR=0
-            - MINOR=0
-            - PATCH=$((PATCH + 1))
-          - >
-            curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/AUTH_VERSION" --form "value=$MAJOR.$MINOR.$PATCH"
+            MINOR=$((MINOR + 1))
+            PATCH=0
+          elif [[ $word1 == "patch" ]]; then
+            PATCH=$((PATCH + 1))
+          fi
+          
+          curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/AUTH_VERSION" --form "value=$MAJOR.$MINOR.$PATCH"
           ;;
         "social-graph-service")
           if [[ $word1 == "major" ]]; then
-            - cd $word2
-            - >
-              curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$word2-major" --form "value=$word2-major+1"
+            cd $word2
+            curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$word2-major" --form "value=${word2}-major+1"
           elif [[ $word1 == "minor" ]]; then
-            - cd $word2
-            - >
-              curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$word2-minor" --form "value=$word2-minor+1"
-          elif [[ $word1 == "patch"]]; then
-            - cd $word2
-            - >
-              curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$word2-patch" --form "value=$word2-patch+1"
+            cd $word2
+            curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$word2-minor" --form "value=${word2}-minor+1"
+          elif [[ $word1 == "patch" ]]; then
+            cd $word2
+            curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$word2-patch" --form "value=${word2}-patch+1"
+          fi
           ;;
         "value3")
           echo "Performing actions for value3"
