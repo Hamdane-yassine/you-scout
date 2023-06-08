@@ -177,8 +177,8 @@ deploy:
   script: |
     sed -i "s|image:.*|image: registry.gitlab.com/hamdane10/you-scout/comments-service:$COMMENT_VERSION|g" k8s/auth-service.yaml
     apk add --no-cache git
-    git config --global user.name "ayoubonn"
-    git config --global user.email "aarrasseayoub@gmail"
+    git config --global user.name "oussamaZAAM"
+    git config --global user.email "zaam.oussama@gmail"
     git checkout master
     git add k8s/auth-service.yaml
     git commit -m "Update image reference in deployment.yaml"
