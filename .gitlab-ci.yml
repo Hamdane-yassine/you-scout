@@ -41,7 +41,7 @@ auth_major:
 versioning:
   stage: version
   script:
-    - variable_value="$CI_VARIABLE_NAME"
+    - variable_value="increment-major-auth-service"
     - echo "Variable value $variable_value"
     - if [[ $variable_value =~ ^increment-major-auth-service$ ]]; then echo "Variable matches pattern"; fi
     - word1=$(echo $variable_value | cut -d '-' -f 1)
