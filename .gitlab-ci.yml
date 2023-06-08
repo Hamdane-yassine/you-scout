@@ -181,61 +181,6 @@ versioning:
   rules:
     - if: '$CI_COMMIT_TAG'
 
-graph_major:
-  stage: version
-  script:
-    - cd social-graph-service
-    - echo "Incrementing Major version"
-    - VERSION=$(cat $VERSION_FILE)
-    - IFS='.' read -ra VERSION_PARTS <<< "$VERSION"
-    - VERSION_MAJOR=$((VERSION_PARTS[0] + 1))
-    - echo "$VERSION_MAJOR.0.0" > $VERSION_FILE
-  rules:
-    - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-major-social-graph-service"'
-post_major:
-  stage: version
-  script:
-    - cd post-handling-service
-    - echo "Incrementing Major version"
-    - VERSION=$(cat $VERSION_FILE)
-    - IFS='.' read -ra VERSION_PARTS <<< "$VERSION"
-    - VERSION_MAJOR=$((VERSION_PARTS[0] + 1))
-    - echo "$VERSION_MAJOR.0.0" > $VERSION_FILE
-  rules:
-    - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-major-post-handling-service"'
-feed_major:
-  stage: version
-  script:
-    - cd user-feed-service
-    - echo "Incrementing Major version"
-    - VERSION=$(cat $VERSION_FILE)
-    - IFS='.' read -ra VERSION_PARTS <<< "$VERSION"
-    - VERSION_MAJOR=$((VERSION_PARTS[0] + 1))
-    - echo "$VERSION_MAJOR.0.0" > $VERSION_FILE
-  rules:
-    - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-major-user-feed-service"'
-comment_major:
-  stage: version
-  script:
-    - cd comments-service
-    - echo "Incrementing Major version"
-    - VERSION=$(cat $VERSION_FILE)
-    - IFS='.' read -ra VERSION_PARTS <<< "$VERSION"
-    - VERSION_MAJOR=$((VERSION_PARTS[0] + 1))
-    - echo "$VERSION_MAJOR.0.0" > $VERSION_FILE
-  rules:
-    - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-major-comments-service"'
-skill_major:
-  stage: version
-  script:
-    - cd skills-service
-    - echo "Incrementing Major version"
-    - VERSION=$(cat $VERSION_FILE)
-    - IFS='.' read -ra VERSION_PARTS <<< "$VERSION"
-    - VERSION_MAJOR=$((VERSION_PARTS[0] + 1))
-    - echo "$VERSION_MAJOR.0.0" > $VERSION_FILE
-  rules:
-    - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-major-skills-service"'
 
 
 
@@ -248,8 +193,7 @@ authentication-service-build:
     - cd auth-service
     - export PACKAGE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
     - export IMAGE_NAME=$CI_REGISTRY_IMAGE/microservice/authentication
-    - VERSION=$(cat $VERSION_FILE)
-    - export VERSION=$(cat $VERSION_FILE)
+    - export VERSION=$AUTH_VERSION
   script: |
     mvn compile jib:build \
       -Djib.to.auth.username=${CI_REGISTRY_USER} \
@@ -322,7 +266,7 @@ comments-service-build:
   stage: build
   before_script:
     - cd comments-service
-    - export VERSION=$(cat $VERSION_FILE)
+    - export VERSION=$COMMENT_VERSION
   script:
     - mvn compile jib:build -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD -Djib.to.image=$CONTAINER_RELEASE_IMAGE
   cache:
