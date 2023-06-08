@@ -156,14 +156,6 @@ skill_major:
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-major-skills-service"'
 
 
-auth_version:
-  stage: build
-  image: curlimages/curl
-  script:
-    - cd auth-service
-    - echo "I want this versio $(cat $VERSION_FILE)"
-    - >
-      curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/AUTH_VERSION" --form "value=$(cat $VERSION_FILE)"
 
 
 
