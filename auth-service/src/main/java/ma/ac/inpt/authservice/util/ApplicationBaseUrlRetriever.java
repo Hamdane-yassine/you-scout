@@ -29,7 +29,7 @@ public class ApplicationBaseUrlRetriever {
      * @return the base URL of the application
      */
     public String getBaseUrl() {
-        return baseUrl + "/" + applicationContextPath;
+        return baseUrl + applicationContextPath;
     }
 }
 
