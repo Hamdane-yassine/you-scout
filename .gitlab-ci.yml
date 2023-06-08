@@ -175,6 +175,7 @@ versioning:
 modify_yaml:
   stage: deploy
   script: |
+    export COMMENT_VERSION=$COMMENT_VERSION
     sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/comments-service:${COMMENT_VERSION}|' k8s/auth-service.yaml
     cat k8s/auth-service.yaml
     ENCODED_CONTENT=$(base64 -w 0 k8s/auth-service.yaml)
