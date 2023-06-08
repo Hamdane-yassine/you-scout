@@ -180,7 +180,7 @@ deploy:
     git config --global user.name "ayoubonn"
     git config --global user.email "aarrasseayoub@gmail"
     git add k8s/auth-service.yaml
-    git branch -a
+    git branch
     git commit -m "Update image reference in deployment.yaml"
     git push origin ayoub
 
