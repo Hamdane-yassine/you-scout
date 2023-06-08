@@ -1,4 +1,6 @@
-
+default:
+  tags:
+    - docker
 stages:
   - scan
   - version
