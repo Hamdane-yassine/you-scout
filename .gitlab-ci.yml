@@ -181,8 +181,9 @@ auth_yaml:
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fauth-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    - changes:
-      - auth-service/**/*
+    # - changes:
+    #   - auth-service/**/*
+    - when: never
 comment_yaml:
   stage: deploy
   script: |
@@ -191,8 +192,9 @@ comment_yaml:
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fcomments-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    - changes:
-      - comments-service/**/*
+    # - changes:
+    #   - comments-service/**/*
+    - when: never
 social_graph_yaml:
   stage: deploy
   script: |
@@ -201,8 +203,9 @@ social_graph_yaml:
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fsocial-graph-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    - changes:
-      - social-graph-service/**/*
+    # - changes:
+    #   - social-graph-service/**/*
+    - when: never
 post_yaml:
   stage: deploy
   script: |
@@ -211,8 +214,9 @@ post_yaml:
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fpost-handling-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    - changes:
-      - post-handling-service/**/*
+    # - changes:
+    #   - post-handling-service/**/*
+    - when: never
 feed_yaml:
   stage: deploy
   script: |
@@ -221,8 +225,9 @@ feed_yaml:
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fuser-feed-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    - changes:
-      - user-feed-service/**/*
+    # - changes:
+    #   - user-feed-service/**/*
+    - when: never
 skill_yaml:
   stage: deploy
   script: |
@@ -231,8 +236,9 @@ skill_yaml:
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fskills-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    - changes:
-      - skills-service/**/*
+    # - changes:
+    #   - skills-service/**/*
+    - when: never
  
 
  
