@@ -1,6 +1,3 @@
-default:
-  tags:
-    - docker
 
 stages:
   - scan
@@ -357,10 +354,10 @@ auth_yaml:
     sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/auth-service:'$AUTH_VERSION'|' k8s/auth-service.yaml
     DECODED_CONTENT=$(cat k8s/auth-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fauth-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
-  rules:
-    - if: '$CI_COMMIT_TAG == "major-auth-service" || $CI_COMMIT_TAG == "minor-auth-service" || $CI_COMMIT_TAG == "patch-auth-service"'
-      changes:
-        - auth-service/**/*
+  # rules:
+  #   - if: '$CI_COMMIT_TAG == "major-auth-service" || $CI_COMMIT_TAG == "minor-auth-service" || $CI_COMMIT_TAG == "patch-auth-service"'
+  #     changes:
+  #       - auth-service/**/*
   needs:
     - job: auth-build
 
