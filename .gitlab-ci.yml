@@ -41,7 +41,7 @@ auth_major:
 versioning:
   stage: version
   script:
-    - variable_value= $CI_COMMIT_REF_NAME
+    - variable_value = $CI_COMMIT_REF_NAME
     - echo "Variable value $variable_value"
     - if [[ $variable_value =~ ^increment-major-auth-service$ ]]; then echo "Variable matches pattern"; fi
     - IFS='-' read -ra words <<< "$variable_value"
