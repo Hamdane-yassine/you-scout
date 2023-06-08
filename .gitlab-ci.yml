@@ -180,8 +180,7 @@ deploy:
     git add k8s/deployment.yaml
     git commit -m "Update image reference in deployment.yaml"
     git push origin master
-  needs:
-    - job: version
+
 
 
 
