@@ -209,7 +209,7 @@ authentication-service-build:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       allow_failure: true
-    - if: $CI_COMMIT_TAG == *"auth-service"*
+    - if: '$CI_COMMIT_TAG =~ /auth-service/'
     - changes:
       - auth-service/**/*
 
@@ -229,7 +229,7 @@ social-graph-build:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       allow_failure: true
-    - if: $CI_COMMIT_TAG == *"social-graph-service"*
+    - if: '$CI_COMMIT_TAG =~ /social-graph-service/'
     - changes:
       - social-graph-service/**/*
 
@@ -246,7 +246,7 @@ post-service-build:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       allow_failure: true
-    - if: $CI_COMMIT_TAG == *"post-service"*
+    - if: '$CI_COMMIT_TAG =~ /post-handling-service/'
     - changes:
       - post-service/**/*
 
@@ -268,7 +268,7 @@ user-feed-build:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       allow_failure: true
-    - if: $CI_COMMIT_TAG == *"user-feed-service"*
+    - if: '$CI_COMMIT_TAG =~ /user-feed-service/'
     - changes:
       - user-feed-service/**/*
 
@@ -293,7 +293,7 @@ comments-service-build:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       allow_failure: true
-    - if: $CI_COMMIT_TAG == *"comment-service"*
+    - if: '$CI_COMMIT_TAG =~ /comments-service/'
     - changes:
       - comment-service/**/*
 
@@ -319,7 +319,7 @@ skills-service-build:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       allow_failure: true
-    - if: $CI_COMMIT_TAG == *"skills-service"*
+    - if: '$CI_COMMIT_TAG =~ /skills-service/'
     - changes:
       - skills-service/**/*
 
