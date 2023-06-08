@@ -44,7 +44,7 @@ public class CommentService {
         return newComment;
     }
 
-
+    // Get comments sorted by auery
     public List<Comment> getAllCommentsForPost(String postId, String query) {
         if (query.equals("oldest")) {
             Optional<List<Comment>> providedComments = commentRepository.findCommentsByPostIdOrderByTimestampAsc(postId);
@@ -66,6 +66,7 @@ public class CommentService {
         return comments.get(comments.size() - 1);
     }
 
+    // check if the comment exist
     private List<Comment> checkPost(String postId) {
         Optional<List<Comment>> providedComments = commentRepository.findCommentsByPostId(postId);
         return providedComments.orElseThrow(() -> new CommentException("Comments not found"));
