@@ -1,14 +1,30 @@
-kind: Service
+apiVersion: v1
+kind: ConfigMap
 metadata:
-  name: cassandra
-  labels:
-    app: cassandra
-spec:
-  clusterIP: None
-  ports:
-    - port: 9042
-  selector:
-    app: cassandra
+  name: cassandra-init-script
+data:
+  init.sh: |
+    #!/bin/bash
+
+    # This function will wait for Cassandra to start up
+    function wait_for_cassandra() {
+      for i in {1..30}; do
+        if cqlsh -e 'describe cluster' > /dev/null 2>&1; then
+          return 0
+        fi
+        echo "waiting for Cassandra to start"
+        sleep 2
+      done
+      return 1
+    }
+
+    # Start the first node and create the schema
+    if ! wait_for_cassandra; then
+      echo "Cassandra took too long to start up, exiting"
+      exit 1
+    fi
+
+    cqlsh -e "CREATE KEYSPACE youscoutfeed WITH replication = {'class' : 'SimpleStrategy', 'replication_factor' : 1};"
 
 ---
 apiVersion: apps/v1
@@ -26,41 +42,41 @@ spec:
       labels:
         app: cassandra
     spec:
-      terminationGracePeriodSeconds: 1800
       containers:
         - name: cassandra
-          image: cassandra:3.11
-          imagePullPolicy: Always
+          image: cassandra:4.0.7
           ports:
-            - containerPort: 7000
-              name: intra-node
-            - containerPort: 7001
-              name: tls-intra-node
-            - containerPort: 7199
-              name: jmx
             - containerPort: 9042
-              name: cql
           volumeMounts:
             - name: cassandra-data
-              mountPath: /var/lib/cassandra
-          readinessProbe:
-            exec:
-              command:
-                - /bin/bash
-                - -c
-                - /ready-probe.sh
-            initialDelaySeconds: 15
-            timeoutSeconds: 5
+              mountPath: /cassandra_data
+            - name: init-script
+              mountPath: /init.sh
+          command: ["/bin/bash", "-c", "/init.sh && cassandra -f"]
       volumes:
-        - name: cassandra-config-volume
+        - name: init-script
           configMap:
-            name: cassandra-config
-      # These volume claims will be created for each replica
-      volumeClaimTemplates:
-        - metadata:
-            name: cassandra-data
-          spec:
-            accessModes: [ "ReadWriteOnce" ]
-            resources:
-              requests:
-                storage: 1Gi
+            name: cassandra-init-script
+            defaultMode: 0744
+  volumeClaimTemplates:
+    - metadata:
+        name: cassandra-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cassandra
+spec:
+  clusterIP: None
+  selector:
+    app: cassandra
+  ports:
+    - protocol: TCP
+      port: 9042
+      targetPort: 9042
