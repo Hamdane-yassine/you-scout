@@ -70,7 +70,7 @@ versioning:
           elif [[ $word1 == "patch" ]]; then
             PATCH=$((PATCH + 1))
           fi
-          
+          echo "major $MAJOR, minor $MINOR, patch $PATCH"
           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/AUTH_VERSION" --form "value=$MAJOR.$MINOR.$PATCH"
           ;;
         "social-graph-service")
