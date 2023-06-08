@@ -44,9 +44,9 @@ versioning:
   script:
     - variable_value=$CI_COMMIT_REF_NAME
     - echo "Variable value $variable_value"
-    - IFS='-' read -ra words <<< "$variable_value"
+    - IFS='_' read -ra words <<< "$variable_value"
     - word1="${words[0]}"
-    - word2=$(echo "$variable_value" | cut -d'-' -f2-)
+    - word2=$(echo "$variable_value" | cut -d'_' -f2-)
     - variable_name="${word1}-${word2}"
     - cd ${word2//_/-}
     - echo "key $variable_value, value ${variables[$variable_value]}"
