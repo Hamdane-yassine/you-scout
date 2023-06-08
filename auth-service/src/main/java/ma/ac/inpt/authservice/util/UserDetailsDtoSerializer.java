@@ -13,7 +13,7 @@ import java.io.IOException;
 
 /**
  * UserDetailsDtoSerializer is a custom JsonSerializer for UserDetailsDto.
- * It serializes the UserDetailsDto object into JSON format.
+ * It serializes the UserDetailsDto object into JSON format
  * The purpose of this custom serializer is to conditionally include certain fields (isEnabled, roles)
  * in the JSON output based on the authority of the authenticated user
  */
