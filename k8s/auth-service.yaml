@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: auth-service
-          image: registry.gitlab.com/hamdane10/you-scout/auth-service:1.0
+          image: registry.gitlab.com/hamdane10/you-scout/auth-service:v1.0
           ports:
             - containerPort: 8082
           env:
@@ -55,6 +55,11 @@ spec:
                 secretKeyRef:
                   name: you-scout-secret
                   key: aws-access-key
+            - name: APP_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: you-scout-secret
+                  key: app-base-url
             - name: AWS_SECRET_KEY
               valueFrom:
                 secretKeyRef:
@@ -64,6 +69,7 @@ spec:
               value: eu-west-3
             - name: AWS_S3_BUCKET
               value: you-scout-media
+
       imagePullSecrets:
         - name: registry-crds
 ---
