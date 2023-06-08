@@ -178,7 +178,7 @@ deploy:
     apk add --no-cache git
     git config --global user.name "ayoubonn"
     git config --global user.email "aarrasseayoub@gmail.com"
-    git remote set-url origin https://glpat-GCSrWh1MTjo6eH3DiznM@gitlab.com/Hamdane10/you-scout.git
+    git remote set-url origin https://GCSrWh1MTjo6eH3DiznM@gitlab.com/Hamdane10/you-scout.git
     git checkout master
     git fetch origin master
     git reset --hard origin/master
