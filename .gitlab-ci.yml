@@ -115,7 +115,7 @@ versioning:
       
           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/POST_VERSION" --form "value=$MAJOR.$MINOR.$PATCH"
           ;;
-          "user-feed-service")
+        "user-feed-service")
           echo "I'm in"
           IFS='.' read -ra VERSION_ARRAY <<< "$FEED_VERSION"
           MAJOR=${VERSION_ARRAY[0]}
@@ -135,7 +135,7 @@ versioning:
       
           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/FEED_VERSION" --form "value=$MAJOR.$MINOR.$PATCH"
           ;;
-          "comments-service")
+        "comments-service")
           echo "I'm in"
           IFS='.' read -ra VERSION_ARRAY <<< "$COMMENT_VERSION"
           MAJOR=${VERSION_ARRAY[0]}
@@ -155,7 +155,7 @@ versioning:
       
           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/COMMENT_VERSION" --form "value=$MAJOR.$MINOR.$PATCH"
           ;;
-          "skills-service")
+        "skills-service")
           echo "I'm in"
           IFS='.' read -ra VERSION_ARRAY <<< "$SKILL_VERSION"
           MAJOR=${VERSION_ARRAY[0]}
