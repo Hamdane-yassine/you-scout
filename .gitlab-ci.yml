@@ -1,6 +1,6 @@
 default:
   tags:
-    - Windows
+    - docker
 
 
 stages:
@@ -41,14 +41,56 @@ auth_major:
 versioning:
   stage: version
   script:
-    - variable_value="major-auth-service"
+    - variable_value= $CI_COMMIT_REF_NAME
     - echo "Variable value $variable_value"
     - if [[ $variable_value =~ ^increment-major-auth-service$ ]]; then echo "Variable matches pattern"; fi
     - IFS='-' read -ra words <<< "$variable_value"
     - word1="${words[0]}"
     - word2=$(echo "$variable_value" | cut -d'-' -f2-)
-    - echo "Word 1 $word1"
-    - echo "Word 2 $word2"
+    - variable_name="${word1}-${word2}"
+    - cd $word2
+    - echo "key $variable_value, value ${!variable_value}"
+    - >
+      curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$variable_value" --form "value=${!variable_value}+1"
+    # - |
+    #   case "$word2" in
+    #     "auth-service")
+    #       if [[ $word1 == "major" ]]; then
+    #         - cd $word2
+    #         - >
+    #           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$word2-major" --form "value=$word2-major+1"
+    #       elif [[ $word1 == "minor" ]]; then
+    #         - cd $word2
+    #         - >
+    #           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$word2-minor" --form "value=$word2-minor+1"
+    #       elif [[ $word1 == "patch"]]; then
+    #         - cd $word2
+    #         - >
+    #           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$word2-patch" --form "value=$word2-patch+1"
+    #       ;;
+    #     "social-graph-service")
+    #       if [[ $word1 == "major" ]]; then
+    #         - cd $word2
+    #         - >
+    #           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$word2-major" --form "value=$word2-major+1"
+    #       elif [[ $word1 == "minor" ]]; then
+    #         - cd $word2
+    #         - >
+    #           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$word2-minor" --form "value=$word2-minor+1"
+    #       elif [[ $word1 == "patch"]]; then
+    #         - cd $word2
+    #         - >
+    #           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$word2-patch" --form "value=$word2-patch+1"
+    #       ;;
+    #     "value3")
+    #       echo "Performing actions for value3"
+    #       # Run commands for value3
+    #       ;;
+    #     *)
+    #       echo "Invalid value or no matching case"
+    #       # Default actions or error handling
+    #       ;;
+    #   esac
   # rules:
   #   - if: '$CI_COMMIT_TAG'
 
@@ -203,7 +245,7 @@ comments-service-build:
     - cd comments-service
     - export VERSION=$(cat $VERSION_FILE)
   script:
-    - mvn clean compile jib:build -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD -Djib.to.image=$CONTAINER_RELEASE_IMAGE
+    - mvn compile jib:build -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD -Djib.to.image=$CONTAINER_RELEASE_IMAGE
   cache:
     key: "$CI_COMMIT_REF_SLUG"
     paths:
@@ -223,7 +265,10 @@ skills-service-build:
     - cd skills-service
     - export VERSION=$(cat $VERSION_FILE)
   script:
-    - mvn clean compile jib:build -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD -Djib.to.image=$CONTAINER_RELEASE_IMAGE
+    - mvn compile jib:build \
+      -Djib.to.auth.username=${CI_REGISTRY_USER} \
+      -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
+      -Djib.to.image=${CI_REGISTRY_IMAGE}
   cache:
     key: "$CI_COMMIT_REF_SLUG"
     paths:
