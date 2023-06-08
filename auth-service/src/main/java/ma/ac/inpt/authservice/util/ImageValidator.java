@@ -9,7 +9,7 @@ import javax.validation.ConstraintValidatorContext;
 import java.io.IOException;
 
 /**
- * ImageValidator is a custom constraint validator for validating image files.
+ * ImageValidator is a custom constraint validator for validating image files
  */
 public class ImageValidator implements ConstraintValidator<ValidImage, MultipartFile> {
 
