@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import ma.ac.inpt.postservice.model.Post;
 import ma.ac.inpt.postservice.payload.PostEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Service;
 public class PostEventSender {
 
     private final KafkaTemplate<String, PostEvent> kafkaTemplate;
+
+    @Value("${spring.kafka.topic.name}")
+    private String topicName;
 
     /**
      * Sends a post created event to Kafka.
@@ -44,7 +48,7 @@ public class PostEventSender {
      */
     private void sendPostChangedEvent(PostEvent payload) {
         // Send the PostEvent payload to the "post" topic using the KafkaTemplate
-        kafkaTemplate.send("post", payload);
+        kafkaTemplate.send(topicName, payload);
     }
 
     /**

@@ -14,7 +14,7 @@ public class PostEventListener {
 
     private final PostService postService;
 
-    @KafkaListener(topics = "comment", groupId = "comment", containerFactory = "factory")
+    @KafkaListener(topics = "${spring.kafka.topic.name}", groupId = "post-service", containerFactory = "factory")
     // The method name can be changed to 'consume' to match the naming convention used in the example
     public void consume(CommentNumEvent message) {
         log.info("received the updated number of comments for post {}", message.getCommentNum());
