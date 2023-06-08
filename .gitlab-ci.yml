@@ -49,7 +49,7 @@ versioning:
     - word2=$(echo "$variable_value" | cut -d'-' -f2-)
     - variable_name="${word1}-${word2}"
     - cd ${word2//_/-}
-    - echo "key $variable_value, value ${$variable_value}"
+    - echo "key $variable_value, value ${!$variable_value}"
     - >
       curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$variable_value" --form "value=${!variable_value}+1"
     # - |
