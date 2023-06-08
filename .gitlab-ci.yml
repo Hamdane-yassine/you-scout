@@ -176,8 +176,8 @@ deploy:
   image: alpine
   script: |
     apk add --no-cache git
-    git config --global user.name "oussamaZAAM"
-    git config --global user.email "zaam.oussama@gmail"
+    git config --global user.name "ayoubonn"
+    git config --global user.email "aarrasseayoub@gmail.com"
     git remote set-url origin https://glpat-GCSrWh1MTjo6eH3DiznM@gitlab.com/Hamdane10/you-scout.git
     git checkout master
     git fetch origin master
@@ -186,10 +186,6 @@ deploy:
     git add k8s/auth-service.yaml
     git commit -m "Update image reference in deployment.yaml"
     git push origin master
-
-
-
-
 
 
 authentication-service-build:
