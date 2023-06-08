@@ -7,7 +7,7 @@ import java.time.Period;
 
 /**
  * AgeValidator is a custom constraint validator that implements the ConstraintValidator interface.
- * It validates a user's age by checking if it meets the minimum age requirement specified in the
+ * It validates a user age by checking if it meets the minimum age requirement specified in the
  * ValidAge annotation.
  */
 public class AgeValidator implements ConstraintValidator<ValidAge, LocalDate> {
