@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: api-gateway
-          image: registry.gitlab.com/hamdane10/you-scout/api-gateway:1.0
+          image: registry.gitlab.com/hamdane10/you-scout/api-gateway:v2.0
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: docker
