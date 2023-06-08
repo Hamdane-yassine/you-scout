@@ -181,6 +181,7 @@ modify_yaml:
     ENCODED_CONTENT=$(base64 -w 0 k8s/auth-service1.yaml)
     echo "$ENCODED_CONTENT"
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/$ENCODED_URL" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$ENCODED_CONTENT"'", "commit_message": "update file"}'
+    cat k8s/auth-service1.yaml
  
 
  
