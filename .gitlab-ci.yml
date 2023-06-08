@@ -177,13 +177,11 @@ deploy:
   script: |
     sed -i "s|image:.*|image: registry.gitlab.com/hamdane10/you-scout/comments-service:$COMMENT_VERSION|g" k8s/auth-service.yaml
     apk add --no-cache git
-    git init
     git config --global user.name "ayoubonn"
     git config --global user.email "aarrasseayoub@gmail"
     git add k8s/auth-service.yaml
     git commit -m "Update image reference in deployment.yaml"
-    git remote add origin https://gitlab.com/Hamdane10/you-scout.git
-    git push origin master
+    git push origin ayoub
 
 
 
