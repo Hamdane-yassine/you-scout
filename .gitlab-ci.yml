@@ -1,6 +1,6 @@
 default:
   tags:
-    - docker
+    - Windows
 
 
 stages:
@@ -203,7 +203,7 @@ comments-service-build:
     - cd comments-service
     - export VERSION=$(cat $VERSION_FILE)
   script:
-    - mvn compile jib:build -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD -Djib.to.image=$CONTAINER_RELEASE_IMAGE
+    - mvn clean compile jib:build -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD -Djib.to.image=$CONTAINER_RELEASE_IMAGE
   cache:
     key: "$CI_COMMIT_REF_SLUG"
     paths:
@@ -223,10 +223,7 @@ skills-service-build:
     - cd skills-service
     - export VERSION=$(cat $VERSION_FILE)
   script:
-    - mvn compile jib:build \
-      -Djib.to.auth.username=${CI_REGISTRY_USER} \
-      -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
-      -Djib.to.image=${CI_REGISTRY_IMAGE}
+    - mvn clean compile jib:build -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD -Djib.to.image=$CONTAINER_RELEASE_IMAGE
   cache:
     key: "$CI_COMMIT_REF_SLUG"
     paths:
