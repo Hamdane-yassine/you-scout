@@ -225,6 +225,7 @@ skills-service-build:
       - skills-service/**/*
 
 
+
 increment_minor:
   stage: build
   script:
