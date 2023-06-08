@@ -172,7 +172,8 @@ user-feed-build:
   stage: build
   before_script:
     - cd user-feed-service
-  script: "mvn package -B"
+  script:
+    - mvn -e compile jib:build -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD -Djib.to.image=$CI_REGISTRY_IMAGE
   artifacts:
     paths:
       - user-feed-service/target/*.jar
