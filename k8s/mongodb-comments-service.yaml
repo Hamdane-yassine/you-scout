@@ -17,16 +17,6 @@ spec:
         - name: mongodb
           image: mongo:4.2.0
           env:
-            - name: MONGO_INITDB_ROOT_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: you-scout-secret
-                  key: mongodb-comments-service-user
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: you-scout-secret
-                  key: mongodb-comments-service-password
             - name: MONGO_INITDB_DATABASE
               valueFrom:
                 secretKeyRef:
