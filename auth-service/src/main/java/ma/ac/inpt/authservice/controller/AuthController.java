@@ -14,8 +14,8 @@ import javax.validation.Valid;
 import java.security.Principal;
 
 /**
- * Controller class for managing user authentication and authorization.
- * Provides endpoints for user registration, authentication, account verification, and password reset.
+ * Controller class for managing user authentication and authorization
+ * Provides endpoints for user registration, authentication, account verification, and password reset
  */
 @RestController
 @RequestMapping("/auth")
