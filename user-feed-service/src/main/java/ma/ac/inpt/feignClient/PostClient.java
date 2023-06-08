@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.List;
 
 
-@FeignClient(name = "post-handling-service")
+@FeignClient(name = "${post.handling.uri}")
 public interface PostClient {
 
     /**
