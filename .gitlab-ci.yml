@@ -41,10 +41,10 @@ auth_major:
 versioning:
   stage: version
   script:
-    - variable_value="increment-major-auth-service"
+    - variable_value="major-auth-service"
     - echo "Variable value $variable_value"
     - if [[ $variable_value =~ ^increment-major-auth-service$ ]]; then echo "Variable matches pattern"; fi
-    - words=(${variable_value//-/ })
+    - IFS='-' read -ra words <<< "$variable_value"
     - word1="${words[0]}"
     - word2="${words[1]}"
     - echo "Word 1 $word1"
