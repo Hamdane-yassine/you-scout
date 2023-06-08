@@ -354,7 +354,7 @@ skills-build:
 auth_yaml:
   stage: deploy
   script: |
-    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/auth-service:'$AUTH_VERSION'|' k8s/auth-service1.yaml
+    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/auth-service:'$AUTH_VERSION'|' k8s/auth-service.yaml
     DECODED_CONTENT=$(cat k8s/auth-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fauth-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
@@ -367,7 +367,7 @@ auth_yaml:
 social_graph_yaml:
   stage: deploy
   script: |
-    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/social-graph-service:'$GRAPH_VERSION'|' k8s/auth-service1.yaml
+    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/social-graph-service:'$GRAPH_VERSION'|' k8s/auth-service.yaml
     DECODED_CONTENT=$(cat k8s/social-graph-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fsocial-graph-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
@@ -380,7 +380,7 @@ social_graph_yaml:
 post_yaml:
   stage: deploy
   script: |
-    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/post-handling-service:'$POST_VERSION'|' k8s/auth-service1.yaml
+    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/post-handling-service:'$POST_VERSION'|' k8s/auth-service.yaml
     DECODED_CONTENT=$(cat k8s/post-handling-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fpost-handling-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
@@ -393,7 +393,7 @@ post_yaml:
 feed_yaml:
   stage: deploy
   script: |
-    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/user-feed-service:'$FEED_VERSION'|' k8s/auth-service1.yaml
+    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/user-feed-service:'$FEED_VERSION'|' k8s/auth-service.yaml
     DECODED_CONTENT=$(cat k8s/user-feed-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fuser-feed-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
@@ -406,7 +406,7 @@ feed_yaml:
 comment_yaml:
   stage: deploy
   script: |
-    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/comments-service:'$COMMENT_VERSION'|' k8s/auth-service1.yaml
+    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/comments-service:'$COMMENT_VERSION'|' k8s/auth-service.yaml
     DECODED_CONTENT=$(cat k8s/comments-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fcomments-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
@@ -419,7 +419,7 @@ comment_yaml:
 skill_yaml:
   stage: deploy
   script: |
-    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/skills-service:'$SKILL_VERSION'|' k8s/auth-service1.yaml
+    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/skills-service:'$SKILL_VERSION'|' k8s/auth-service.yaml
     DECODED_CONTENT=$(cat k8s/skills-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fskills-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
