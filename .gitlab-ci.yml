@@ -114,46 +114,46 @@ versioning:
       
           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/POST_VERSION" --form "value=$MAJOR.$MINOR.$PATCH"
           ;;
-        # "user-feed-service")
-        #   echo "I'm in"
-        #   IFS='.' read -ra VERSION_ARRAY <<< "$FEED_VERSION"
-        #   MAJOR=${VERSION_ARRAY[0]}
-        #   MINOR=${VERSION_ARRAY[1]}
-        #   PATCH=${VERSION_ARRAY[2]}
-        #   if [[ $word1 == "major" ]]; then
-        #     echo "I'm really in"
-        #     MAJOR=$((MAJOR + 1))
-        #     MINOR=0
-        #     PATCH=0
-        #   elif [[ $word1 == "minor" ]]; then
-        #     MINOR=$((MINOR + 1))
-        #     PATCH=0
-        #   elif [[ $word1 == "patch" ]]; then
-        #     PATCH=$((PATCH + 1))
-        #   fi
+        "user-feed-service")
+          echo "I'm in"
+          IFS='.' read -ra VERSION_ARRAY <<< "$FEED_VERSION"
+          MAJOR=${VERSION_ARRAY[0]}
+          MINOR=${VERSION_ARRAY[1]}
+          PATCH=${VERSION_ARRAY[2]}
+          if [[ $word1 == "major" ]]; then
+            echo "I'm really in"
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
+          elif [[ $word1 == "minor" ]]; then
+            MINOR=$((MINOR + 1))
+            PATCH=0
+          elif [[ $word1 == "patch" ]]; then
+            PATCH=$((PATCH + 1))
+          fi
       
-        #   curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/FEED_VERSION" --form "value=$MAJOR.$MINOR.$PATCH"
-        #   ;;
-        # "comments-service")
-        #   echo "I'm in"
-        #   IFS='.' read -ra VERSION_ARRAY <<< "$COMMENT_VERSION"
-        #   MAJOR=${VERSION_ARRAY[0]}
-        #   MINOR=${VERSION_ARRAY[1]}
-        #   PATCH=${VERSION_ARRAY[2]}
-        #   if [[ $word1 == "major" ]]; then
-        #     echo "I'm really in"
-        #     MAJOR=$((MAJOR + 1))
-        #     MINOR=0
-        #     PATCH=0
-        #   elif [[ $word1 == "minor" ]]; then
-        #     MINOR=$((MINOR + 1))
-        #     PATCH=0
-        #   elif [[ $word1 == "patch" ]]; then
-        #     PATCH=$((PATCH + 1))
-        #   fi
+          curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/FEED_VERSION" --form "value=$MAJOR.$MINOR.$PATCH"
+          ;;
+        "comments-service")
+          echo "I'm in"
+          IFS='.' read -ra VERSION_ARRAY <<< "$COMMENT_VERSION"
+          MAJOR=${VERSION_ARRAY[0]}
+          MINOR=${VERSION_ARRAY[1]}
+          PATCH=${VERSION_ARRAY[2]}
+          if [[ $word1 == "major" ]]; then
+            echo "I'm really in"
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
+          elif [[ $word1 == "minor" ]]; then
+            MINOR=$((MINOR + 1))
+            PATCH=0
+          elif [[ $word1 == "patch" ]]; then
+            PATCH=$((PATCH + 1))
+          fi
       
-        #   curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/COMMENT_VERSION" --form "value=$MAJOR.$MINOR.$PATCH"
-        #   ;;
+          curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/COMMENT_VERSION" --form "value=$MAJOR.$MINOR.$PATCH"
+          ;;
         # "skills-service")
         #   echo "I'm in"
         #   IFS='.' read -ra VERSION_ARRAY <<< "$SKILL_VERSION"
