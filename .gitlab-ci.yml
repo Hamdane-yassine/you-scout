@@ -199,7 +199,7 @@ auth-build:
   rules:
     # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     #   allow_failure: true
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG = "major-auth-service" || $CI_COMMIT_TAG = "minor-auth-service" || $CI_COMMIT_TAG = "patch-auth-service"'
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG == "major-auth-service" || $CI_COMMIT_TAG == "minor-auth-service" || $CI_COMMIT_TAG == "patch-auth-service"'
       changes:
       - comments-service/**/*
 
@@ -225,7 +225,7 @@ social-graph-build:
     # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     #   allow_failure: true
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG = "major-social-graph-service" || $CI_COMMIT_TAG = "minor-social-graph-service" || $CI_COMMIT_TAG = "patch-social-graph-service"'
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG == "major-social-graph-service" || $CI_COMMIT_TAG == "minor-social-graph-service" || $CI_COMMIT_TAG == "patch-social-graph-service"'
       changes:
       - auth-service/**/*
 
@@ -251,7 +251,7 @@ post-handling-build:
     # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     #   allow_failure: true
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG = "major-post-handling-service" || $CI_COMMIT_TAG = "minor-post-handling-service" || $CI_COMMIT_TAG = "patch-post-handling-service"'
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG == "major-post-handling-service" || $CI_COMMIT_TAG == "minor-post-handling-service" || $CI_COMMIT_TAG == "patch-post-handling-service"'
       changes:
         - post-service/**/*
 
@@ -281,7 +281,7 @@ user-feed-build:
     # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     #   allow_failure: true
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG = "major-user-feed-service" || $CI_COMMIT_TAG = "minor-user-feed-service" || $CI_COMMIT_TAG = "patch-user-feed-service"'
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG == "major-user-feed-service" || $CI_COMMIT_TAG == "minor-user-feed-service" || $CI_COMMIT_TAG == "patch-user-feed-service"'
       changes:
         - user-feed-service/**/*
 
@@ -312,7 +312,7 @@ comments-build:
     # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     #   allow_failure: true
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG = "major-comments-service" || $CI_COMMIT_TAG = "minor-comments-service" || $CI_COMMIT_TAG = "patch-comments-service"'
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG == "major-comments-service" || $CI_COMMIT_TAG == "minor-comments-service" || $CI_COMMIT_TAG == "patch-comments-service"'
       changes:
         - comments-service/**/*
 
@@ -343,7 +343,7 @@ skills-build:
     # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     #   allow_failure: true
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG = "major-skills-service" || $CI_COMMIT_TAG = "minor-skills-service" || $CI_COMMIT_TAG = "patch-skills-service"'
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG == "major-skills-service" || $CI_COMMIT_TAG == "minor-skills-service" || $CI_COMMIT_TAG == "patch-skills-service"'
       changes:
         - skills-service/**/*
 
@@ -356,7 +356,7 @@ auth_yaml:
     DECODED_CONTENT=$(cat k8s/auth-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fauth-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
-    - if: '$CI_COMMIT_TAG = "major-auth-service" || $CI_COMMIT_TAG = "minor-auth-service" || $CI_COMMIT_TAG = "patch-auth-service"'
+    - if: '$CI_COMMIT_TAG == "major-auth-service" || $CI_COMMIT_TAG == "minor-auth-service" || $CI_COMMIT_TAG == "patch-auth-service"'
       changes:
         - auth-service/**/*
   needs:
@@ -369,7 +369,7 @@ social_graph_yaml:
     DECODED_CONTENT=$(cat k8s/social-graph-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fsocial-graph-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
-    - if: '$CI_COMMIT_TAG = "major-social-graph-service" || $CI_COMMIT_TAG = "minor-social-graph-service" || $CI_COMMIT_TAG = "patch-social-graph-service"'
+    - if: '$CI_COMMIT_TAG == "major-social-graph-service" || $CI_COMMIT_TAG == "minor-social-graph-service" || $CI_COMMIT_TAG == "patch-social-graph-service"'
       changes:
         - social-graph-service/**/*
   needs:
@@ -382,7 +382,7 @@ post_yaml:
     DECODED_CONTENT=$(cat k8s/post-handling-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fpost-handling-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
-    - if: '$CI_COMMIT_TAG = "major-post-handling-service" || $CI_COMMIT_TAG = "minor-post-handling-service" || $CI_COMMIT_TAG = "patch-post-handling-service"'
+    - if: '$CI_COMMIT_TAG == "major-post-handling-service" || $CI_COMMIT_TAG == "minor-post-handling-service" || $CI_COMMIT_TAG == "patch-post-handling-service"'
       changes:
         - post-service/**/*
   needs:
@@ -395,7 +395,7 @@ feed_yaml:
     DECODED_CONTENT=$(cat k8s/user-feed-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fuser-feed-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
-    - if: '$CI_COMMIT_TAG = "major-user-feed-service" || $CI_COMMIT_TAG = "minor-user-feed-service" || $CI_COMMIT_TAG = "patch-user-feed-service"'
+    - if: '$CI_COMMIT_TAG == "major-user-feed-service" || $CI_COMMIT_TAG == "minor-user-feed-service" || $CI_COMMIT_TAG == "patch-user-feed-service"'
       changes:
         - user-feed-service/**/*
   needs:
@@ -408,7 +408,7 @@ comment_yaml:
     DECODED_CONTENT=$(cat k8s/comments-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fcomments-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
-    - if: '$CI_COMMIT_TAG = "major-comments-service" || $CI_COMMIT_TAG = "minor-comments-service" || $CI_COMMIT_TAG = "patch-comments-service"'
+    - if: '$CI_COMMIT_TAG == "major-comments-service" || $CI_COMMIT_TAG == "minor-comments-service" || $CI_COMMIT_TAG == "patch-comments-service"'
       changes:
         - comments-service/**/*
   needs:
@@ -421,7 +421,7 @@ skill_yaml:
     DECODED_CONTENT=$(cat k8s/skills-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fskills-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
-    - if: '$CI_COMMIT_TAG = "major-skills-service" || $CI_COMMIT_TAG = "minor-skills-service" || $CI_COMMIT_TAG = "patch-skills-service"'
+    - if: '$CI_COMMIT_TAG == "major-skills-service" || $CI_COMMIT_TAG == "minor-skills-service" || $CI_COMMIT_TAG == "patch-skills-service"'
       changes:
         - skills-service/**/*
   needs:
