@@ -272,6 +272,7 @@ comments-service-build:
     - echo "$COMMENT_VERSION"
     - export VERSION="$COMMENT_VERSION"
   script:
+    - echo "$COMMENT_VERSION"
     - mvn compile jib:build -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD -Djib.to.image=$CONTAINER_RELEASE_IMAGE
   cache:
     key: "$CI_COMMIT_REF_SLUG"
