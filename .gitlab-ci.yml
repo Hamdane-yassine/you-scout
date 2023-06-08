@@ -8,6 +8,12 @@ stages:
   - build
   - deploy
 
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .m2/repository
+
+
 variables:
   VERSION_TAG: $CI_PIPELINE_IID
   VERSION_FILE: version.txt
