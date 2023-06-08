@@ -4,20 +4,29 @@ default:
 
 
 stages:
+  - scan
+  - version
   - build
 
 
+
 variables:
-  # SAST_IMAGE_SUFFIX: '-fips'
   VERSION_TAG: $CI_PIPELINE_IID
   VERSION_FILE: version.txt
   SERVICES: value
+  CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
 
-
-
+scan_code:
+  image: registry.gitlab.com/gitlab-org/security-products/analyzers/semgrep:latest
+  stage: scan
+  script:
+    - semgrep --config auto -o gl-sast-report.json .
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
 
 auth_major:
-  stage: build
+  stage: version
   script:
     - cd auth-service
     - echo "Incrementing Major version"
@@ -27,8 +36,66 @@ auth_major:
     - echo "$VERSION_MAJOR.0.0" > $VERSION_FILE
   rules:
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-major-auth-service"'
+
+
+versioning:
+  stage: version
+  script:
+    - variable_value= $CI_COMMIT_REF_NAME
+    - echo "Variable value $variable_value"
+    - if [[ $variable_value =~ ^increment-major-auth-service$ ]]; then echo "Variable matches pattern"; fi
+    - IFS='-' read -ra words <<< "$variable_value"
+    - word1="${words[0]}"
+    - word2=$(echo "$variable_value" | cut -d'-' -f2-)
+    - variable_name="${word1}-${word2}"
+    - cd ${$word2//-/_}
+    - echo "key $variable_value, value ${!variable_value}"
+    - >
+      curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$variable_value" --form "value=${!variable_value}+1"
+    # - |
+    #   case "$word2" in
+    #     "auth-service")
+    #       if [[ $word1 == "major" ]]; then
+    #         - cd $word2
+    #         - >
+    #           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$word2-major" --form "value=$word2-major+1"
+    #       elif [[ $word1 == "minor" ]]; then
+    #         - cd $word2
+    #         - >
+    #           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$word2-minor" --form "value=$word2-minor+1"
+    #       elif [[ $word1 == "patch"]]; then
+    #         - cd $word2
+    #         - >
+    #           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$word2-patch" --form "value=$word2-patch+1"
+    #       ;;
+    #     "social-graph-service")
+    #       if [[ $word1 == "major" ]]; then
+    #         - cd $word2
+    #         - >
+    #           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$word2-major" --form "value=$word2-major+1"
+    #       elif [[ $word1 == "minor" ]]; then
+    #         - cd $word2
+    #         - >
+    #           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$word2-minor" --form "value=$word2-minor+1"
+    #       elif [[ $word1 == "patch"]]; then
+    #         - cd $word2
+    #         - >
+    #           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/$word2-patch" --form "value=$word2-patch+1"
+    #       ;;
+    #     "value3")
+    #       echo "Performing actions for value3"
+    #       # Run commands for value3
+    #       ;;
+    #     *)
+    #       echo "Invalid value or no matching case"
+    #       # Default actions or error handling
+    #       ;;
+    #   esac
+  # rules:
+  #   - if: '$CI_COMMIT_TAG'
+
 graph_major:
-  stage: build
+  stage: version
   script:
     - cd social-graph-service
     - echo "Incrementing Major version"
@@ -39,7 +106,7 @@ graph_major:
   rules:
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-major-social-graph-service"'
 post_major:
-  stage: build
+  stage: version
   script:
     - cd post-handling-service
     - echo "Incrementing Major version"
@@ -50,7 +117,7 @@ post_major:
   rules:
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-major-post-handling-service"'
 feed_major:
-  stage: build
+  stage: version
   script:
     - cd user-feed-service
     - echo "Incrementing Major version"
@@ -61,7 +128,7 @@ feed_major:
   rules:
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-major-user-feed-service"'
 comment_major:
-  stage: build
+  stage: version
   script:
     - cd comments-service
     - echo "Incrementing Major version"
@@ -72,7 +139,7 @@ comment_major:
   rules:
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "increment-major-comments-service"'
 skill_major:
-  stage: build
+  stage: version
   script:
     - cd skills-service
     - echo "Incrementing Major version"
@@ -89,10 +156,11 @@ auth_version:
   image: curlimages/curl
   script:
     - cd auth-service
+    - echo "I want this versio $(cat $VERSION_FILE)"
     - >
-      curl --request PUT --header "PRIVATE-TOKEN: glpat-1xXn98s_LphPR_-xpEvB" --form "value=$(cat $VERSION_FILE)" "https://gitlab.com/api/v4/projects/44998572/variables/AUTH_VERSION"
-  needs:
-    - auth_major
+      curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/AUTH_VERSION" --form "value=$(cat $VERSION_FILE)"
+
+
 
 authentication-service-build:
   image: maven:3.8.4-openjdk-17
@@ -115,13 +183,13 @@ authentication-service-build:
   cache:
     paths:
       - .m2/repository/
-  # only:
-  #   changes:
-  #     - auth-service/**/*
+  only:
+    changes:
+      - auth-service/**/*
 
 
 social-graph-build:
-  image:  maven:3.8.4-openjdk-17
+  image: maven:3.8.4-openjdk-17
   stage: build
   before_script:
     - cd social-graph-service
@@ -175,13 +243,13 @@ comments-service-build:
   stage: build
   before_script:
     - cd comments-service
+    - export VERSION=$(cat $VERSION_FILE)
   script:
-    - echo "Running build job"
-    - mvn package -B
+    - mvn compile jib:build -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD -Djib.to.image=$CONTAINER_RELEASE_IMAGE
   cache:
-    key: $CI_COMMIT_REF_SLUG
+    key: "$CI_COMMIT_REF_SLUG"
     paths:
-      - comments-service/.m2/repository/
+      - .m2/repository/
   artifacts:
     paths:
       - comments-service/target/*.jar
@@ -195,12 +263,16 @@ skills-service-build:
   stage: build
   before_script:
     - cd skills-service
+    - export VERSION=$(cat $VERSION_FILE)
   script:
-    - mvn package -B
+    - mvn compile jib:build \
+      -Djib.to.auth.username=${CI_REGISTRY_USER} \
+      -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
+      -Djib.to.image=${CI_REGISTRY_IMAGE}
   cache:
-    key: $CI_COMMIT_REF_SLUG
+    key: "$CI_COMMIT_REF_SLUG"
     paths:
-      - skills-service/.m2/repository/
+      - .m2/repository/
   artifacts:
     paths:
       - skills-service/target/*.jar
