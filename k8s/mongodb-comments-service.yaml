@@ -21,7 +21,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: you-scout-secret
-                  key: mongodb-comments-service-database
+                  key: mongodb-database
           volumeMounts:
             - name: mongodb-data
               mountPath: /data/db

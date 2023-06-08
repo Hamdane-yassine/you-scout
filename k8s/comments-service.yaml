@@ -24,7 +24,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: you-scout-secret
-                  key: mongodb-comments-service-database
+                  key: mongodb-database
 
       imagePullSecrets:
         - name: registry-crds
