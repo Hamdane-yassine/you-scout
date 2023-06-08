@@ -8,6 +8,8 @@ stages:
   - build
   - deploy
 
+
+
 variables:
   VERSION_TAG: $CI_PIPELINE_IID
   VERSION_FILE: version.txt
@@ -23,6 +25,8 @@ scan_code:
   artifacts:
     reports:
       sast: gl-sast-report.json
+
+
 
 versioning:
   stage: version
@@ -74,7 +78,7 @@ versioning:
           elif [[ $word1 == "patch" ]]; then
             PATCH=$((PATCH + 1))
           fi
-          
+      
           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/GRAPH_VERSION" --form "value=$MAJOR.$MINOR.$PATCH"
           ;;
         "post-handling-service")
@@ -94,7 +98,7 @@ versioning:
           elif [[ $word1 == "patch" ]]; then
             PATCH=$((PATCH + 1))
           fi
-          
+      
           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/POST_VERSION" --form "value=$MAJOR.$MINOR.$PATCH"
           ;;
         "user-feed-service")
@@ -114,7 +118,7 @@ versioning:
           elif [[ $word1 == "patch" ]]; then
             PATCH=$((PATCH + 1))
           fi
-          
+      
           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/FEED_VERSION" --form "value=$MAJOR.$MINOR.$PATCH"
           ;;
         "comments-service")
@@ -156,16 +160,31 @@ versioning:
           elif [[ $word1 == "patch" ]]; then
             PATCH=$((PATCH + 1))
           fi
-          
+      
           curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/SKILL_VERSION" --form "value=$MAJOR.$MINOR.$PATCH"
           ;;
         *)
           echo "Invalid value or no matching case"
           ;;
-          
+      
       esac
   rules:
     - if: '$CI_COMMIT_TAG'
+
+deploy:
+  stage: deploy
+  image: alpine
+  script: |
+    sed -i "s|image:.*|image: registry.gitlab.com/hamdane10/you-scout/comments-service:$COMMENT_VERSION|g" k8s/deployment.yaml
+    apk add --no-cache git
+    git add k8s/deployment.yaml
+    git commit -m "Update image reference in deployment.yaml"
+    git push origin master
+
+
+
+
+
 
 authentication-service-build:
   image: maven:3.8.4-openjdk-17
@@ -187,18 +206,13 @@ authentication-service-build:
   cache:
     paths:
       - .m2/repository/
-  only:
-    - tags
-    - branches
   rules:
-    - exists:
-        - auth-service/**/*
-      changes:
-        - auth-service/**/*
-    - exists:
-        - $CI_COMMIT_TAG
-      changes:
-        - /*
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      allow_failure: true
+    - if: $CI_COMMIT_TAG
+    - changes:
+      - auth-service/**/*
+
 
 social-graph-build:
   image: maven:3.8.4-openjdk-17
@@ -212,18 +226,13 @@ social-graph-build:
   artifacts:
     paths:
       - social-graph-service/target/*.jar
-  only:
-    - tags
-    - branches
   rules:
-    - exists:
-        - social-graph-service/**/*
-      changes:
-        - social-graph-service/**/*
-    - exists:
-        - $CI_COMMIT_TAG
-      changes:
-        - /*
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      allow_failure: true
+    - if: $CI_COMMIT_TAG
+    - changes:
+      - social-graph-service/**/*
+
 
 post-service-build:
   image: maven:3.8.4-openjdk-17
@@ -234,18 +243,15 @@ post-service-build:
   artifacts:
     paths:
       - post-service/target/*.jar.original
-  only:
-    - tags
-    - branches
   rules:
-    - exists:
-        - post-handling-service/**/*
-      changes:
-        - post-handling-service/**/*
-    - exists:
-        - $CI_COMMIT_TAG
-      changes:
-        - /*
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      allow_failure: true
+    - if: $CI_COMMIT_TAG
+    - changes:
+      - post-service/**/*
+
+
+
 user-feed-build:
   image: maven:3.8.4-openjdk-17
   stage: build
@@ -259,18 +265,12 @@ user-feed-build:
     paths:
       - .m2/repository/
       - user-feed-service/target
-  only:
-    - tags
-    - branches
   rules:
-    - exists:
-        - user-feed-service/**/*
-      changes:
-        - user-feed-service/**/*
-    - exists:
-        - $CI_COMMIT_TAG
-      changes:
-        - /*
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      allow_failure: true
+    - if: $CI_COMMIT_TAG
+    - changes:
+      - user-feed-service/**/*
 
 comments-service-build:
   image: maven:3.8.4-openjdk-17
@@ -289,18 +289,14 @@ comments-service-build:
   artifacts:
     paths:
       - comments-service/target/*.jar
-  only:
-    - tags
-    - branches
+
   rules:
-    - exists:
-        - comments-service/**/*
-      changes:
-        - comments-service/**/*
-    - exists:
-        - $CI_COMMIT_TAG
-      changes:
-        - /*
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      allow_failure: true
+    - if: $CI_COMMIT_TAG
+    - changes:
+      - comment-service/**/*
+
 
 skills-service-build:
   image: maven:3.8.4-openjdk-17
@@ -320,31 +316,17 @@ skills-service-build:
   artifacts:
     paths:
       - skills-service/target/*.jar
-  only:
-    - tags
-    - branches
   rules:
-    - exists:
-        - skills-service/**/*
-      changes:
-        - skills-service/**/*
-    - exists:
-        - $CI_COMMIT_TAG
-      changes:
-        - /*
-  
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      allow_failure: true
+    - if: $CI_COMMIT_TAG
+    - changes:
+      - skills-service/**/*
 
-deploy:
-  stage: deploy
-  image: alpine
-  script: |
-    sed -i "s|image:.*|image: registry.gitlab.com/hamdane10/you-scout/comments-service:$COMMENT_VERSION|g" k8s/deployment.yaml
-    apk add --no-cache git
-    git add k8s/deployment.yaml
-    git commit -m "Update image reference in deployment.yaml"
-    git push origin master
-  needs:
-    - job: versioning
+
+ 
+
+
 
 
 
