@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: post-handling-service
-          image: registry.gitlab.com/hamdane10/you-scout/post-service:v6.0
+          image: registry.gitlab.com/hamdane10/you-scout/post-service:v10.0
           ports:
             - containerPort: 8001
           env:

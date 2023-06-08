@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: zookeeper
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: zookeeper
@@ -42,7 +42,7 @@ kind: Deployment
 metadata:
   name: broker
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: broker

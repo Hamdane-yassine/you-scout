@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: skills-service
-          image: registry.gitlab.com/hamdane10/you-scout/skills-service:v6.0
+          image: registry.gitlab.com/hamdane10/you-scout/skills-service:v10.0
           ports:
             - containerPort: 8072
           env:
