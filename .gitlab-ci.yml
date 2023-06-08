@@ -224,7 +224,7 @@ versioning:
         *)
           echo "Invalid value or no matching case"
           ;;
-      esac
+      esac
 
 
 
