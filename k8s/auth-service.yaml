@@ -1,1 +1,1 @@
-sdf
+$(cat k8s/auth-service.yaml)
