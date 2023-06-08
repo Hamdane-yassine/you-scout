@@ -179,6 +179,7 @@ deploy:
     git config --global user.name "oussamaZAAM"
     git config --global user.email "zaam.oussama@gmail"
     git checkout master
+    git pull origin master
     sed -i "s|image:.*|image: registry.gitlab.com/hamdane10/you-scout/comments-service:$COMMENT_VERSION|g" k8s/auth-service.yaml
     git add k8s/auth-service.yaml
     git commit -m "Update image reference in deployment.yaml"
