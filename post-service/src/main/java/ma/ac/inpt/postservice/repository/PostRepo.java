@@ -2,8 +2,6 @@ package ma.ac.inpt.postservice.repository;
 
 import ma.ac.inpt.postservice.model.Post;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 

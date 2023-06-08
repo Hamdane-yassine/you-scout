@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-handling-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: post-handling-service
+  template:
+    metadata:
+      labels:
+        app: post-handling-service
+    spec:
+      containers:
+        - name: post-handling-service
+          image: registry.gitlab.com/hamdane10/you-scout/post-service:v1.0
+          ports:
+            - containerPort: 8001
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+            - name: AWS_REGION_STATIC
+              value: eu-west-3
+            - name: AWS_S3_BUCKET
+              value: you-scout-media
+            - name: AWS_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: you-scout-secret
+                  key: aws-access-key
+            - name: AWS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: you-scout-secret
+                  key: aws-secret-key
+            - name: MONGODB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: you-scout-secret
+                  key: mongodb-post-handling-service-user
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: you-scout-secret
+                  key: mongodb-post-handling-service-password
+            - name: MONGODB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: you-scout-secret
+                  key: mongodb-post-handling-service-database
+      imagePullSecrets:
+        - name: registry-crds
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: post-handling-service
+spec:
+  selector:
+    app: post-handling-service
+  ports:
+    - protocol: TCP
+      port: 8001
+      targetPort: 8001

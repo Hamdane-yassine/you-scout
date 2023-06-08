@@ -3,21 +3,16 @@ package ma.ac.inpt.postservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.ac.inpt.postservice.model.Post;
 import ma.ac.inpt.postservice.payload.ApiResponse;
-import ma.ac.inpt.postservice.payload.CompletePostRequest;
 import ma.ac.inpt.postservice.payload.PostRequest;
 import ma.ac.inpt.postservice.payload.RatingRequest;
 import ma.ac.inpt.postservice.service.PostService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import java.io.IOException;
 import java.security.Principal;
@@ -35,7 +30,7 @@ public class PostController {
     public ResponseEntity<?> uploadVideo(@RequestPart("post") String postRequest, @RequestPart("video") MultipartFile file, Principal user, @RequestHeader("Authorization") String accessToken) {
         // Convert userStr to User object
         ObjectMapper mapper = new ObjectMapper();
-        PostRequest post = null;
+        PostRequest post;
         try {
             post = mapper.readValue(postRequest, PostRequest.class);
         } catch (IOException e) {
@@ -72,25 +67,14 @@ public class PostController {
         return ResponseEntity.ok(message);
     }
 
-//    @DeleteMapping("/posts/{id}/removelike")
-//    public ResponseEntity<?> removeLikePost(@PathVariable("id") String id, Principal user) {
-//
-//        log.info("Received a remove post liking request for post id {} from user {}", id, user.getName());
-//
-//        // Remove the like from the post
-//        String message = postService.removeLikePost(id, user.getName());
-//
-//        return ResponseEntity.ok(message);
-//    }
-
     @PostMapping("/posts/{id}/rate")
     public ResponseEntity<String> ratePost(@PathVariable("id") String id, @RequestBody RatingRequest ratingRequest, Principal user) {
 
         log.info("Received a rating post request for post id {} from user {}", id, user.getName());
 
         // Rate the post
-            String message = postService.ratePost(id, ratingRequest, user.getName());
-            return ResponseEntity.ok(message);
+        String message = postService.ratePost(id, ratingRequest, user.getName());
+        return ResponseEntity.ok(message);
 
     }
 
