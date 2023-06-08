@@ -8,8 +8,6 @@ stages:
   - build
   - deploy
 
-
-
 variables:
   VERSION_TAG: $CI_PIPELINE_IID
   VERSION_FILE: version.txt
@@ -25,7 +23,6 @@ scan_code:
   artifacts:
     reports:
       sast: gl-sast-report.json
-
 
 
 versioning:
@@ -173,77 +170,6 @@ versioning:
 
 
 
-auth_yaml:
-  stage: deploy
-  script: |
-    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/auth-service:'$AUTH_VERSION'|' k8s/auth-service1.yaml
-    DECODED_CONTENT=$(cat k8s/auth-service.yaml)
-    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fauth-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
-  rules:
-    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    # - changes:
-    #   - auth-service/**/*
-    - when: never
-comment_yaml:
-  stage: deploy
-  script: |
-    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/comments-service:'$COMMENT_VERSION'|' k8s/auth-service1.yaml
-    DECODED_CONTENT=$(cat k8s/comments-service.yaml)
-    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fcomments-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
-  rules:
-    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    # - changes:
-    #   - comments-service/**/*
-    - when: never
-social_graph_yaml:
-  stage: deploy
-  script: |
-    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/social-graph-service:'$GRAPH_VERSION'|' k8s/auth-service1.yaml
-    DECODED_CONTENT=$(cat k8s/social-graph-service.yaml)
-    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fsocial-graph-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
-  rules:
-    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    # - changes:
-    #   - social-graph-service/**/*
-    - when: never
-post_yaml:
-  stage: deploy
-  script: |
-    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/post-handling-service:'$POST_VERSION'|' k8s/auth-service1.yaml
-    DECODED_CONTENT=$(cat k8s/post-handling-service.yaml)
-    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fpost-handling-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
-  rules:
-    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    # - changes:
-    #   - post-handling-service/**/*
-    - when: never
-feed_yaml:
-  stage: deploy
-  script: |
-    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/user-feed-service:'$FEED_VERSION'|' k8s/auth-service1.yaml
-    DECODED_CONTENT=$(cat k8s/user-feed-service.yaml)
-    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fuser-feed-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
-  rules:
-    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    # - changes:
-    #   - user-feed-service/**/*
-    - when: never
-skill_yaml:
-  stage: deploy
-  script: |
-    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/skills-service:'$SKILL_VERSION'|' k8s/auth-service1.yaml
-    DECODED_CONTENT=$(cat k8s/skills-service.yaml)
-    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fskills-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
-  rules:
-    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    # - changes:
-    #   - skills-service/**/*
-    - when: never
- 
-
- 
-
-
 authentication-service-build:
   image: maven:3.8.4-openjdk-17
   stage: build
@@ -265,70 +191,94 @@ authentication-service-build:
     paths:
       - .m2/repository/
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      allow_failure: true
-    - if: '$CI_COMMIT_TAG =~ /auth-service/'
+    # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    #   allow_failure: true
+    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
     - changes:
       - comments-service/**/*
-
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /comments-service/'
 
 social-graph-build:
   image: maven:3.8.4-openjdk-17
   stage: build
   before_script:
     - cd social-graph-service
+    - export VERSION=$GRAPH_VERSION
   script: |
     mvn compile jib:build \
     -Djib.to.auth.username=${CI_REGISTRY_USER} \
     -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
   artifacts:
-    paths:
-      - social-graph-service/target/*.jar
+    name: "Maven artifacts from $CI_PROJECT_NAME on $CI_COMMIT_REF_SLUG"
+    reports:
+      junit:
+        - "post-handling-service/target/*-reports/TEST-*.xml"
+  # artifacts:
+  #   paths:
+  #     - social-graph-service/target/*.jar
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      allow_failure: true
-    - if: '$CI_COMMIT_TAG =~ /social-graph-service/'
+    # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    #   allow_failure: true
+    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
     - changes:
-      - social-graph-service/**/*
-
+      - auth-service/**/*
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /auth-service/'
 
 post-service-build:
   image: maven:3.8.4-openjdk-17
   stage: build
   before_script:
     - cd post-service
-  script: "mvn package -B"
+    - export VERSION=$POST_VERSION
+  script: |
+    mvn compile jib:build \
+      -Djib.to.auth.username=${CI_REGISTRY_USER} \
+      -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
   artifacts:
-    paths:
-      - post-service/target/*.jar.original
+    name: "Maven artifacts from $CI_PROJECT_NAME on $CI_COMMIT_REF_SLUG"
+    reports:
+      junit:
+        - "post-handling-service/target/*-reports/TEST-*.xml"
+  # artifacts:
+  #   paths:
+  #     - post-service/target/*.jar.original
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      allow_failure: true
-    - if: '$CI_COMMIT_TAG =~ /post-handling-service/'
+    # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    #   allow_failure: true
+    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
     - changes:
-      - post-service/**/*
-
-
+      - social-graph-service/**/*
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /social-graph-service/'
 
 user-feed-build:
   image: maven:3.8.4-openjdk-17
   stage: build
   before_script:
     - cd user-feed-service
-  script: "mvn package -B"
+    - export VERSION=$FEED_VERSION
+  script: |
+    mvn compile jib:build \
+      -Djib.to.auth.username=${CI_REGISTRY_USER} \
+      -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
   artifacts:
-    paths:
-      - user-feed-service/target/*.jar
+    name: "Maven artifacts from $CI_PROJECT_NAME on $CI_COMMIT_REF_SLUG"
+    reports:
+      junit:
+        - "user-feed-service/target/*-reports/TEST-*.xml"
+  # artifacts:
+  #   paths:
+  #     - user-feed-service/target/*.jar
   cache:
     paths:
       - .m2/repository/
       - user-feed-service/target
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      allow_failure: true
-    - if: '$CI_COMMIT_TAG =~ /user-feed-service/'
+    # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    #   allow_failure: true
+    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
     - changes:
       - user-feed-service/**/*
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /user-feed-service/'
 
 comments-service-build:
   image: maven:3.8.4-openjdk-17
@@ -345,23 +295,28 @@ comments-service-build:
     paths:
       - .m2/repository/
   artifacts:
-    paths:
-      - comments-service/target/*.jar
+    name: "Maven artifacts from $CI_PROJECT_NAME on $CI_COMMIT_REF_SLUG"
+    reports:
+      junit:
+        - "comments-service/target/*-reports/TEST-*.xml"
+  # artifacts:
+  #   paths:
+  #     - comments-service/target/*.jar
 
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      allow_failure: true
-    - if: '$CI_COMMIT_TAG =~ /comments-service/'
+    # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    #   allow_failure: true
+    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
     - changes:
-      - comment-service/**/*
-
+      - comments-service/**/*
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /comments-service/'
 
 skills-service-build:
   image: maven:3.8.4-openjdk-17
   stage: build
   before_script:
     - cd skills-service
-    - export VERSION=$(cat $VERSION_FILE)
+    - export VERSION=$SKILL_VERSION
   script:
     - mvn compile jib:build \
       -Djib.to.auth.username=${CI_REGISTRY_USER} \
@@ -372,14 +327,109 @@ skills-service-build:
     paths:
       - .m2/repository/
   artifacts:
-    paths:
-      - skills-service/target/*.jar
+    name: "Maven artifacts from $CI_PROJECT_NAME on $CI_COMMIT_REF_SLUG"
+    reports:
+      junit:
+        - "skills-service/target/*-reports/TEST-*.xml"
+  # artifacts:
+  #   paths:
+  #     - skills-service/target/*.jar
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      allow_failure: true
-    - if: '$CI_COMMIT_TAG =~ /skills-service/'
+    # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    #   allow_failure: true
+    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
     - changes:
       - skills-service/**/*
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /skills-service/'
+
+
+
+auth_yaml:
+  stage: deploy
+  script: |
+    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/auth-service:'$AUTH_VERSION'|' k8s/auth-service1.yaml
+    DECODED_CONTENT=$(cat k8s/auth-service.yaml)
+    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fauth-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
+  rules:
+    - changes:
+        - auth-service/*
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /auth-service/'
+
+    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
+    # - changes:
+    #   - auth-service/**/*
+    - when: never
+comment_yaml:
+  stage: deploy
+  script: |
+    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/comments-service:'$COMMENT_VERSION'|' k8s/auth-service1.yaml
+    DECODED_CONTENT=$(cat k8s/comments-service.yaml)
+    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fcomments-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
+  rules:
+    - changes:
+        - comments-service/*
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /comments-service/'
+    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
+    # - changes:
+    #   - comments-service/**/*
+    - when: never
+social_graph_yaml:
+  stage: deploy
+  script: |
+    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/social-graph-service:'$GRAPH_VERSION'|' k8s/auth-service1.yaml
+    DECODED_CONTENT=$(cat k8s/social-graph-service.yaml)
+    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fsocial-graph-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
+  rules:
+    - changes:
+        - social-graph-service/*
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /social-graph-service/'
+    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
+    # - changes:
+    #   - social-graph-service/**/*
+    - when: never
+post_yaml:
+  stage: deploy
+  script: |
+    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/post-handling-service:'$POST_VERSION'|' k8s/auth-service1.yaml
+    DECODED_CONTENT=$(cat k8s/post-handling-service.yaml)
+    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fpost-handling-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
+  rules:
+    - changes:
+        - post-handling-service/*
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /post-handling-service/'
+    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
+    # - changes:
+    #   - post-handling-service/**/*
+    - when: never
+feed_yaml:
+  stage: deploy
+  script: |
+    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/user-feed-service:'$FEED_VERSION'|' k8s/auth-service1.yaml
+    DECODED_CONTENT=$(cat k8s/user-feed-service.yaml)
+    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fuser-feed-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
+  rules:
+    - changes:
+        - user-feed-service/*
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /user-feed-service/'
+    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
+    # - changes:
+    #   - user-feed-service/**/*
+    - when: never
+skill_yaml:
+  stage: deploy
+  script: |
+    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/skills-service:'$SKILL_VERSION'|' k8s/auth-service1.yaml
+    DECODED_CONTENT=$(cat k8s/skills-service.yaml)
+    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fskills-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
+  rules:
+    - changes:
+        - skills-service/*
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /skills-service/'
+    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
+    # - changes:
+    #   - skills-service/**/*
+    - when: never
+ 
 
 
  
