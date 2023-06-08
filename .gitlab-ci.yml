@@ -188,8 +188,17 @@ authentication-service-build:
     paths:
       - .m2/repository/
   only:
-    changes:
-      - auth-service/**/*
+    - tags
+    - branches
+  rules:
+    - exists:
+        - auth-service/**/*
+      changes:
+        - auth-service/**/*
+    - exists:
+        - $CI_COMMIT_TAG
+      changes:
+        - /*
 
 social-graph-build:
   image: maven:3.8.4-openjdk-17
@@ -204,8 +213,17 @@ social-graph-build:
     paths:
       - social-graph-service/target/*.jar
   only:
-    changes:
-      - social-graph-service/**/*
+    - tags
+    - branches
+  rules:
+    - exists:
+        - social-graph-service/**/*
+      changes:
+        - social-graph-service/**/*
+    - exists:
+        - $CI_COMMIT_TAG
+      changes:
+        - /*
 
 post-service-build:
   image: maven:3.8.4-openjdk-17
@@ -217,9 +235,17 @@ post-service-build:
     paths:
       - post-service/target/*.jar.original
   only:
-    changes:
-      - post-service/**/*
-
+    - tags
+    - branches
+  rules:
+    - exists:
+        - post-handling-service/**/*
+      changes:
+        - post-handling-service/**/*
+    - exists:
+        - $CI_COMMIT_TAG
+      changes:
+        - /*
 user-feed-build:
   image: maven:3.8.4-openjdk-17
   stage: build
@@ -234,8 +260,17 @@ user-feed-build:
       - .m2/repository/
       - user-feed-service/target
   only:
-    changes:
-      - user-feed-service/**/*
+    - tags
+    - branches
+  rules:
+    - exists:
+        - user-feed-service/**/*
+      changes:
+        - user-feed-service/**/*
+    - exists:
+        - $CI_COMMIT_TAG
+      changes:
+        - /*
 
 comments-service-build:
   image: maven:3.8.4-openjdk-17
@@ -255,8 +290,17 @@ comments-service-build:
     paths:
       - comments-service/target/*.jar
   only:
-    changes:
-      - comments-service/**/*
+    - tags
+    - branches
+  rules:
+    - exists:
+        - comments-service/**/*
+      changes:
+        - comments-service/**/*
+    - exists:
+        - $CI_COMMIT_TAG
+      changes:
+        - /*
 
 skills-service-build:
   image: maven:3.8.4-openjdk-17
@@ -277,11 +321,21 @@ skills-service-build:
     paths:
       - skills-service/target/*.jar
   only:
-    changes:
-      - skills-service/**/*
+    - tags
+    - branches
+  rules:
+    - exists:
+        - skills-service/**/*
+      changes:
+        - skills-service/**/*
+    - exists:
+        - $CI_COMMIT_TAG
+      changes:
+        - /*
+  
 
 deploy:
-  stage: build
+  stage: deploy
   image: alpine
   script: |
     sed -i "s|image:.*|image: registry.gitlab.com/hamdane10/you-scout/comments-service:$COMMENT_VERSION|g" k8s/deployment.yaml
