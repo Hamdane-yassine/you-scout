@@ -213,6 +213,9 @@ social-graph-build:
     mvn compile jib:build \
     -Djib.to.auth.username=${CI_REGISTRY_USER} \
     -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
+  cache:
+    paths:
+      - .m2/repository/
   artifacts:
     name: "Maven artifacts from $CI_PROJECT_NAME on $CI_COMMIT_REF_SLUG"
     reports:
@@ -239,6 +242,9 @@ post-handling-build:
     mvn compile jib:build \
       -Djib.to.auth.username=${CI_REGISTRY_USER} \
       -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
+  cache:
+    paths:
+      - .m2/repository/
   artifacts:
     name: "Maven artifacts from $CI_PROJECT_NAME on $CI_COMMIT_REF_SLUG"
     reports:
@@ -265,6 +271,9 @@ user-feed-build:
     mvn compile jib:build \
       -Djib.to.auth.username=${CI_REGISTRY_USER} \
       -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
+  cache:
+    paths:
+      - .m2/repository/
   artifacts:
     name: "Maven artifacts from $CI_PROJECT_NAME on $CI_COMMIT_REF_SLUG"
     reports:
@@ -273,10 +282,6 @@ user-feed-build:
   # artifacts:
   #   paths:
   #     - user-feed-service/target/*.jar
-  cache:
-    paths:
-      - .m2/repository/
-      - user-feed-service/target
   rules:
     # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     #   allow_failure: true
