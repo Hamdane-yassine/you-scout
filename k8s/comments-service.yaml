@@ -14,27 +14,18 @@ spec:
     spec:
       containers:
         - name: comments-service
-          image: registry.gitlab.com/hamdane10/you-scout/comments-service:v5.0
+          image: registry.gitlab.com/hamdane10/you-scout/comments-service:v6.0
           ports:
             - containerPort: 8071
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: docker
-            - name: MONGODB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: you-scout-secret
-                  key: mongodb-comments-service-user
-            - name: MONGODB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: you-scout-secret
-                  key: mongodb-comments-service-password
             - name: MONGODB_DATABASE
               valueFrom:
                 secretKeyRef:
                   name: you-scout-secret
-                  key: mongodb-comments-service-database
+                  key: mongodb-database
+
       imagePullSecrets:
         - name: registry-crds
 ---
