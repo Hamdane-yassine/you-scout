@@ -194,9 +194,10 @@ authentication-service-build:
     # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     #   allow_failure: true
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /comments-service/'
+    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /comments-service/'
     - changes:
       - comments-service/**/*
+    
 
 social-graph-build:
   image: maven:3.8.4-openjdk-17
@@ -222,7 +223,7 @@ social-graph-build:
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
     - changes:
       - auth-service/**/*
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /auth-service/'
+    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /auth-service/'
 
 post-service-build:
   image: maven:3.8.4-openjdk-17
@@ -248,7 +249,7 @@ post-service-build:
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
     - changes:
       - social-graph-service/**/*
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /social-graph-service/'
+    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /social-graph-service/'
 
 user-feed-build:
   image: maven:3.8.4-openjdk-17
@@ -278,7 +279,7 @@ user-feed-build:
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
     - changes:
       - user-feed-service/**/*
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /user-feed-service/'
+    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /user-feed-service/'
 
 comments-service-build:
   image: maven:3.8.4-openjdk-17
@@ -309,7 +310,7 @@ comments-service-build:
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
     - changes:
       - comments-service/**/*
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /comments-service/'
+    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /comments-service/'
 
 skills-service-build:
   image: maven:3.8.4-openjdk-17
@@ -340,7 +341,7 @@ skills-service-build:
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
     - changes:
       - skills-service/**/*
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /skills-service/'
+    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /skills-service/'
 
 
 
@@ -368,7 +369,7 @@ comment_yaml:
   rules:
     - changes:
         - comments-service/*
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /comments-service/'
+    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /comments-service/'
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
     # - changes:
     #   - comments-service/**/*
@@ -382,7 +383,7 @@ social_graph_yaml:
   rules:
     - changes:
         - social-graph-service/*
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /social-graph-service/'
+    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /social-graph-service/'
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
     # - changes:
     #   - social-graph-service/**/*
@@ -410,7 +411,7 @@ feed_yaml:
   rules:
     - changes:
         - user-feed-service/*
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /user-feed-service/'
+    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /user-feed-service/'
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
     # - changes:
     #   - user-feed-service/**/*
@@ -424,7 +425,7 @@ skill_yaml:
   rules:
     - changes:
         - skills-service/*
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /skills-service/'
+    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /skills-service/'
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
     # - changes:
     #   - skills-service/**/*
