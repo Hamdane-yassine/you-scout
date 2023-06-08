@@ -136,6 +136,7 @@ versioning:
         "comments-service")
           echo "I'm in"
           IFS='.' read -ra VERSION_ARRAY <<< "$COMMENT_VERSION"
+          echo "$COMMENT_VERSION"
           MAJOR=${VERSION_ARRAY[0]}
           MINOR=${VERSION_ARRAY[1]}
           PATCH=${VERSION_ARRAY[2]}
@@ -268,7 +269,7 @@ comments-service-build:
   before_script:
     - cd comments-service
     - echo "$COMMENT_VERSION"
-    - export VERSION=${COMMENT_VERSION}
+    - export VERSION=${"$COMMENT_VERSION"}
   script:
     - mvn compile jib:build -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD -Djib.to.image=$CONTAINER_RELEASE_IMAGE
   cache:
