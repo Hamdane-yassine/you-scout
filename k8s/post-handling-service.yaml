@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: post-handling-service
-          image: registry.gitlab.com/hamdane10/you-scout/post-service:v5.0
+          image: registry.gitlab.com/hamdane10/you-scout/post-service:v6.0
           ports:
             - containerPort: 8001
           env:
@@ -34,21 +34,11 @@ spec:
                 secretKeyRef:
                   name: you-scout-secret
                   key: aws-secret-key
-            - name: MONGODB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: you-scout-secret
-                  key: mongodb-post-handling-service-user
-            - name: MONGODB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: you-scout-secret
-                  key: mongodb-post-handling-service-password
             - name: MONGODB_DATABASE
               valueFrom:
                 secretKeyRef:
                   name: you-scout-secret
-                  key: mongodb-post-handling-service-database
+                  key: mongodb-database
       imagePullSecrets:
         - name: registry-crds
 ---
