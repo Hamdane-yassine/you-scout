@@ -1,37 +1,37 @@
-#apiVersion: apps/v1
-#kind: Deployment
-#metadata:
-#  name: user-feed-service
-#spec:
-#  replicas: 2
-#  selector:
-#    matchLabels:
-#      app: user-feed-service
-#  template:
-#    metadata:
-#      labels:
-#        app: user-feed-service
-#    spec:
-#      containers:
-#        - name: user-feed-service
-#          image: registry.gitlab.com/hamdane10/you-scout/user-feed-service:v2.0
-#          ports:
-#            - containerPort: 8003
-#          env:
-#            - name: SPRING_PROFILES_ACTIVE
-#              value: docker
-#
-#      imagePullSecrets:
-#        - name: registry-crds
-#---
-#apiVersion: v1
-#kind: Service
-#metadata:
-#  name: user-feed-service
-#spec:
-#  selector:
-#    app: user-feed-service
-#  ports:
-#    - protocol: TCP
-#      port: 8003
-#      targetPort: 8003
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-feed-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-feed-service
+  template:
+    metadata:
+      labels:
+        app: user-feed-service
+    spec:
+      containers:
+        - name: user-feed-service
+          image: registry.gitlab.com/hamdane10/you-scout/user-feed-service:v2.0
+          ports:
+            - containerPort: 8003
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+
+      imagePullSecrets:
+        - name: registry-crds
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-feed-service
+spec:
+  selector:
+    app: user-feed-service
+  ports:
+    - protocol: TCP
+      port: 8003
+      targetPort: 8003
