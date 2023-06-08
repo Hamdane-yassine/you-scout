@@ -179,10 +179,10 @@ deploy:
     apk add --no-cache git
     git config --global user.name "ayoubonn"
     git config --global user.email "aarrasseayoub@gmail"
+    git checkout master
     git add k8s/auth-service.yaml
-    git branch
     git commit -m "Update image reference in deployment.yaml"
-    git push origin ayoub
+    git push origin master
 
 
 
