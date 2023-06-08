@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb-skills-service
+spec:
+  serviceName: "mongodb-skills-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb-skills-service
+  template:
+    metadata:
+      labels:
+        app: mongodb-skills-service
+    spec:
+      containers:
+        - name: mongodb
+          image: mongo:4.2.0
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: you-scout-secret
+                  key: mongodb-skills-service-user
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: you-scout-secret
+                  key: mongodb-skills-service-password
+            - name: MONGO_INITDB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: you-scout-secret
+                  key: mongodb-skills-service-database
+          volumeMounts:
+            - name: mongodb-data
+              mountPath: /data/db
+  volumeClaimTemplates:
+    - metadata:
+        name: mongodb-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-skills-service
+spec:
+  selector:
+    app: mongodb-skills-service
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
