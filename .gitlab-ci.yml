@@ -220,9 +220,9 @@ social-graph-build:
     # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     #   allow_failure: true
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    - changes:
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /auth-service/'
+      changes:
       - auth-service/**/*
-    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /auth-service/'
 
 post-service-build:
   image: maven:3.8.4-openjdk-17
@@ -246,9 +246,9 @@ post-service-build:
     # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     #   allow_failure: true
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    - changes:
-      - social-graph-service/**/*
-    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /social-graph-service/'
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /post-service/'
+      changes:
+        - post-service/**/*
 
 user-feed-build:
   image: maven:3.8.4-openjdk-17
@@ -276,9 +276,9 @@ user-feed-build:
     # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     #   allow_failure: true
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    - changes:
-      - user-feed-service/**/*
-    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /user-feed-service/'
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /user-feed-service/'
+      changes:
+        - user-feed-service/**/*
 
 comments-service-build:
   image: maven:3.8.4-openjdk-17
@@ -307,9 +307,9 @@ comments-service-build:
     # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     #   allow_failure: true
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    - changes:
-      - comments-service/**/*
-    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /comments-service/'
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /comments-service/'
+      changes:
+        - comments-service/**/*
 
 skills-service-build:
   image: maven:3.8.4-openjdk-17
@@ -338,9 +338,9 @@ skills-service-build:
     # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     #   allow_failure: true
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    - changes:
-      - skills-service/**/*
-    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /skills-service/'
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /skills-service/'
+      changes:
+        - skills-service/**/*
 
 
 
@@ -351,14 +351,9 @@ auth_yaml:
     DECODED_CONTENT=$(cat k8s/auth-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fauth-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
-    - changes:
-        - auth-service/*
-    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /auth-service/'
-
-    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    # - changes:
-    #   - auth-service/**/*
-    - when: never
+    - if: '$CI_COMMIT_TAG =~ /auth-service/'
+      changes:
+        - auth-service/**/*
 comment_yaml:
   stage: deploy
   script: |
@@ -366,13 +361,9 @@ comment_yaml:
     DECODED_CONTENT=$(cat k8s/comments-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fcomments-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
-    - changes:
-        - comments-service/*
-    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /comments-service/'
-    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    # - changes:
-    #   - comments-service/**/*
-    - when: never
+    - if: '$CI_COMMIT_TAG =~ /comments-service/'
+      changes:
+        - comments-service/**/*
 social_graph_yaml:
   stage: deploy
   script: |
@@ -380,13 +371,9 @@ social_graph_yaml:
     DECODED_CONTENT=$(cat k8s/social-graph-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fsocial-graph-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
-    - changes:
-        - social-graph-service/*
-    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /social-graph-service/'
-    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    # - changes:
-    #   - social-graph-service/**/*
-    - when: never
+    - if: '$CI_COMMIT_TAG =~ /social-graph-service/'
+      changes:
+        - social-graph-service/**/*
 post_yaml:
   stage: deploy
   script: |
@@ -394,13 +381,9 @@ post_yaml:
     DECODED_CONTENT=$(cat k8s/post-handling-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fpost-handling-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
-    - changes:
-        - post-handling-service/*
-    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /post-handling-service/'
-    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    # - changes:
-    #   - post-handling-service/**/*
-    - when: never
+    - if: '$CI_COMMIT_TAG =~ /post-service/'
+      changes:
+        - post-service/**/*
 feed_yaml:
   stage: deploy
   script: |
@@ -408,13 +391,9 @@ feed_yaml:
     DECODED_CONTENT=$(cat k8s/user-feed-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fuser-feed-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
-    - changes:
-        - user-feed-service/*
-    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /user-feed-service/'
-    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    # - changes:
-    #   - user-feed-service/**/*
-    - when: never
+    - if: '$CI_COMMIT_TAG =~ /user-feed-service/'
+      changes:
+        - user-feed-service/**/*
 skill_yaml:
   stage: deploy
   script: |
@@ -422,13 +401,9 @@ skill_yaml:
     DECODED_CONTENT=$(cat k8s/skills-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fskills-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
   rules:
-    - changes:
-        - skills-service/*
-    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /skills-service/'
-    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    # - changes:
-    #   - skills-service/**/*
-    - when: never
+    - if: '$CI_COMMIT_TAG =~ /skills-service/'
+      changes:
+        - skills-service/**/*
  
 
 
