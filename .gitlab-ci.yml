@@ -14,6 +14,7 @@ variables:
   VERSION_TAG: $CI_PIPELINE_IID
   VERSION_FILE: version.txt
   SERVICES: value
+  CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
 
 scan_code:
   image: registry.gitlab.com/gitlab-org/security-products/analyzers/semgrep:latest
@@ -45,7 +46,7 @@ versioning:
     - if [[ $variable_value =~ ^increment-major-auth-service$ ]]; then echo "Variable matches pattern"; fi
     - IFS='-' read -ra words <<< "$variable_value"
     - word1="${words[0]}"
-    - word2="${words[1]}"
+    - word2=$(echo "$variable_value" | cut -d'-' -f2-)
     - echo "Word 1 $word1"
     - echo "Word 2 $word2"
   # rules:
@@ -167,8 +168,7 @@ post-service-build:
   stage: build
   before_script:
     - cd post-service
-  script:
-    - mvn -e compile jib:build -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD -Djib.to.image=$CI_REGISTRY_IMAGE
+  script: "mvn package -B"
   artifacts:
     paths:
       - post-service/target/*.jar.original
@@ -183,8 +183,7 @@ user-feed-build:
   stage: build
   before_script:
     - cd user-feed-service
-  script:
-    - mvn -e compile jib:build -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD -Djib.to.image=$CI_REGISTRY_IMAGE
+  script: "mvn package -B"
   artifacts:
     paths:
       - user-feed-service/target/*.jar
@@ -224,7 +223,10 @@ skills-service-build:
     - cd skills-service
     - export VERSION=$(cat $VERSION_FILE)
   script:
-    - mvn compile jib:build -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD -Djib.to.image=$CONTAINER_RELEASE_IMAGE
+    - mvn compile jib:build \
+      -Djib.to.auth.username=${CI_REGISTRY_USER} \
+      -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
+      -Djib.to.image=${CI_REGISTRY_IMAGE}
   cache:
     key: "$CI_COMMIT_REF_SLUG"
     paths:
@@ -235,7 +237,6 @@ skills-service-build:
   only:
     changes:
       - skills-service/**/*
-
 
 
 increment_minor:
