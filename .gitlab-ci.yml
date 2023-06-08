@@ -176,7 +176,7 @@ versioning:
 
 
 
-authentication-service-build:
+auth-build:
   image: maven:3.8.4-openjdk-17
   stage: build
   before_script:
@@ -202,7 +202,6 @@ authentication-service-build:
     - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /comments-service/'
       changes:
       - comments-service/**/*
-    
 
 social-graph-build:
   image: maven:3.8.4-openjdk-17
@@ -230,7 +229,7 @@ social-graph-build:
       changes:
       - auth-service/**/*
 
-post-service-build:
+post-handling-build:
   image: maven:3.8.4-openjdk-17
   stage: build
   before_script:
@@ -286,7 +285,7 @@ user-feed-build:
       changes:
         - user-feed-service/**/*
 
-comments-service-build:
+comments-build:
   image: maven:3.8.4-openjdk-17
   stage: build
   before_script:
@@ -317,7 +316,7 @@ comments-service-build:
       changes:
         - comments-service/**/*
 
-skills-service-build:
+skills-build:
   image: maven:3.8.4-openjdk-17
   stage: build
   before_script:
@@ -360,6 +359,9 @@ auth_yaml:
     - if: '$CI_COMMIT_TAG =~ /auth-service/'
       changes:
         - auth-service/**/*
+  needs:
+    - job: auth-build
+
 comment_yaml:
   stage: deploy
   script: |
@@ -370,6 +372,9 @@ comment_yaml:
     - if: '$CI_COMMIT_TAG =~ /comments-service/'
       changes:
         - comments-service/**/*
+  needs:
+    - job: comments-build
+
 social_graph_yaml:
   stage: deploy
   script: |
@@ -380,6 +385,9 @@ social_graph_yaml:
     - if: '$CI_COMMIT_TAG =~ /social-graph-service/'
       changes:
         - social-graph-service/**/*
+  needs:
+    - job: social-graph-build
+
 post_yaml:
   stage: deploy
   script: |
@@ -390,6 +398,9 @@ post_yaml:
     - if: '$CI_COMMIT_TAG =~ /post-service/'
       changes:
         - post-service/**/*
+  needs:
+    - job: post-handling-build
+
 feed_yaml:
   stage: deploy
   script: |
@@ -400,6 +411,9 @@ feed_yaml:
     - if: '$CI_COMMIT_TAG =~ /user-feed-service/'
       changes:
         - user-feed-service/**/*
+  needs:
+    - job: user-feed-build
+
 skill_yaml:
   stage: deploy
   script: |
@@ -410,6 +424,8 @@ skill_yaml:
     - if: '$CI_COMMIT_TAG =~ /skills-service/'
       changes:
         - skills-service/**/*
+  needs:
+    - job: skills-build
  
 
 
