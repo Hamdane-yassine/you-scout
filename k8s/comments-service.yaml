@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: comments-service
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: comments-service
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: comments-service
-          image: registry.gitlab.com/hamdane10/you-scout/comments-service:v1.0
+          image: registry.gitlab.com/hamdane10/you-scout/comments-service:v2.0
           ports:
             - containerPort: 8071
           env:
