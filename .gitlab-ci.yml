@@ -1,7 +1,7 @@
 default:
   tags:
     - Windows
-
+    - docker
 
 stages:
   - scan
