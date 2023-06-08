@@ -175,9 +175,9 @@ deploy:
   stage: deploy
   image: alpine
   script: |
-    sed -i "s|image:.*|image: registry.gitlab.com/hamdane10/you-scout/comments-service:$COMMENT_VERSION|g" k8s/deployment.yaml
+    sed -i "s|image:.*|image: registry.gitlab.com/hamdane10/you-scout/comments-service:$COMMENT_VERSION|g" k8s/auth-service.yaml
     apk add --no-cache git
-    git add k8s/deployment.yaml
+    git add k8s/auth-service.yaml
     git commit -m "Update image reference in deployment.yaml"
     git push origin master
 
