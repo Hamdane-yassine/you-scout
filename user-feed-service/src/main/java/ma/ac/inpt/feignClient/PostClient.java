@@ -1,7 +1,6 @@
 package ma.ac.inpt.feignClient;
 
 
-import ma.ac.inpt.models.Post;
 import ma.ac.inpt.payload.PostRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.List;
 
 
-@FeignClient(name = "POST-HANDLING-SERVICE")
+@FeignClient(name = "post-handling-service")
 public interface PostClient {
 
     /**
