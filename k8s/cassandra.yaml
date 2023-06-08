@@ -1,38 +1,26 @@
+#cassandra-service.yaml
 apiVersion: v1
-kind: ConfigMap
+kind: Service
 metadata:
-  name: cassandra-init-script
-data:
-  init.sh: |
-    #!/bin/bash
-
-    # This function will wait for Cassandra to start up
-    function wait_for_cassandra() {
-      for i in {1..30}; do
-        if cqlsh -e 'describe cluster' > /dev/null 2>&1; then
-          return 0
-        fi
-        echo "waiting for Cassandra to start"
-        sleep 2
-      done
-      return 1
-    }
-
-    # Start the first node and create the schema
-    if ! wait_for_cassandra; then
-      echo "Cassandra took too long to start up, exiting"
-      exit 1
-    fi
-
-    cqlsh -e "CREATE KEYSPACE youscoutfeed WITH replication = {'class' : 'SimpleStrategy', 'replication_factor' : 1};"
+  labels:
+    app: cassandra
+  name: cassandra
+spec:
+  clusterIP: None
+  ports:
+    - port: 9042
+  selector:
+    app: cassandra
 
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: cassandra
+  labels:
+    app: cassandra
 spec:
-  serviceName: "cassandra"
+  serviceName: cassandra
   replicas: 1
   selector:
     matchLabels:
@@ -44,39 +32,19 @@ spec:
     spec:
       containers:
         - name: cassandra
-          image: cassandra:4.0.7
-          ports:
-            - containerPort: 9042
+          image: cassandra:3.11.8
+          env:
+            - name: CASSANDRA_SEEDS
+              value: "cassandra-0.cassandra.default.svc.cluster.local"
           volumeMounts:
-            - name: cassandra-data
-              mountPath: /cassandra_data
-            - name: init-script
-              mountPath: /init-scripts
-          command: ["/bin/bash", "-c", "/init-scripts/init.sh && cassandra -f"]
-      volumes:
-        - name: init-script
-          configMap:
-            name: cassandra-init-script
-            defaultMode: 0744
+            - mountPath: "/var/lib/cassandra"
+              name: cassandra-data
   volumeClaimTemplates:
     - metadata:
         name: cassandra-data
       spec:
         accessModes: [ "ReadWriteOnce" ]
+        storageClassName: azurefile
         resources:
           requests:
             storage: 1Gi
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: cassandra
-spec:
-  clusterIP: None
-  selector:
-    app: cassandra
-  ports:
-    - protocol: TCP
-      port: 9042
-      targetPort: 9042
