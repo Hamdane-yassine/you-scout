@@ -1,1 +1,1 @@
-image: lsgdjglsj
+image: registry.gitlab.com/hamdane10/you-scout/comments-service:${COMMENT_VERSION}
