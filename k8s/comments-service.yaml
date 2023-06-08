@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comments-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: comments-service
+  template:
+    metadata:
+      labels:
+        app: comments-service
+    spec:
+      containers:
+        - name: comments-service
+          image: registry.gitlab.com/hamdane10/you-scout/comments-service:v1.0
+          ports:
+            - containerPort: 8071
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+            - name: MONGODB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: you-scout-secret
+                  key: mongodb-comments-service-user
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: you-scout-secret
+                  key: mongodb-comments-service-password
+            - name: MONGODB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: you-scout-secret
+                  key: mongodb-comments-service-database
+      imagePullSecrets:
+        - name: registry-crds
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comments-service
+spec:
+  selector:
+    app: comments-service
+  ports:
+    - protocol: TCP
+      port: 8071
+      targetPort: 8071

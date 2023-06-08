@@ -1,29 +1,31 @@
 package ma.ac.inpt.postservice.model;
 
 
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
-import org.springframework.data.annotation.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
+
 @Data
 @RequiredArgsConstructor
-@NoArgsConstructor
 @AllArgsConstructor
 @Document
 public class Post {
 
     private String _id;
     @CreatedDate
-    @NonNull
+    @NotNull
     private Instant createdAt;
 
     @CreatedBy
-    @NonNull
+    @NotNull
     private String username;
 
     private String userProfilePic;
@@ -37,24 +39,4 @@ public class Post {
 
     private Map<String, Map<String, Integer>> skills;
 
-
-
-    /**
-     * Constructs a Post object with the specified id, username, profile picture, video, and caption.
-     *
-     * @param username     The username of the post creator
-     * @param profilePic   The profile picture of the post creator
-     * @param caption      The caption of the post
-     */
-    public Post(@NotNull String username, @NotNull String profilePic, @NotNull String caption) {
-        this.username = username;
-        this.userProfilePic = profilePic;
-        this.caption = caption;
-    }
-
-    public Post(@NotNull String username, String videoUrl) {
-        this.username = username;
-        this.videoUrl = videoUrl;
-        this.createdAt = Instant.now();
-    }
 }

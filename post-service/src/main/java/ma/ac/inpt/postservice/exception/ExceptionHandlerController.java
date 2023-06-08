@@ -55,21 +55,6 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         return buildResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
     }
 
-//    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-//        // Build custom error response body
-//        Map<String, Object> body = new LinkedHashMap<>();
-//        body.put("timestamp", LocalDateTime.now());
-//        body.put("status", status.value());
-//        body.put("error", status.getReasonPhrase());
-//        body.put("path", request.getDescription(false));
-//
-//        // Get error message from validation errors
-//        String errorMessage = ex.getBindingResult().getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).findFirst().orElse("Validation error");
-//        body.put("message", errorMessage);
-//
-//        return new ResponseEntity<>(body, headers, status);
-//    }
-
     /**
      * Builds a custom response entity with the given HTTP status, error message, and web request description.
      */

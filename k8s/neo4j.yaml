@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -23,11 +24,12 @@ spec:
 
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: neo4j-deployment
+  name: neo4j
 spec:
-  replicas: 1
+  serviceName: "neo4j"
+  replicas: 2
   selector:
     matchLabels:
       app: neo4j
@@ -37,26 +39,30 @@ spec:
         app: neo4j
     spec:
       containers:
-      - name: neo4j
-        image: neo4j:4.4.21
-        ports:
-        - containerPort: 7474
-          name: http
-        - containerPort: 7687
-          name: bolt
-        volumeMounts:
-        - name: neo4jdbvol
-          mountPath: /data
-        env:
-        - name: NEO4J_AUTH
-          valueFrom:
-            secretKeyRef:
-              name: you-scout-secret
-              key: neo4j-auth
-      volumes:
-      - name: neo4jdbvol
-        persistentVolumeClaim:
-          claimName: neo4jdbvol-claim
+        - name: neo4j
+          image: neo4j:4.4.21
+          ports:
+            - containerPort: 7474
+              name: http
+            - containerPort: 7687
+              name: bolt
+          volumeMounts:
+            - name: neo4jdbvol
+              mountPath: /data
+          env:
+            - name: NEO4J_AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: you-scout-secret
+                  key: neo4j-auth
+  volumeClaimTemplates:
+    - metadata:
+        name: neo4jdbvol
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
 
 ---
 apiVersion: v1

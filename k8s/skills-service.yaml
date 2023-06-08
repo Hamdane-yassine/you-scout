@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skills-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: skills-service
+  template:
+    metadata:
+      labels:
+        app: skills-service
+    spec:
+      containers:
+        - name: skills-service
+          image: registry.gitlab.com/hamdane10/you-scout/skills-service:v1.0
+          ports:
+            - containerPort: 8072
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+            - name: MONGODB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: you-scout-secret
+                  key: mongodb-skills-service-user
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: you-scout-secret
+                  key: mongodb-skills-service-password
+            - name: MONGODB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: you-scout-secret
+                  key: mongodb-skills-service-database
+      imagePullSecrets:
+        - name: registry-crds
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: skills-service
+spec:
+  selector:
+    app: skills-service
+  ports:
+    - protocol: TCP
+      port: 8072
+      targetPort: 8072
