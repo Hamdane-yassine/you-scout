@@ -17,7 +17,7 @@ public class PostEventSender {
 
     private final KafkaTemplate<String, PostEvent> kafkaTemplate;
 
-    @Value("${spring.kafka.topic.name}")
+    @Value("${spring.kafka.topic.post.name}")
     private String topicName;
 
     /**
