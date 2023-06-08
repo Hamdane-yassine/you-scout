@@ -8,8 +8,6 @@ stages:
   - build
   - deploy
 
-
-
 variables:
   VERSION_TAG: $CI_PIPELINE_IID
   VERSION_FILE: version.txt
@@ -25,8 +23,6 @@ scan_code:
   artifacts:
     reports:
       sast: gl-sast-report.json
-
-
 
 versioning:
   stage: version
@@ -171,21 +167,6 @@ versioning:
   rules:
     - if: '$CI_COMMIT_TAG'
 
-deploy:
-  stage: deploy
-  image: alpine
-  script: |
-    sed -i "s|image:.*|image: registry.gitlab.com/hamdane10/you-scout/comments-service:$COMMENT_VERSION|g" k8s/deployment.yaml
-    apk add --no-cache git
-    git add k8s/deployment.yaml
-    git commit -m "Update image reference in deployment.yaml"
-    git push origin master
-
-
-
-
-
-
 authentication-service-build:
   image: maven:3.8.4-openjdk-17
   stage: build
@@ -210,7 +191,6 @@ authentication-service-build:
     changes:
       - auth-service/**/*
 
-
 social-graph-build:
   image: maven:3.8.4-openjdk-17
   stage: build
@@ -227,7 +207,6 @@ social-graph-build:
     changes:
       - social-graph-service/**/*
 
-
 post-service-build:
   image: maven:3.8.4-openjdk-17
   stage: build
@@ -240,8 +219,6 @@ post-service-build:
   only:
     changes:
       - post-service/**/*
-
-
 
 user-feed-build:
   image: maven:3.8.4-openjdk-17
@@ -259,7 +236,6 @@ user-feed-build:
   only:
     changes:
       - user-feed-service/**/*
-
 
 comments-service-build:
   image: maven:3.8.4-openjdk-17
@@ -281,7 +257,6 @@ comments-service-build:
   only:
     changes:
       - comments-service/**/*
-
 
 skills-service-build:
   image: maven:3.8.4-openjdk-17
@@ -305,7 +280,17 @@ skills-service-build:
     changes:
       - skills-service/**/*
 
-
+deploy:
+  stage: deploy
+  image: alpine
+  script: |
+    sed -i "s|image:.*|image: registry.gitlab.com/hamdane10/you-scout/comments-service:$COMMENT_VERSION|g" k8s/deployment.yaml
+    apk add --no-cache git
+    git add k8s/deployment.yaml
+    git commit -m "Update image reference in deployment.yaml"
+    git push origin master
+  needs:
+    - job: versioning
 
 
 
