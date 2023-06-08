@@ -281,7 +281,7 @@ skills-service-build:
       - skills-service/**/*
 
 deploy:
-  stage: deploy
+  stage: build
   image: alpine
   script: |
     sed -i "s|image:.*|image: registry.gitlab.com/hamdane10/you-scout/comments-service:$COMMENT_VERSION|g" k8s/deployment.yaml
