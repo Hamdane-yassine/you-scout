@@ -193,9 +193,8 @@ authentication-service-build:
   rules:
     # - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     #   allow_failure: true
-    # - if: '$CI_COMMIT_TAG =~ /auth-service/'
-    # - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /comments-service/'
-    - changes:
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG =~ /comments-service/'
+      changes:
       - comments-service/**/*
     
 
