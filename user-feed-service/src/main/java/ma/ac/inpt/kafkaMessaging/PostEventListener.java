@@ -15,7 +15,7 @@ public class PostEventListener {
 
     private final FeedGenService feedGeneratorService;
 
-    @KafkaListener(topics = "post", groupId = "posts", containerFactory = "factory")
+    @KafkaListener(topics = "${spring.kafka.topic.name}", groupId = "post-service", containerFactory = "factory")
     public void consume(PostEvent message) {
         log.info(message.toString());
 

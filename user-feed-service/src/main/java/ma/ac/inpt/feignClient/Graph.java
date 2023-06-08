@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-@FeignClient(name = "SOCIAL-GRAPH-SERVICE")
+@FeignClient(name = "social-graph-service")
 public interface Graph {
 
     /**
