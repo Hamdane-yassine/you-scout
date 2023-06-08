@@ -47,6 +47,8 @@ versioning:
     - IFS='-' read -ra words <<< "$variable_value"
     - word1="${words[0]}"
     - word2=$(echo "$variable_value" | cut -d'-' -f2-)
+    - echo $word1
+    - echo $word2
     - variable_name="${word1}-${word2}"
     # - echo "key $variable_value, value ${variables[$variable_value]}"
     # - >
@@ -54,12 +56,13 @@ versioning:
     - |
       case "$word2" in
         "auth-service")
+          echo "I'm in"
           IFS='.' read -ra VERSION_ARRAY <<< "$AUTH_VERSION"
           MAJOR=${VERSION_ARRAY[0]}
           MINOR=${VERSION_ARRAY[1]}
           PATCH=${VERSION_ARRAY[2]}
-          
           if [[ $word1 == "major" ]]; then
+            echo "I'm really in"
             MAJOR=$((MAJOR + 1))
             MINOR=0
             PATCH=0
