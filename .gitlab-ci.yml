@@ -190,7 +190,7 @@ comments-service-build:
     - cd comments-service
     - export VERSION=$(cat $VERSION_FILE)
   script:
-    - mvn compile jib:build -Djib.to.auth.username="$CI_REGISTRY_USER" -Djib.to.auth.password="$CI_REGISTRY_PASSWORD" -Djib.to.image=registry.gitlab.com/hamdane10/you-scout/comments-service:latest
+    - mvn compile jib:build -Djib.to.auth.username="$CI_REGISTRY_USER" -Djib.to.auth.password="$CI_REGISTRY_PASSWORD" -Djib.to.image="$CI_REGISTRY_IMAGE:latest"
   cache:
     key: "$CI_COMMIT_REF_SLUG"
     paths:
@@ -212,7 +212,8 @@ skills-service-build:
   script:
     - mvn compile jib:build \
       -Djib.to.auth.username=${CI_REGISTRY_USER} \
-      -Djib.to.auth.password=${CI_REGISTRY_PASSWORD}
+      -Djib.to.auth.password=${CI_REGISTRY_PASSWORD} \
+      -Djib.to.image=${CI_REGISTRY_IMAGE}
   cache:
     key: "$CI_COMMIT_REF_SLUG"
     paths:
