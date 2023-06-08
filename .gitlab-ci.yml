@@ -181,7 +181,7 @@ deploy:
     git commit -m "Update image reference in deployment.yaml"
     git push origin master
   needs:
-    - job: versioning
+    - job: version
 
 
 
