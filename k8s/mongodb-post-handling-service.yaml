@@ -17,21 +17,11 @@ spec:
         - name: mongodb
           image: mongo:4.2.0
           env:
-            - name: MONGO_INITDB_ROOT_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: you-scout-secret
-                  key: mongodb-post-handling-service-user
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: you-scout-secret
-                  key: mongodb-post-handling-service-password
             - name: MONGO_INITDB_DATABASE
               valueFrom:
                 secretKeyRef:
                   name: you-scout-secret
-                  key: mongodb-post-handling-service-database
+                  key: mongodb-database
           volumeMounts:
             - name: mongodb-data
               mountPath: /data/db
