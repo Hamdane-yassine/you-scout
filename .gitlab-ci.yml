@@ -44,8 +44,9 @@ versioning:
     - variable_value="increment-major-auth-service"
     - echo "Variable value $variable_value"
     - if [[ $variable_value =~ ^increment-major-auth-service$ ]]; then echo "Variable matches pattern"; fi
-    - word1=$(echo $variable_value | cut -d '-' -f 1)
-    - word2=$(echo $variable_value | cut -d '-' -f 2)
+    - words=(${variable_value//-/ })
+    - word1="${words[0]}"
+    - word2="${words[1]}"
     - echo "Word 1 $word1"
     - echo "Word 2 $word2"
   # rules:
