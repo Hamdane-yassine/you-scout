@@ -39,6 +39,7 @@ auth_major:
 
 
 versioning:
+  stage: version
   script:
     - variable_value="$CI_VARIABLE_NAME"
     - echo "Variable value $variable_value"
