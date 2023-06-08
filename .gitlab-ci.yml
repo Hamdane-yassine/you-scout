@@ -1,6 +1,6 @@
 default:
   tags:
-    - Ultimate runner
+    - Windows
 
 
 stages:
