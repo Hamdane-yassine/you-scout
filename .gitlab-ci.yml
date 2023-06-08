@@ -176,7 +176,7 @@ modify_yaml:
   stage: deploy
   script: |
     sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/comments-service:$COMMENT_VERSION|' k8s/auth-service.yaml
-    ENCODED_CONTENT=$(base64 -w 0 path/to/auth-service.yaml)
+    ENCODED_CONTENT=$(base64 -w 0 k8s/auth-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-LGFV1vP3hhkkxyb9b8Hc" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s/auth-service.yaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$ENCODED_CONTENT"'", "commit_message": "update file"}'
 
  
