@@ -157,7 +157,8 @@ post-service-build:
   stage: build
   before_script:
     - cd post-service
-  script: "mvn package -B"
+  script:
+    - mvn compile jib:build -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD -Djib.to.image=$CONTAINER_RELEASE_IMAGE
   artifacts:
     paths:
       - post-service/target/*.jar.original
