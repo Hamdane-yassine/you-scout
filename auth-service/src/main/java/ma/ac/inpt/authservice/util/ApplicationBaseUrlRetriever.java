@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * A component responsible for retrieving the base URL of the application.
- * The base URL is composed of the application base URL and the server port number.
+ * The base URL is composed of the application base URL and the server port number
  */
 @Component
 public class ApplicationBaseUrlRetriever {
