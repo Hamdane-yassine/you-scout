@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Represents an email payload containing the necessary information to send an email.
+ * Represents an email payload containing the necessary information to send an email
  */
 @Data
 @Builder
