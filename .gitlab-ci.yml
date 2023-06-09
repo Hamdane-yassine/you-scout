@@ -360,19 +360,19 @@ auth_yaml:
     ENCODED_CONTENT=$(base64 -w 0 k8s/auth-service.yaml)
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$ENCODED_CONTENT"'", "commit_message": "update file", "encoding":"base64"}' "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fauth-service%2Eyaml"
 
-  # rules:
-  #   - if: '$CI_COMMIT_TAG == "major-auth-service" || $CI_COMMIT_TAG == "minor-auth-service" || $CI_COMMIT_TAG == "patch-auth-service"'
-  #     changes:
-  #       - auth-service/**/*
-  # needs:
-  #   - job: auth-build
+  rules:
+    - if: '$CI_COMMIT_TAG == "major-auth-service" || $CI_COMMIT_TAG == "minor-auth-service" || $CI_COMMIT_TAG == "patch-auth-service"'
+      changes:
+        - auth-service/**/*
+  needs:
+    - job: auth-build
 
 social_graph_yaml:
   stage: deploy
   script: |
     sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/social-graph-service:'$GRAPH_VERSION'|' k8s/social-graph-service.yaml
-    DECODED_CONTENT=$(cat k8s/social-graph-service.yaml)
-    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fsocial-graph-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
+    ENCODED_CONTENT=$(base64 -w 0 k8s/social-graph-service.yaml)
+    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fsocial-graph-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file", "encoded":"base64"}'
   rules:
     - if: '$CI_COMMIT_TAG == "major-social-graph-service" || $CI_COMMIT_TAG == "minor-social-graph-service" || $CI_COMMIT_TAG == "patch-social-graph-service"'
       changes:
@@ -384,8 +384,8 @@ post_yaml:
   stage: deploy
   script: |
     sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/post-handling-service:'$POST_VERSION'|' k8s/post-handling-service.yaml
-    DECODED_CONTENT=$(cat k8s/post-handling-service.yaml)
-    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fpost-handling-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
+    ENCODED_CONTENT=$(base64 -w 0 k8s/post-service.yaml)
+    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fpost-handling-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file", "encoded":"base64"}'
   rules:
     - if: '$CI_COMMIT_TAG == "major-post-handling-service" || $CI_COMMIT_TAG == "minor-post-handling-service" || $CI_COMMIT_TAG == "patch-post-handling-service"'
       changes:
@@ -397,8 +397,8 @@ feed_yaml:
   stage: deploy
   script: |
     sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/user-feed-service:'$FEED_VERSION'|' k8s/user-feed-service.yaml
-    DECODED_CONTENT=$(cat k8s/user-feed-service.yaml)
-    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fuser-feed-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
+    ENCODED_CONTENT=$(base64 -w 0 k8s/user-feed-service.yaml)
+    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fuser-feed-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file","encoded":"base64"}'
   rules:
     - if: '$CI_COMMIT_TAG == "major-user-feed-service" || $CI_COMMIT_TAG == "minor-user-feed-service" || $CI_COMMIT_TAG == "patch-user-feed-service"'
       changes:
@@ -410,9 +410,9 @@ comment_yaml:
   stage: deploy
   script: |
     sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/comments-service:'$COMMENT_VERSION'|' k8s/comments-service.yaml
-    DECODED_CONTENT=$(cat k8s/comments-service.yaml)
+    ENCODED_CONTENT=$(base64 -w 0 k8s/comments-service.yaml)
     echo "$DECODED_CONTENT"
-    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fcomments-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
+    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fcomments-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file", "encoded":"base64"}'
 
   rules:
     - if: '$CI_COMMIT_TAG == "major-comments-service" || $CI_COMMIT_TAG == "minor-comments-service" || $CI_COMMIT_TAG == "patch-comments-service"'
@@ -425,8 +425,8 @@ skill_yaml:
   stage: deploy
   script: |
     sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/skills-service:'$SKILL_VERSION'|' k8s/skills-service.yaml
-    DECODED_CONTENT=$(cat k8s/skills-service.yaml)
-    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fskills-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file"}'
+    ENCODED_CONTENT=$(base64 -w 0 k8s/skills-service.yaml)
+    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fskills-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file", "encoded":"base64"}'
   rules:
     - if: '$CI_COMMIT_TAG == "major-skills-service" || $CI_COMMIT_TAG == "minor-skills-service" || $CI_COMMIT_TAG == "patch-skills-service"'
       changes:
