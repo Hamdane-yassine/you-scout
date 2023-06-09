@@ -31,7 +31,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param identifier the username or email to search for
      * @return an Optional containing the User object with the specified username or email, or an empty Optional if not found
      */
-    @Query("SELECT u FROM User u WHERE u.username = :identifier OR u.email = :identifier")
+    @Query("SELECT u FROM User u WHERE lower(u.username) = lower(:identifier) OR lower(u.email) = lower(:identifier)")
     Optional<User> findByUsernameIgnoreCaseOrEmailIgnoreCase(@Param("identifier") String identifier);
 
     /**
