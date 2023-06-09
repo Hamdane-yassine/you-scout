@@ -1,6 +1,6 @@
 default:
   tags:
-    - docker-youscout
+    - gitlab-runner-7cb44649f8-8b2l6
 stages:
   - scan
   - version

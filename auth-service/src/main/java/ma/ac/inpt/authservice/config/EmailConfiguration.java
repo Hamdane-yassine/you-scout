@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
+import java.util.Properties;
+
 /**
  * Configuration class for setting up the JavaMailSender used for sending emails.
  */
@@ -48,6 +50,11 @@ public class EmailConfiguration {
         mailSenderImpl.setPort(port);
         mailSenderImpl.setUsername(username);
         mailSenderImpl.setPassword(password);
+        Properties props = mailSenderImpl.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.debug", "true");
         return mailSenderImpl;
     }
 }
