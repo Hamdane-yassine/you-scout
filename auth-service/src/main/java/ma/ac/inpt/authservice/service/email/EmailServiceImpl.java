@@ -71,8 +71,8 @@ public class EmailServiceImpl implements EmailService {
             Resource resource = new ClassPathResource(templatePath);
             File file = resource.getFile();
             String htmlContent = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-            htmlContent = htmlContent.replace("{{title}}", title);
-            htmlContent = htmlContent.replace("{{content}}", content);
+            htmlContent = htmlContent.replace("{{title}}", escapeHtml(title));
+            htmlContent = htmlContent.replace("{{content}}", escapeHtml(content));
             log.info("Email template loaded successfully");
             return htmlContent;
         } catch (IOException e) {
@@ -80,4 +80,19 @@ public class EmailServiceImpl implements EmailService {
             throw new EmailTemplateLoadingException("Error loading email template");
         }
     }
+
+    private static String escapeHtml(String input) {
+        if (input == null) {
+            return null;
+        }
+
+        return input
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#x27;");
+    }
+
+
 }
