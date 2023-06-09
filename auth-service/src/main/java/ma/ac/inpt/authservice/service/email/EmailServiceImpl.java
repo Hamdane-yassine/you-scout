@@ -34,7 +34,7 @@ public class EmailServiceImpl implements EmailService {
     private String sender; // Email address of the sender
 
     /**
-     * Sends an email asynchronously using the provided email payload
+     * Sends an email asynchronously using the provided email payload.
      *
      * @param payload the email payload containing the recipient address, subject, and content
      */
@@ -71,8 +71,8 @@ public class EmailServiceImpl implements EmailService {
             Resource resource = new ClassPathResource(templatePath);
             File file = resource.getFile();
             String htmlContent = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-            htmlContent = htmlContent.replace("{{title}}", escapeHtml(title));
-            htmlContent = htmlContent.replace("{{content}}", escapeHtml(content));
+            htmlContent = htmlContent.replace("{{title}}", title);
+            htmlContent = htmlContent.replace("{{content}}", content);
             log.info("Email template loaded successfully");
             return htmlContent;
         } catch (IOException e) {
@@ -80,19 +80,4 @@ public class EmailServiceImpl implements EmailService {
             throw new EmailTemplateLoadingException("Error loading email template");
         }
     }
-
-    private static String escapeHtml(String input) {
-        if (input == null) {
-            return null;
-        }
-
-        return input
-                .replace("&", "&amp;")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;")
-                .replace("\"", "&quot;")
-                .replace("'", "&#x27;");
-    }
-
-
 }

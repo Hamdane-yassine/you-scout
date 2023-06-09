@@ -68,7 +68,7 @@ public abstract class AbstractTokenService<T extends Token> {
             token = createOrUpdateToken(user,emailVerificationType);
             String recipientAddress = token.getUser().getEmail();
             String confirmationLink = getTokenContent(token);
-            String content = "Please click on the following link to proceed:<br>" + confirmationLink + "<br> This link will expire in 24 hours.";
+            String content = String.format("Please click on the following link to proceed:<br><a href='%s'>Click here to proceed</a><br> This link will expire in 24 hours.", confirmationLink);
             responseMessage = message + " has been sent to " + recipientAddress + ". Please check your inbox and follow the instructions.";
             getEmailService().sendEmail(EmailPayload.builder().recipientAddress(recipientAddress).subject(subject).content(content).build());
         }

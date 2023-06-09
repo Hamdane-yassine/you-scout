@@ -71,8 +71,7 @@ public class EmailVerificationServiceImpl extends AbstractTokenService<Verificat
      */
     @Override
     protected String getTokenContent(VerificationToken token) {
-        String url = applicationBaseUrlRetriever.getBaseUrl() + "/auth/confirm?token=" + token.getToken();
-        return "<a href=\"" + url + "\">Click here to proceed</a>";
+        return applicationBaseUrlRetriever.getBaseUrl() + "/auth/confirm?token=" + token.getToken();
     }
 
     /**
