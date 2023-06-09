@@ -15,13 +15,13 @@ class ApplicationBaseUrlRetrieverTest {
     void getBaseUrl() {
         // given
         ReflectionTestUtils.setField(retriever, "baseUrl", "http://localhost");
-        ReflectionTestUtils.setField(retriever, "serverPort", "8080");
+        ReflectionTestUtils.setField(retriever, "applicationContextPath", "/api/v1/auth-service");
 
         // when
         String baseUrl = retriever.getBaseUrl();
 
         // then
-        assertEquals("http://localhost:8080", baseUrl);
+        assertEquals("http://localhost/api/v1/auth-service", baseUrl);
     }
 
     @Test
@@ -29,27 +29,27 @@ class ApplicationBaseUrlRetrieverTest {
     void getBaseUrlWithDifferentPort() {
         // given
         ReflectionTestUtils.setField(retriever, "baseUrl", "http://localhost");
-        ReflectionTestUtils.setField(retriever, "serverPort", "8000");
+        ReflectionTestUtils.setField(retriever, "applicationContextPath", "/api/v1/auth-service");
 
         // when
         String baseUrl = retriever.getBaseUrl();
 
         // then
-        assertEquals("http://localhost:8000", baseUrl);
+        assertEquals("http://localhost/api/v1/auth-service", baseUrl);
     }
 
     @Test
     @DisplayName("Should correctly retrieve base URL with https")
     void getBaseUrlWithHttps() {
         // given
-        ReflectionTestUtils.setField(retriever, "baseUrl", "https://localhost");
-        ReflectionTestUtils.setField(retriever, "serverPort", "443");
+        ReflectionTestUtils.setField(retriever, "baseUrl", "http://localhost");
+        ReflectionTestUtils.setField(retriever, "applicationContextPath", "/api/v1/auth-service");
 
         // when
         String baseUrl = retriever.getBaseUrl();
 
         // then
-        assertEquals("https://localhost:443", baseUrl);
+        assertEquals("http://localhost/api/v1/auth-service", baseUrl);
     }
 }
 

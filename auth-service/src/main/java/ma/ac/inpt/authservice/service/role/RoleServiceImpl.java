@@ -67,7 +67,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public String assignRoleToUser(UserRoleRequest request) {
-        User user = userRepository.findByUsernameOrEmail(request.getUsername())
+        User user = userRepository.findByUsernameIgnoreCaseOrEmailIgnoreCase(request.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         Role role = roleRepository.findByRoleNameIgnoreCase(request.getRoleName())
@@ -88,7 +88,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public void assignDefaultRolesToUser(User user) {
-        Set<Role> existingDefaultRoles = new HashSet<>(roleRepository.findByRoleNameIn(defaultUserRoles));
+        Set<Role> existingDefaultRoles = new HashSet<>(roleRepository.findByRoleNameIgnoreCaseIn(defaultUserRoles));
         user.setRoles(existingDefaultRoles);
     }
 
@@ -97,7 +97,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @PostConstruct
     public void createDefaultAppRoles() {
-        Set<String> existingRoleNames = roleRepository.findByRoleNameIn(defaultAppRoles)
+        Set<String> existingRoleNames = roleRepository.findByRoleNameIgnoreCaseIn(defaultAppRoles)
                 .stream()
                 .map(Role::getRoleName)
                 .collect(Collectors.toSet());
@@ -162,7 +162,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public String removeRoleFromUser(UserRoleRequest request) {
-        User user = userRepository.findByUsernameOrEmail(request.getUsername())
+        User user = userRepository.findByUsernameIgnoreCaseOrEmailIgnoreCase(request.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         Role role = roleRepository.findByRoleNameIgnoreCase(request.getRoleName())

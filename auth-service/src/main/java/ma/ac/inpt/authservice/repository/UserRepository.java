@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return A list of User entities with usernames containing the specified string.
      *         If no users have usernames that contain the string, an empty list is returned.
      */
-    Page<User> findByUsernameContaining(String username, Pageable pageable);
+    Page<User> findByUsernameIgnoreCaseContaining(String username, Pageable pageable);
 
     /**
      * Returns an optional User object with the specified username or email.
@@ -32,7 +32,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return an Optional containing the User object with the specified username or email, or an empty Optional if not found
      */
     @Query("SELECT u FROM User u WHERE u.username = :identifier OR u.email = :identifier")
-    Optional<User> findByUsernameOrEmail(@Param("identifier") String identifier);
+    Optional<User> findByUsernameIgnoreCaseOrEmailIgnoreCase(@Param("identifier") String identifier);
 
     /**
      * Returns an optional User object with the specified username.
@@ -40,7 +40,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param username the username to search for
      * @return an Optional containing the User object with the specified username, or an empty Optional if not found
      */
-    Optional<User> findByUsername(String username);
+    Optional<User> findByUsernameIgnoreCase(String username);
 
     /**
      * Returns an optional User object with the specified email.
@@ -48,7 +48,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param email the email to search for
      * @return an Optional containing the User object with the specified email, or an empty Optional if not found
      */
-    Optional<User> findByEmail(String email);
+    Optional<User> findByEmailIgnoreCase(String email);
 
     /**
      * Returns true if a user with the specified username exists.
@@ -56,7 +56,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param username the username to search for
      * @return true if a user with the specified username exists, false otherwise
      */
-    Boolean existsByUsername(String username);
+    Boolean existsByUsernameIgnoreCase(String username);
 
     /**
      * Returns true if a user with the specified email exists.
@@ -64,6 +64,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param email the email to search for
      * @return true if a user with the specified email exists, false otherwise
      */
-    Boolean existsByEmail(String email);
+    Boolean existsByEmailIgnoreCase(String email);
 
 }

@@ -91,7 +91,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new IllegalArgumentException("Unsupported OAuth2 provider: " + provider);
         }
         var authenticationRequest = oAuth2Provider.authenticate(authorizationCode);
-        User user = userRepository.findByUsername(authenticationRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = userRepository.findByUsernameIgnoreCase(authenticationRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
         String scope = authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(" "));
         return buildAuthenticationResponse(authenticationRequest.isWithRefreshToken(), authenticationRequest.getUsername(), scope);
@@ -105,7 +105,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public void logout(String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = userRepository.findByUsernameIgnoreCase(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         log.info("Username is {}", user.getUsername());
         user.setRefreshToken(null);
         userRepository.save(user);
@@ -129,7 +129,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new AuthenticationFailedException("Username or password Incorrect");
         }
         catch (DisabledException e) {
-            User user = userRepository.findByUsernameOrEmail(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            User user = userRepository.findByUsernameIgnoreCaseOrEmailIgnoreCase(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
             String message = emailVerificationService.sendVerificationEmail(user, EmailVerificationType.RESEND);
             throw new AccountNotEnabledException(message);
         }
@@ -154,7 +154,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (!refreshTokenRepository.existsByTokenUuid(jti))
             throw new InvalidRefreshTokenException("Error validating refresh token");
         String subject = decodeJWT.getSubject();
-        User user = userRepository.findByUsername(subject).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = userRepository.findByUsernameIgnoreCase(subject).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
         String scope = authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(" "));
         log.info("Refresh token grant authentication successful for user: {}", subject);
@@ -180,7 +180,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             jwtRefreshToken = Optional.of(jwtEncoder.encode(JwtEncoderParameters.from(JwtClaimsSet.builder().subject(subject).issuedAt(instant).expiresAt(instant.plus(REFRESH_TOKEN_EXPIRE_DATE_IN_DAYS, ChronoUnit.DAYS)).issuer("you-scout-auth-service").claim("jti", refreshTokenUuid).build())).getTokenValue());
 
             // Retrieve the user from the subject (username)
-            User user = userRepository.findByUsername(subject).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            User user = userRepository.findByUsernameIgnoreCase(subject).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
             if (user.getRefreshToken() != null) {
                 // Update the existing refresh token

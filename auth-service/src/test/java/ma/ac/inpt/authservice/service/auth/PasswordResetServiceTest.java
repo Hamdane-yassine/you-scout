@@ -55,15 +55,15 @@ class PasswordResetServiceTest {
     @BeforeEach
     void setUp() {
         testUser = User.builder().
-                        username("testUsername").
-                        email("test@test.com").
-                        password(passwordEncoder.encode("testPassword")).
-                        build();
+                username("testUsername").
+                email("test@test.com").
+                password(passwordEncoder.encode("testPassword")).
+                build();
 
         testToken = PasswordResetToken.builder().
-                    user(testUser).token("testToken").
-                    expiryDate(LocalDateTime.now().plusDays(1)).
-                    build();
+                user(testUser).token("testToken").
+                expiryDate(LocalDateTime.now().plusDays(1)).
+                build();
     }
 
     @DisplayName("Test Send Password Reset Email")
@@ -72,7 +72,7 @@ class PasswordResetServiceTest {
         // Given
         ForgotPasswordRequest request = ForgotPasswordRequest.builder().email(testUser.getEmail()).build();
 
-        when(userRepository.findByEmail(any())).thenReturn(Optional.of(testUser));
+        when(userRepository.findByEmailIgnoreCase(any())).thenReturn(Optional.of(testUser));
         when(passwordResetTokenRepository.save(any())).thenReturn(testToken); // Added this line
 
         // When

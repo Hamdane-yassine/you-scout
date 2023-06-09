@@ -101,13 +101,13 @@ class UserServiceTest {
     @DisplayName("Should Delete User With Profile Picture By Username")
     void shouldDeleteUserWithProfilePictureByUsername() {
         // Given
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameIgnoreCase(username)).thenReturn(Optional.of(user));
 
         // When
         userService.deleteUserByUsername(username);
 
         // Then
-        verify(userRepository, times(1)).findByUsername(username);
+        verify(userRepository, times(1)).findByUsernameIgnoreCase(username);
         verify(userRepository, times(1)).delete(user);
         verify(userEventMessagingService, times(1)).sendUserDeleted(user);
         verify(mediaService, times(1)).deleteFile(user.getProfile().getProfilePicture());
@@ -119,13 +119,13 @@ class UserServiceTest {
     void shouldDeleteUserWithoutProfilePictureByUsername() {
         // Given
         user.getProfile().setProfilePicture(null);
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameIgnoreCase(username)).thenReturn(Optional.of(user));
 
         // When
         userService.deleteUserByUsername(username);
 
         // Then
-        verify(userRepository, times(1)).findByUsername(username);
+        verify(userRepository, times(1)).findByUsernameIgnoreCase(username);
         verify(userRepository, times(1)).delete(user);
         verify(userEventMessagingService, times(1)).sendUserDeleted(user);
         verify(mediaService, never()).deleteFile(any());
@@ -136,14 +136,14 @@ class UserServiceTest {
     @DisplayName("Should Get User Details By Username")
     void shouldGetUserDetailsByUsername() {
         // Given
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameIgnoreCase(username)).thenReturn(Optional.of(user));
         when(userMapper.userToUserDetailsDto(user)).thenReturn(userDetailsDto);
 
         // When
         UserDetailsDto returnedDto = userService.getUserDetailsByUsername(username);
 
         // Then
-        verify(userRepository, times(1)).findByUsername(username);
+        verify(userRepository, times(1)).findByUsernameIgnoreCase(username);
         assertNotNull(returnedDto);
         assertEquals(userDetailsDto, returnedDto);
     }
@@ -159,14 +159,14 @@ class UserServiceTest {
         userUpdateRequest.setNewEmail("newtest@gmail.com");
         UserUpdateResponse expectedResponse = UserUpdateResponse.builder().username("newUsername").email("test@gmail.com").build();
         when(passwordEncoder.matches("password", user.getPassword())).thenReturn(true);
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameIgnoreCase(username)).thenReturn(Optional.of(user));
         when(userMapper.userToUserUpdateResponse(user)).thenReturn(expectedResponse);
 
         // When
         UserUpdateResponse response = userService.updateUserByUsername(username, userUpdateRequest);
 
         // Then
-        verify(userRepository, times(1)).findByUsername(username);
+        verify(userRepository, times(1)).findByUsernameIgnoreCase(username);
         verify(userRepository, times(1)).save(user);
         verify(userEventMessagingService, never()).sendUserUpdated(user);
         verify(authenticationService, times(1)).logout("newUsername");
@@ -184,14 +184,14 @@ class UserServiceTest {
         userUpdateRequest.setNewPassword("newPassword");
         UserUpdateResponse expectedResponse = UserUpdateResponse.builder().username("newUsername").email("test@gmail.com").build();
         when(passwordEncoder.matches("password", user.getPassword())).thenReturn(true);
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameIgnoreCase(username)).thenReturn(Optional.of(user));
         when(userMapper.userToUserUpdateResponse(user)).thenReturn(expectedResponse);
 
         // When
         UserUpdateResponse response = userService.updateUserByUsername(username, userUpdateRequest);
 
         // Then
-        verify(userRepository, times(1)).findByUsername(username);
+        verify(userRepository, times(1)).findByUsernameIgnoreCase(username);
         verify(userRepository, times(1)).save(user);
         verify(userEventMessagingService,times(1)).sendUserUpdated(user);
         verify(authenticationService, times(1)).logout("newUsername");
@@ -206,11 +206,11 @@ class UserServiceTest {
         // Given
         String incorrectPassword = "incorrectPassword";
         userUpdateRequest.setPassword(incorrectPassword);
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameIgnoreCase(username)).thenReturn(Optional.of(user));
 
         // Then
         assertThrows(PasswordInvalidException.class, () -> userService.updateUserByUsername(username, userUpdateRequest));
-        verify(userRepository, times(1)).findByUsername(username);
+        verify(userRepository, times(1)).findByUsernameIgnoreCase(username);
         verify(userRepository, never()).save(any());
         verify(userEventMessagingService, never()).sendUserUpdated(any());
         verify(authenticationService, never()).logout(any());
@@ -224,13 +224,13 @@ class UserServiceTest {
         String existingUsername = "existingUser";
         userUpdateRequest.setPassword("password");
         userUpdateRequest.setNewUsername(existingUsername);
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
-        when(userRepository.existsByUsername(existingUsername)).thenReturn(true);
+        when(userRepository.findByUsernameIgnoreCase(username)).thenReturn(Optional.of(user));
+        when(userRepository.existsByUsernameIgnoreCase(existingUsername)).thenReturn(true);
         when(passwordEncoder.matches("password", user.getPassword())).thenReturn(true);
 
         // Then
         assertThrows(UsernameAlreadyExistsException.class, () -> userService.updateUserByUsername(username, userUpdateRequest));
-        verify(userRepository, times(1)).findByUsername(username);
+        verify(userRepository, times(1)).findByUsernameIgnoreCase(username);
         verify(userRepository, never()).save(any());
         verify(userEventMessagingService, never()).sendUserUpdated(any());
         verify(userEventMessagingService, never()).sendUserUpdated(any());
@@ -245,13 +245,13 @@ class UserServiceTest {
         String existingEmail = "existingEmail";
         userUpdateRequest.setPassword("password");
         userUpdateRequest.setNewEmail(existingEmail);
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
-        when(userRepository.existsByEmail(existingEmail)).thenReturn(true);
+        when(userRepository.findByUsernameIgnoreCase(username)).thenReturn(Optional.of(user));
+        when(userRepository.existsByEmailIgnoreCase(existingEmail)).thenReturn(true);
         when(passwordEncoder.matches("password", user.getPassword())).thenReturn(true);
 
         // Then
         assertThrows(EmailAlreadyExistsException.class, () -> userService.updateUserByUsername(username, userUpdateRequest));
-        verify(userRepository, times(1)).findByUsername(username);
+        verify(userRepository, times(1)).findByUsernameIgnoreCase(username);
         verify(userRepository, never()).save(any());
         verify(userEventMessagingService, never()).sendUserUpdated(any());
         verify(userEventMessagingService, never()).sendUserUpdated(any());
@@ -265,14 +265,14 @@ class UserServiceTest {
         // Given
         profileUpdateRequest.setFullName("test");
         ProfileUpdateResponse expectedResponse = ProfileUpdateResponse.builder().fullName("test").build();
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameIgnoreCase(username)).thenReturn(Optional.of(user));
         when(userMapper.profileToProfileUpdateResponse(user.getProfile())).thenReturn(expectedResponse);
 
         // When
         ProfileUpdateResponse response = userService.updateProfileByUsername(username, profileUpdateRequest);
 
         // Then
-        verify(userRepository, times(1)).findByUsername(username);
+        verify(userRepository, times(1)).findByUsernameIgnoreCase(username);
         verify(userRepository, times(1)).save(user);
         verify(userEventMessagingService,times(1)).sendUserUpdated(user);
         assertEquals(expectedResponse, response);
@@ -285,7 +285,7 @@ class UserServiceTest {
         // Given
         String fileUrl = "testUrl";
         ProfilePictureUpdateResponse expectedResponse = ProfilePictureUpdateResponse.builder().username(username).profilePictureUrl("testUrl").build();
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameIgnoreCase(username)).thenReturn(Optional.of(user));
         when(mediaService.uploadFile(file)).thenReturn(fileUrl);
         when(userMapper.userToProfilePictureUpdateResponse(user)).thenReturn(expectedResponse);
 
@@ -293,7 +293,7 @@ class UserServiceTest {
         ProfilePictureUpdateResponse response = userService.updateProfilePicture(username, file);
 
         // Then
-        verify(userRepository, times(1)).findByUsername(username);
+        verify(userRepository, times(1)).findByUsernameIgnoreCase(username);
         verify(mediaService, times(1)).uploadFile(file);
         verify(userRepository, times(1)).save(user);
         assertEquals(expectedResponse, response);
@@ -305,13 +305,13 @@ class UserServiceTest {
     void shouldUpdateUserEnabledStatus() {
         // Given
         boolean isEnabled = false;
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameIgnoreCase(username)).thenReturn(Optional.of(user));
 
         // When
         userService.updateUserEnabledStatus(username, isEnabled);
 
         // Then
-        verify(userRepository, times(1)).findByUsername(username);
+        verify(userRepository, times(1)).findByUsernameIgnoreCase(username);
         verify(userRepository, times(1)).save(user);
     }
 }

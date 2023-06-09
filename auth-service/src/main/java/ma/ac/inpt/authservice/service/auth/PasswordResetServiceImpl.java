@@ -139,7 +139,7 @@ public class PasswordResetServiceImpl extends AbstractTokenService<PasswordReset
      */
     @Override
     public String sendPasswordResetEmail(ForgotPasswordRequest request) {
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = userRepository.findByEmailIgnoreCase(request.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return sendTokenEmail(user, "Password Reset", "A password reset email", EmailVerificationType.PASSWORD_RESET);
     }
 

@@ -69,7 +69,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     public void registerOauth2User(RegistrationRequest request) {
         // If the user email does not already exist, save the user
-        if (!userRepository.existsByEmail(request.getEmail())) {
+        if (!userRepository.existsByEmailIgnoreCase(request.getEmail())) {
             saveUser(request, true);
         }
     }
@@ -90,7 +90,7 @@ public class RegistrationServiceImpl implements RegistrationService {
      * @param username the username to validate
      */
     private void validateUsername(String username) {
-        if (userRepository.existsByUsername(username)) {
+        if (userRepository.existsByUsernameIgnoreCase(username)) {
             throw new UsernameAlreadyExistsException("The username is already taken");
         }
     }
@@ -101,7 +101,7 @@ public class RegistrationServiceImpl implements RegistrationService {
      * @param email the email to validate
      */
     private void validateEmail(String email) {
-        if (userRepository.existsByEmail(email)) {
+        if (userRepository.existsByEmailIgnoreCase(email)) {
             throw new EmailAlreadyExistsException("The email address is already taken");
         }
     }
