@@ -1,6 +1,6 @@
 default:
   tags:
-    - gitlab-runner-7cb44649f8-8b2l6
+    - Windows
 stages:
   - scan
   - version
