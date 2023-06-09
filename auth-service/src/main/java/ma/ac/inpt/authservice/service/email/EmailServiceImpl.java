@@ -30,7 +30,7 @@ public class EmailServiceImpl implements EmailService {
     @Value("${email.template.path}")
     private String templatePath; // Path to the email template file
 
-    @Value("${spring.mail.from}")
+    @Value("${spring.mail.username}")
     private String sender; // Email address of the sender
 
     /**
