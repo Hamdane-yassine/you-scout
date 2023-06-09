@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Represents an authentication response containing the necessary information to authenticate a user.
+ * Represents an authentication response containing the necessary information to authenticate a user
  */
 @Data
 @Builder
