@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import ma.ac.inpt.authservice.util.ValidAuthenticationRequest;
 
 /**
- * Represents an authentication request containing the necessary information to authenticate a user.
+ * Represents an authentication request containing the necessary information to authenticate a user
  */
 @Data
 @Builder
