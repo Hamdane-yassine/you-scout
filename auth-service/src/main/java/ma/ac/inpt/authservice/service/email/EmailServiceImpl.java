@@ -34,7 +34,7 @@ public class EmailServiceImpl implements EmailService {
     private String sender; // Email address of the sender
 
     /**
-     * Sends an email asynchronously using the provided email payload.
+     * Sends an email asynchronously using the provided email payload
      *
      * @param payload the email payload containing the recipient address, subject, and content
      */
