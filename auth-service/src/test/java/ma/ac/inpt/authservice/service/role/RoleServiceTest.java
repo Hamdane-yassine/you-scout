@@ -80,7 +80,7 @@ class RoleServiceTest {
     @Test
     void shouldAssignRoleToUser() {
         // given
-        when(userRepository.findByUsernameOrEmail(anyString())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameIgnoreCaseOrEmailIgnoreCase(anyString())).thenReturn(Optional.of(user));
         when(roleRepository.findByRoleNameIgnoreCase(anyString())).thenReturn(Optional.of(role));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
@@ -99,7 +99,7 @@ class RoleServiceTest {
         // given
         List<Role> defaultRoles = Collections.singletonList(Role.builder().roleName("USER").build());
         List<String> defaultUserRoles = Collections.singletonList("USER");
-        when(roleRepository.findByRoleNameIn(defaultUserRoles)).thenReturn(defaultRoles);
+        when(roleRepository.findByRoleNameIgnoreCaseIn(defaultUserRoles)).thenReturn(defaultRoles);
         RoleServiceImpl roleService = new RoleServiceImpl(roleRepository, userRepository);
         roleService.setDefaultUserRoles(defaultUserRoles);
 
@@ -176,7 +176,7 @@ class RoleServiceTest {
         // given
         user.getRoles().add(role);
 
-        when(userRepository.findByUsernameOrEmail(anyString())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameIgnoreCaseOrEmailIgnoreCase(anyString())).thenReturn(Optional.of(user));
         when(roleRepository.findByRoleNameIgnoreCase(anyString())).thenReturn(Optional.of(role));
         when(userRepository.save(any(User.class))).thenReturn(user);
 

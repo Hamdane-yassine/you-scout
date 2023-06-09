@@ -45,8 +45,8 @@ class RegistrationServiceTest {
         request.setFullName("Test User");
         request.setPassword("testPassword");
 
-        when(userRepository.existsByUsername(anyString())).thenReturn(false);
-        when(userRepository.existsByEmail(anyString())).thenReturn(false);
+        when(userRepository.existsByUsernameIgnoreCase(anyString())).thenReturn(false);
+        when(userRepository.existsByEmailIgnoreCase(anyString())).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(emailVerificationService.sendVerificationEmail(any(), any())).thenReturn("Email sent");
         when(userRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
@@ -67,7 +67,7 @@ class RegistrationServiceTest {
         request.setUsername("existingUser");
         request.setEmail("testEmail");
 
-        when(userRepository.existsByUsername(anyString())).thenReturn(true);
+        when(userRepository.existsByUsernameIgnoreCase(anyString())).thenReturn(true);
 
         // When / Then
         assertThrows(UsernameAlreadyExistsException.class, () -> registrationService.register(request));
@@ -81,8 +81,8 @@ class RegistrationServiceTest {
         request.setUsername("testUser");
         request.setEmail("existingEmail");
 
-        when(userRepository.existsByUsername(anyString())).thenReturn(false);
-        when(userRepository.existsByEmail(anyString())).thenReturn(true);
+        when(userRepository.existsByUsernameIgnoreCase(anyString())).thenReturn(false);
+        when(userRepository.existsByEmailIgnoreCase(anyString())).thenReturn(true);
 
         // When / Then
         assertThrows(EmailAlreadyExistsException.class, () -> registrationService.register(request));
@@ -96,8 +96,8 @@ class RegistrationServiceTest {
         request.setUsername("testUser");
         request.setEmail("testEmail");
 
-        when(userRepository.existsByUsername(anyString())).thenReturn(false);
-        when(userRepository.existsByEmail(anyString())).thenReturn(false);
+        when(userRepository.existsByUsernameIgnoreCase(anyString())).thenReturn(false);
+        when(userRepository.existsByEmailIgnoreCase(anyString())).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenThrow(new RuntimeException("Test exception"));
 
         // When / Then
@@ -113,7 +113,7 @@ class RegistrationServiceTest {
         request.setEmail("newEmail");
         request.setPassword("testPassword");  // set the password
 
-        when(userRepository.existsByEmail(anyString())).thenReturn(false);
+        when(userRepository.existsByEmailIgnoreCase(anyString())).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(userRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -134,7 +134,7 @@ class RegistrationServiceTest {
         request.setUsername("testUser");
         request.setEmail("existingEmail");
 
-        when(userRepository.existsByEmail(anyString())).thenReturn(true);
+        when(userRepository.existsByEmailIgnoreCase(anyString())).thenReturn(true);
 
         // When
         registrationService.registerOauth2User(request);

@@ -25,7 +25,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
      * @param roles the list of role names to search for
      * @return a List of Role objects with role names in the specified list
      */
-    List<Role> findByRoleNameIn(List<String> roles);
+    List<Role> findByRoleNameIgnoreCaseIn(List<String> roles);
 
 }
 

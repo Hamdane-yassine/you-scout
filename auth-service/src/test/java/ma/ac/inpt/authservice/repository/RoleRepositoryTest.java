@@ -58,7 +58,7 @@ class RoleRepositoryTest {
     void findByRoleNameInTest() {
         // Check that we can find multiple roles by their names
         List<String> roleNames = Arrays.asList(testRole1.getRoleName(), testRole2.getRoleName());
-        List<Role> foundRoles = roleRepository.findByRoleNameIn(roleNames);
+        List<Role> foundRoles = roleRepository.findByRoleNameIgnoreCaseIn((roleNames));
 
         // Assert that the roles were found as expected
         assertNotNull(foundRoles, "Expected a valid list of roles");

@@ -42,7 +42,7 @@ class UserRepositoryTest {
     @DisplayName("Find by Username Test")
     void findByUsernameOrEmailWithUsernameTest() {
         // Test findByUsernameOrEmail method with username
-        Optional<User> foundUser = userRepository.findByUsernameOrEmail(testUser.getUsername());
+        Optional<User> foundUser = userRepository.findByUsernameIgnoreCaseOrEmailIgnoreCase(testUser.getUsername());
         assertTrue(foundUser.isPresent(), "Expected a valid user when searching by username");
         assertEquals(testUser, foundUser.get(), "Expected User should match the returned user when searching by username");
     }
@@ -51,7 +51,7 @@ class UserRepositoryTest {
     @DisplayName("Find by Email Test")
     void findByUsernameOrEmailWithEmailTest() {
         // Test findByUsernameOrEmail method with email
-        Optional<User> foundUser = userRepository.findByUsernameOrEmail(testUser.getEmail());
+        Optional<User> foundUser = userRepository.findByUsernameIgnoreCaseOrEmailIgnoreCase(testUser.getEmail());
         assertTrue(foundUser.isPresent(), "Expected a valid user when searching by email");
         assertEquals(testUser, foundUser.get(), "Expected User should match the returned user when searching by email");
     }
@@ -59,7 +59,7 @@ class UserRepositoryTest {
     @Test
     @DisplayName("Find by Username Test")
     void findByUsernameTest() {
-        Optional<User> foundUser = userRepository.findByUsername(testUser.getUsername());
+        Optional<User> foundUser = userRepository.findByUsernameIgnoreCase(testUser.getUsername());
         assertTrue(foundUser.isPresent(), "Expected a valid user");
         assertEquals(testUser, foundUser.get(), "Expected User should match the returned user");
     }
@@ -67,7 +67,7 @@ class UserRepositoryTest {
     @Test
     @DisplayName("Find by Email Test")
     void findByEmailTest() {
-        Optional<User> foundUser = userRepository.findByEmail(testUser.getEmail());
+        Optional<User> foundUser = userRepository.findByEmailIgnoreCase(testUser.getEmail());
         assertTrue(foundUser.isPresent(), "Expected a valid user");
         assertEquals(testUser, foundUser.get(), "Expected User should match the returned user");
     }
@@ -75,14 +75,14 @@ class UserRepositoryTest {
     @Test
     @DisplayName("Exists by Username Test")
     void existsByUsernameTest() {
-        Boolean exists = userRepository.existsByUsername(testUser.getUsername());
+        Boolean exists = userRepository.existsByUsernameIgnoreCase(testUser.getUsername());
         assertTrue(exists, "Expected user to exist");
     }
 
     @Test
     @DisplayName("Exists by Email Test")
     void existsByEmailTest() {
-        Boolean exists = userRepository.existsByEmail(testUser.getEmail());
+        Boolean exists = userRepository.existsByEmailIgnoreCase(testUser.getEmail());
         assertTrue(exists, "Expected user to exist");
     }
 }

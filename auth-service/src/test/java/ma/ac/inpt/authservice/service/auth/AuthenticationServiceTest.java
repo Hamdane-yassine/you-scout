@@ -119,7 +119,7 @@ class AuthenticationServiceTest {
         when(jwtDecoder.decode(any())).thenReturn(jwt);
         when(jwtEncoder.encode(any())).thenReturn(jwt);
         when(refreshTokenRepository.existsByTokenUuid(any())).thenReturn(true);
-        when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameIgnoreCase(any())).thenReturn(Optional.of(user));
 
         // When
         AuthenticationResponse response = authenticationService.authenticate(request);
@@ -155,7 +155,7 @@ class AuthenticationServiceTest {
         authenticationService = new AuthenticationServiceImpl(jwtEncoder, jwtDecoder, authenticationManager, userRepository, emailVerificationService, oAuth2Providers, refreshTokenRepository);
 
         when(oAuth2Provider.authenticate(authorizationCode)).thenReturn(AuthenticationRequest.builder().username("testUser").build());
-        when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameIgnoreCase(any())).thenReturn(Optional.of(user));
         when(jwtEncoder.encode(any())).thenReturn(jwt);
 
         //When
@@ -185,7 +185,7 @@ class AuthenticationServiceTest {
         //Given
         String username = "testUser";
 
-        when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameIgnoreCase(any())).thenReturn(Optional.of(user));
 
         //When
         authenticationService.logout(username);

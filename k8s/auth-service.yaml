@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: auth-service
-          image: registry.gitlab.com/hamdane10/you-scout/auth-service:v41.0
+          image: registry.gitlab.com/hamdane10/you-scout/auth-service:v45.0
           ports:
             - containerPort: 8082
           env:

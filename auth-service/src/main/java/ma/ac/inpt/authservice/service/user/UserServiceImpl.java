@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserDetailsDto> getUsersByUsername(String username, Integer page, Integer size) {
         log.info("Fetching users with username containing: {}", username);
-        Page<User> users = userRepository.findByUsernameContaining(username, PageRequest.of(page, size));
+        Page<User> users = userRepository.findByUsernameIgnoreCaseContaining(username, PageRequest.of(page, size));
         return users.map(userMapper::userToUserDetailsDto);    }
 
 
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserByUsername(String username) {
         log.info("Deleting user with username: {}", username);
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
+        User user = userRepository.findByUsernameIgnoreCase(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
         String ProfilePictureUrl = user.getProfile().getProfilePicture();
         if (ProfilePictureUrl != null) {
             mediaService.deleteFile(ProfilePictureUrl);
@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetailsDto getUserDetailsByUsername(String username) {
         log.info("Fetching user details by username: {}", username);
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
+        User user = userRepository.findByUsernameIgnoreCase(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
         return userMapper.userToUserDetailsDto(user);
     }
 
@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserUpdateResponse updateUserByUsername(String username, UserUpdateRequest userUpdateRequest) {
         log.info("Updating user with username: {}", username);
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
+        User user = userRepository.findByUsernameIgnoreCase(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
         updateUserFields(user, userUpdateRequest);
         userRepository.save(user);
         if(userUpdateRequest.getNewUsername()!=null && userUpdateRequest.getNewEmail() == null)userEventMessagingService.sendUserUpdated(user);
@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ProfileUpdateResponse updateProfileByUsername(String username, ProfileUpdateRequest profileUpdateRequest) {
         log.info("Updating user profile with username: {}", username);
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
+        User user = userRepository.findByUsernameIgnoreCase(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
         updateProfileFields(user, profileUpdateRequest);
         userRepository.save(user);
         userEventMessagingService.sendUserUpdated(user);
@@ -145,7 +145,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ProfilePictureUpdateResponse  updateProfilePicture(String username, MultipartFile file) {
         log.info("Updating profile picture for user with username: {}", username);
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
+        User user = userRepository.findByUsernameIgnoreCase(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
 
         String oldProfilePictureUrl = user.getProfile().getProfilePicture();
         if (oldProfilePictureUrl != null) {
@@ -169,7 +169,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserEnabledStatus(String username, boolean isEnabled) {
         log.info("Updating enabled status for user with username: {}", username);
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
+        User user = userRepository.findByUsernameIgnoreCase(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
 
         user.setEnabled(isEnabled);
         userRepository.save(user);
@@ -227,7 +227,7 @@ public class UserServiceImpl implements UserService {
      * @param username the new username
      */
     private void updateUsername(User user, String username) {
-        if (userRepository.existsByUsername(username)) {
+        if (userRepository.existsByUsernameIgnoreCase(username)) {
             throw new UsernameAlreadyExistsException(String.format("Username '%s' already exists", username));
         } else {
             user.setUsername(username);
@@ -241,7 +241,7 @@ public class UserServiceImpl implements UserService {
      * @param email the new email
      */
     private void updateEmail(User user, String email) {
-        if (userRepository.existsByEmail(email)) {
+        if (userRepository.existsByEmailIgnoreCase(email)) {
             throw new EmailAlreadyExistsException(String.format("Email '%s' already exists", email));
         } else {
             user.setEmail(email);
