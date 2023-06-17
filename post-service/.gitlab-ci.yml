@@ -79,4 +79,4 @@ post_yaml:
       changes:
         - post-service/**/*
   needs:
-    - job: post-handling-build
+    - job: post-build
