@@ -200,7 +200,7 @@ auth-build:
     #   allow_failure: true
     - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG == "major-auth-service" || $CI_COMMIT_TAG == "minor-auth-service" || $CI_COMMIT_TAG == "patch-auth-service"'
       changes:
-      - comments-service/**/*
+      - auth-service/**/*
 
 social-graph-build:
   image: maven:3.8.4-openjdk-17
@@ -229,7 +229,7 @@ social-graph-build:
     # - if: '$CI_COMMIT_TAG =~ /auth-service/'
     - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG == "major-social-graph-service" || $CI_COMMIT_TAG == "minor-social-graph-service" || $CI_COMMIT_TAG == "patch-social-graph-service"'
       changes:
-      - auth-service/**/*
+      - social-graph-service/**/*
 
 post-handling-build:
   image: maven:3.8.4-openjdk-17
