@@ -17,8 +17,6 @@ versioning:
     - IFS='-' read -ra words <<< "$variable_value"
     - word1="${words[0]}"
     - word2=$(echo "$variable_value" | cut -d'-' -f2-)
-    - echo $word1
-    - echo $word2
     - variable_name="${word1}-${word2}"
     - |
           echo "I'm in"
