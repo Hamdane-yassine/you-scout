@@ -46,10 +46,10 @@ post-build:
   stage: build
   before_script:
     - cd post-handling-service
-    - echo "$COMMENT_VERSION"
-    - export VERSION="$COMMENT_VERSION"
+    - echo "$POST_VERSION"
+    - export VERSION="$POST_VERSION"
   script:
-    - echo "$COMMENT_VERSION"
+    - echo "$POST_VERSION"
     - mvn compile jib:build -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD -Djib.to.image=$CONTAINER_RELEASE_IMAGE
   cache:
     key: "$CI_COMMIT_REF_SLUG"
@@ -64,12 +64,12 @@ post-build:
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG == "major-post-handling-service" || $CI_COMMIT_TAG == "minor-post-handling-service" || $CI_COMMIT_TAG == "patch-post-handling-service"'
       changes:
-        - post-handling-service/**/*
+        - post-service/**/*
 
-comment_yaml:
+post_yaml:
   stage: deploy
   script: |
-    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/post-handling-service:'$COMMENT_VERSION'|' k8s/post-handling-service.yaml
+    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/post-handling-service:'$POST_VERSION'|' k8s/post-handling-service.yaml
     ENCODED_CONTENT=$(base64 -w 0 k8s/post-handling-service.yaml)
     echo "$DECODED_CONTENT"
     curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fpost-handling-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file", "encoded":"base64"}'
@@ -77,6 +77,6 @@ comment_yaml:
   rules:
     - if: '$CI_COMMIT_TAG == "major-post-handling-service" || $CI_COMMIT_TAG == "minor-post-handling-service" || $CI_COMMIT_TAG == "patch-post-handling-service"'
       changes:
-        - post-handling-service/**/*
+        - post-service/**/*
   needs:
-    - job: post-build
+    - job: post-handling-build
