@@ -317,6 +317,22 @@ trigger_comment:
     - changes:
         - comments-service/**/*
 
+trigger_post:
+  stage: triggers
+  trigger:
+    include: post-service/.gitlab-ci.yml
+  rules:
+    - changes:
+        - post-service/**/*
+
+trigger_skill:
+  stage: triggers
+  trigger:
+    include: skills-service/.gitlab-ci.yml
+  rules:
+    - changes:
+        - skills-service/**/*
+
 
 
 
