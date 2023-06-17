@@ -1,0 +1,82 @@
+default:
+  tags:
+    - docker
+stages:
+  - version
+  - build
+  - deploy
+
+variables:
+  variable_value: value
+ 
+versioning:
+  stage: version
+  script:
+    - variable_value=$CI_COMMIT_REF_NAME
+    - echo "Variable value $variable_value"
+    - IFS='-' read -ra words <<< "$variable_value"
+    - word1="${words[0]}"
+    - word2=$(echo "$variable_value" | cut -d'-' -f2-)
+    - echo $word1
+    - echo $word2
+    - variable_name="${word1}-${word2}"
+    - |
+          echo "I'm in"
+          IFS='.' read -ra VERSION_ARRAY <<< "$SKILL_VERSION"
+          MAJOR=${VERSION_ARRAY[0]}
+          MINOR=${VERSION_ARRAY[1]}
+          PATCH=${VERSION_ARRAY[2]}
+          if [[ $word1 == "major" ]]; then
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
+          elif [[ $word1 == "minor" ]]; then
+            MINOR=$((MINOR + 1))
+            PATCH=0
+          elif [[ $word1 == "patch" ]]; then
+            PATCH=$((PATCH + 1))
+          fi
+          echo "major $MAJOR, minor $MINOR, patch $PATCH"
+          curl --request PUT --header "PRIVATE-TOKEN: glpat-rzjTbhoKA5VmBypsnB6n" "https://gitlab.com/api/v4/projects/44998572/variables/SKILL_VERSION" --form "value=$MAJOR.$MINOR.$PATCH"
+
+
+
+skills-build:
+  image: maven:3.8.4-openjdk-17
+  stage: build
+  before_script:
+    - cd skills-service
+    - echo "$SKILL_VERSION"
+    - export VERSION="$SKILL_VERSION"
+  script:
+    - echo "$SKILL_VERSION"
+    - mvn compile jib:build -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD -Djib.to.image=$CONTAINER_RELEASE_IMAGE
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - .m2/repository/
+  artifacts:
+    name: "Maven artifacts from $CI_PROJECT_NAME on $CI_COMMIT_REF_SLUG"
+    reports:
+      junit:
+        - "skills-service/target/*-reports/TEST-*.xml"
+
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG == "major-skills-service" || $CI_COMMIT_TAG == "minor-skills-service" || $CI_COMMIT_TAG == "patch-skills-service"'
+      changes:
+        - skills-service/**/*
+
+skills_yaml:
+  stage: deploy
+  script: |
+    sed -i 's|image:.*|image: registry.gitlab.com/hamdane10/you-scout/skills-service:'$COMMENT_VERSION'|' k8s/skills-service.yaml
+    ENCODED_CONTENT=$(base64 -w 0 k8s/skills-service.yaml)
+    echo "$DECODED_CONTENT"
+    curl --request PUT --header "PRIVATE-TOKEN: glpat-yw5_V7QMKPXSt52tdx5B" "https://gitlab.com/api/v4/projects/44998572/repository/files/k8s%2Fskills-service%2Eyaml" --header "Content-Type: application/json" --data '{"branch": "master", "author_email": "aarrasseayoub@gmail.com", "author_name": "Ayoub AARRASSE", "content": "'"$DECODED_CONTENT"'", "commit_message": "update file", "encoded":"base64"}'
+
+  rules:
+    - if: '$CI_COMMIT_TAG == "major-skills-service" || $CI_COMMIT_TAG == "minor-skills-service" || $CI_COMMIT_TAG == "patch-skills-service"'
+      changes:
+        - skills-service/**/*
+  needs:
+    - job: skills-build
