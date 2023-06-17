@@ -1,11 +1,12 @@
 default:
   tags:
-    - local
+    - docker
 stages:
   - scan
   - version
   - build
   - deploy
+  - triggers
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -310,8 +311,21 @@ skill_yaml:
     - job: skills-build
  
 
+trigger_auth:
+  stage: triggers
+  trigger:
+    include: auth-service/.gitlab-ci.yml
+  rules:
+    - changes:
+        - auth-service/**/*
 
- 
+trigger_comment:
+  stage: triggers
+  trigger:
+    include: comments-service/.gitlab-ci.yml
+  rules:
+    - changes:
+        - comments-service/**/*
 
 
 
