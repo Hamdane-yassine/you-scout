@@ -3,7 +3,6 @@ default:
     - docker
 
 stages:
-  - scan
   - version
   - build
   - deploy
