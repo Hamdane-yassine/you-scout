@@ -144,6 +144,22 @@ trigger_skill:
     - changes:
         - skills-service/**/*
 
+trigger_social_graph:
+  stage: triggers
+  trigger:
+    include: social-graph-service/.gitlab-ci.yml
+  rules:
+    - changes:
+        - social-graph-service/**/*
+
+trigger_feed:
+  stage: triggers
+  trigger:
+    include: user-feed-service/.gitlab-ci.yml
+  rules:
+    - changes:
+        - user-feed-service/**/*
+
 
 
 
